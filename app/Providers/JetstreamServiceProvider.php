@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\User;
+use App\Enums\UserType;
+use App\Http\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Fortify;
@@ -12,6 +13,13 @@ use Laravel\Jetstream\Jetstream;
 
 class JetstreamServiceProvider extends ServiceProvider
 {
+    private UserService $userService;
+
+    public function __construct()
+    {
+        $this->userService = new UserService();
+    }
+
     /**
      * Register any application services.
      *
@@ -36,47 +44,29 @@ class JetstreamServiceProvider extends ServiceProvider
     }
 
     /**
-     * 
+     *
      *
      * @return void
      */
     protected function configureLogin()
     {
         Fortify::authenticateUsing(function (Request $request) {
-            $validator = $request->validate([
-                'email' => 'required',
-                'password' => 'required'
-            ]);
 
-            $credentials = [
-                'user' => $request->input('email'),
-                'password' => $request->input('password'),
-            ];
-    
-            $auth = new \CCUFFS\Auth\AuthIdUFFS();
-            $user_data = $auth->login($credentials);
+            $user = $this->userService->getUserByUsername($request->input('email'));
 
-            if(!$user_data) {
+            if (empty($user)){
                 return null;
             }
 
-            $password = Hash::make($user_data->pessoa_id);
+            echo UserType::RUEmployee;
 
-            $user = User::where(['uid' => $user_data->uid])->first();
-            $data = [
-                'uid' => $user_data->uid,
-                'email' => $user_data->email,
-                'name' => $user_data->name,
-                'password' => $password
-            ];
-
-            if($user) {
-                $user->update($data);
-            } else {
-                $user = User::create($data);
+            if (!Hash::check($user->password, $request->input('password'))){
+                if ($user->type == UserType::RUEmployee or $user->type == UserType::ThirdPartyEmployee){
+                    return $user;
+                }
             }
 
-            return $user;
+            return null;
         });
     }
 
