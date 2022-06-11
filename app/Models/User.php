@@ -27,29 +27,22 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'enrollment_id',
-        'bio',
-        'google',
-        'github',
-        'twitter',
-        'facebook',
-        'instagram',
-        'linkedin',
-        'lattes',
-        'website'
+        'type'
     ];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
+
+     */
+
     protected $hidden = [
         'password',
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',
     ];
-     */
 
     /**
      * The attributes that should be cast to native types.
@@ -66,8 +59,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $appends = [
-        'profile_photo_url',
-    ];
+        'profile_photo_url'    ];
 
     /**
      * Sites que esse usuário possui

@@ -12,7 +12,7 @@ class UserRepository
 
     public function getUserByUsername(string $username) : \App\Models\User
     {
-        return  User::where("uid", $username)->first();
+        return User::where("uid", $username)->first();
     }
 
 }

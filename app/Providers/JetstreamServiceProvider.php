@@ -58,10 +58,8 @@ class JetstreamServiceProvider extends ServiceProvider
                 return null;
             }
 
-            echo UserType::RUEmployee;
-
-            if (!Hash::check($user->password, $request->input('password'))){
-                if ($user->type == UserType::RUEmployee or $user->type == UserType::ThirdPartyEmployee){
+            if (Hash::check(request('password'), $user->password)){
+                if (intval($user->type) == UserType::RUEmployee->value || intval($user->type) == UserType::ThirdPartyEmployee->value){
                     return $user;
                 }
             }
