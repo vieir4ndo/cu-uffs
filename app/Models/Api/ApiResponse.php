@@ -2,25 +2,31 @@
 
 namespace App\Models\Api;
 
-use Illuminate\Http\Response;
-
 class ApiResponse
 {
-    public static function ok($data)
+    public static function ok($data, $success = true)
     {
         return response()->json([
-            "success" => true,
+            "success" => $success,
             "data" => $data,
-            "errors" => null
+            "messages" => null
         ], 200);
     }
 
-    public static function badRequest($error)
+    public static function badRequest($messages)
     {
         return response()->json([
             "success" => false,
             "data" => null,
-            "errors" => $error
+            "messages" => $messages
         ], 400);
+    }
+
+    public static function noContent($messages){
+        return response()->json([
+            "success" => true,
+            "data" => null,
+            "messages" => $messages
+        ], 204);
     }
 }

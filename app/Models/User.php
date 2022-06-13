@@ -27,7 +27,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'type'
+        'type',
+        'bar_code',
+        'profile_photo',
+        'enrollment_id'
     ];
 
     /**
@@ -57,15 +60,8 @@ class User extends Authenticatable
      * The accessors to append to the model's array form.
      *
      * @var array
+     * protected $appends = [
+    'profile_photo_url'    ];
      */
-    protected $appends = [
-        'profile_photo_url'    ];
 
-    /**
-     * Sites que esse usuário possui
-     */
-    public function sites()
-    {
-        return $this->hasMany(Site::class);
-    }
 }

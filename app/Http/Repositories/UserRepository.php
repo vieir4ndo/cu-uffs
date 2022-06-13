@@ -10,9 +10,19 @@ class UserRepository
         return User::create($user);
     }
 
-    public function getUserByUsername(string $username) : \App\Models\User
+    public function getUserByUsername(string $uid) : User
     {
-        return User::where("uid", $username)->first();
+        return User::where("uid", $uid)->first();
+    }
+
+    public function deleteUserByUsername(string $uid) : bool {
+        return User::where("uid", $uid)->delete();
+    }
+
+    public function updateUserByUsername(string $uid, $data) : User{
+        User::where("uid", $uid)->update($data);
+
+        return $this->getUserByUsername($uid);
     }
 
 }

@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Enums\UserType;
+use App\Http\Repositories\UserRepository;
+use App\Http\Services\BarcodeService;
 use App\Http\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -15,11 +17,6 @@ class JetstreamServiceProvider extends ServiceProvider
 {
     private UserService $userService;
 
-    public function __construct()
-    {
-        $this->userService = new UserService();
-    }
-
     /**
      * Register any application services.
      *
@@ -27,6 +24,9 @@ class JetstreamServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $userRepository = new UserRepository();
+        $barcodeService = new BarcodeService();
+        $this->userService = new UserService($userRepository, $barcodeService);
         //
     }
 
@@ -51,15 +51,15 @@ class JetstreamServiceProvider extends ServiceProvider
     protected function configureLogin()
     {
         Fortify::authenticateUsing(function (Request $request) {
-
             $user = $this->userService->getUserByUsername($request->input('email'));
 
             if (empty($user)){
                 return null;
             }
 
+            // for running composer remove the value, we gotta check a workaround
             if (Hash::check(request('password'), $user->password)){
-                if (intval($user->type) == UserType::RUEmployee->value || intval($user->type) == UserType::ThirdPartyEmployee->value){
+                if ((intval($user->type) == UserType::RUEmployee->value) || (intval($user->type) == UserType::ThirdPartyEmployee->value)){
                     return $user;
                 }
             }

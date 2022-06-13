@@ -22,4 +22,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/user', [UserController::class, 'createUser'])
     ->name('api.user.create');
+Route::get('/user/{uid}', [UserController::class, 'getUser'])
+    ->name('api.user.get');
+Route::patch('/user/{uid}', [UserController::class, 'updateUser'])
+    ->name('api.user.update');
+Route::delete('/user/{uid}', [UserController::class, 'deleteUser'])
+    ->name('api.user.delete');
+Route::put('/user/{uid}', [UserController::class, 'updateProfilePicture'])
+    ->name('api.user.updateProfilePicture');
+
 
