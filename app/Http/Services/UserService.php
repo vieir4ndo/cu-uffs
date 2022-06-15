@@ -3,10 +3,10 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\UserRepository;
-use App\Models\Api\ApiResponse;
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\Hash;
-use PHPUnit\Framework\Exception;
+use App\Helpers\StorageHelper;
 
 class UserService
 {
@@ -17,13 +17,13 @@ class UserService
     {
         $this->repository = $userRepository;
         $this->barcodeService = $barcodeService;
-
     }
 
     public function createUser($user)
     {
         $user["password"] = Hash::make($user["password"]);
-        $user["bar_code"] = $this->barcodeService->generateBase64($user["enrollment_id"]);
+        $user["profile_photo"] = StorageHelper::saveProfilePhoto($user["uid"], $user["profile_photo"]);
+        $user["bar_code"] = StorageHelper::saveBarCode($user["uid"], $this->barcodeService->generateBase64($user["enrollment_id"]));
 
         $this->repository->createUser($user);
 
@@ -37,6 +37,9 @@ class UserService
         if (empty($user))
             throw new Exception("Não há usuário cadastrado com esse username");
 
+        $user->profile_photo = StorageHelper::getFile($user->profile_photo);
+        $user->bar_code = StorageHelper::getFile($user->bar_code);
+
         return $user;
     }
 
@@ -44,12 +47,23 @@ class UserService
     {
         $user = $this->getUserByUsername($uid);
 
+        StorageHelper::deleteProfilePhoto($uid);
+        StorageHelper::deleteBarCode($uid);
+
         return $this->repository->deleteUserByUsername($user->uid);
     }
 
     public function updateUser(string $uid, $data): User {
         $user = $this->getUserByUsername($uid);
 
-        return $this->repository->updateUserByUsername($user->uid, $data);
+        if (isset($data["profile_photo"])){
+            StorageHelper::deleteProfilePhoto($uid);
+            $data["profile_photo"] = StorageHelper::saveProfilePhoto($uid, $data["profile_photo"]);
+        }
+
+        $this->repository->updateUserByUsername($user->uid, $data);
+
+        return $this->getUserByUsername($uid);
     }
+
 }

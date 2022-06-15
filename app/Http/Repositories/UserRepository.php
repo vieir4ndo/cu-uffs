@@ -10,7 +10,7 @@ class UserRepository
         return User::create($user);
     }
 
-    public function getUserByUsername(string $uid) : User
+    public function getUserByUsername(string $uid)
     {
         return User::where("uid", $uid)->first();
     }
