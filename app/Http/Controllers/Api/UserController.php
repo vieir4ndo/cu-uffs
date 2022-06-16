@@ -20,12 +20,6 @@ class UserController
     public function createUser(Request $request)
     {
         try {
-            /*Validator::make($input, [
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => $this->passwordRules(),
-            ])->validate();*/
-
             $user = [
                 "uid" => $request->uid,
                 "email" => $request->email,
@@ -35,6 +29,12 @@ class UserController
                 "profile_photo" => $request->profile_photo,
                 "enrollment_id" => $request->enrollment_id
             ];
+
+            $validation = Validator::make($user, $this->createUserRules());
+
+            if ($validation->fails() ) {
+                return ApiResponse::badRequest($validation->errors()->all());
+            }
 
             $savedUser = $this->service->createUser($user);
 
@@ -55,18 +55,18 @@ class UserController
         }
     }
 
-    public function updateProfilePicture(Request $request, string  $uid)
+    public function updateProfilePicture(Request $request, string $uid)
     {
         try {
-            /*Validator::make($input, [
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => $this->passwordRules(),
-            ])->validate();*/
-
             $user = [
                 "profile_photo" => $request->profile_photo,
             ];
+
+            $validation = Validator::make($user, $this->updateProfilePictureRules());
+
+            if ($validation->fails() ) {
+                return ApiResponse::badRequest($validation->errors()->all());
+            }
 
             $savedUser = $this->service->updateUser($uid, $user);
 
@@ -79,17 +79,17 @@ class UserController
     public function updateUser(Request $request, string $uid)
     {
         try {
-            /*Validator::make($input, [
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => $this->passwordRules(),
-            ])->validate();*/
-
             $user = [
                 "email" => $request->email,
                 "name" => $request->name,
                 "type" => $request->type,
             ];
+
+            $validation = Validator::make($user, $this->updateUserRules());
+
+            if ($validation->fails() ) {
+                return ApiResponse::badRequest($validation->errors()->all());
+            }
 
             $savedUser = $this->service->updateUser($uid, $user);
 
@@ -108,6 +108,38 @@ class UserController
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
+    }
+
+    private function createUserRules()
+    {
+        return [
+            "uid" => ['required', 'string', 'unique:users'],
+            'email' => ['required','email',  'unique:users'],
+            'password' => [
+                'required',
+                'string',
+            ],
+            'name' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'int'],
+            'profile_photo' => ['required', 'string'],
+            'enrollment_id' => ['required', 'string', 'max:10', 'min:10',  'unique:users']
+        ];
+    }
+
+    private function updateProfilePictureRules()
+    {
+        return [
+            'profile_photo' => ['required', 'string'],
+        ];
+    }
+
+    private function updateUserRules()
+    {
+        return [
+            'email' => ['required','email',  'unique:users'],
+            'name' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'int'],
+        ];
     }
 
 }

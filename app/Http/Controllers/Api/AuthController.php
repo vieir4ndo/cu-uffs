@@ -2,35 +2,28 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Services\UserService;
+use App\Http\Services\AuthService;
 use App\Models\Api\ApiResponse;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController
 {
-    private UserService $service;
+    private AuthService $service;
 
-    public function __construct(UserService $userService)
+    public function __construct(AuthService $service)
     {
-        $this->service = $userService;
+        $this->service = $service;
     }
 
     public function login(Request $request)
     {
-        $credentials = [
-            "uid" => $request->uid,
-            "passwrod" => $request->password
-        ];
+        try {
+            $token = $this->service->login($request->uid, $request->password);
 
-        $user = $this->service->getUserByUsername($request->uid);
-
-        if (Hash::check($request->password, $user->password)) {
-            $token = $user->createToken($request->uid);
-
-            return ApiResponse::ok(['token' => $token->plainTextToken]);
-        } else {
-            return ApiResponse::badRequest("A senha informada está incorreta.");
+            return ApiResponse::ok(["token" => $token]);
+        } catch (Exception $e) {
+            return ApiResponse::badRequest($e->getMessage());
         }
     }
 }
