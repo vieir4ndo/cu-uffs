@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Http\Services\UserService;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class UserController
 {
@@ -85,7 +86,7 @@ class UserController
                 "type" => $request->type,
             ];
 
-            $validation = Validator::make($user, $this->updateUserRules());
+            $validation = Validator::make($user, $this->updateUserRules($uid));
 
             if ($validation->fails() ) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -133,10 +134,11 @@ class UserController
         ];
     }
 
-    private function updateUserRules()
+    private function updateUserRules($uid)
     {
         return [
-            'email' => ['required','email',  'unique:users'],
+            'email' => ['required','email',
+                Rule::unique('users')->ignore($uid, 'uid')],
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'int'],
         ];

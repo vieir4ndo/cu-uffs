@@ -20,10 +20,11 @@ class AuthService
 
     public function login($uid, $password)
     {
-        $this->user = $this->service->getUserByUsername($uid);
+        $this->user = $this->service->getUserByUsername($uid, false);
 
         if ($this->user->type == UserType::RUEmployee->value or $this->user->type == UserType::default->value) {
-            $this->authWithIdUFFS($uid, $password);
+            $data = $this->authWithIdUFFS($uid, $password);
+            $this->user->update($data);
         } else {
             if (!Hash::check($password, $this->user->password)) {
                 throw new Exception("The password is incorrect.");
@@ -34,7 +35,7 @@ class AuthService
         return $this->user->createToken($uid)->plainTextToken;
     }
 
-    private function authWithIdUFFS($uid, $password)
+    public function authWithIdUFFS($uid, $password)
     {
         $credentials = [
             'user' => $uid,
@@ -50,13 +51,8 @@ class AuthService
 
         $password = Hash::make($user_data->pessoa_id);
 
-        $data = [
-            'uid' => $user_data->uid,
-            'email' => $user_data->email,
-            'name' => $user_data->name,
+        return [
             'password' => $password
         ];
-
-        $this->user->update($data);
     }
 }
