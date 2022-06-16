@@ -21,10 +21,13 @@ class UserService
         $this->barcodeService = $barcodeService;
     }
 
+    /**
+     * @throws Exception
+     */
     public function createUser($user)
     {
-        if ($user["type"] == UserType::default->value or $user["type"] == UserType::RUEmployee->value){
-            $this->validateAtIdUffs($user);
+        if ($user["type"] == UserType::default->value or $user["type"] == UserType::RUEmployee->value) {
+            $this->validateAtIdUffs($user["uid"], $user["password"]);
         }
 
         $user["password"] = Hash::make($user["password"]);
@@ -59,10 +62,11 @@ class UserService
         return $this->repository->deleteUserByUsername($user->uid);
     }
 
-    public function updateUser(string $uid, $data): User {
+    public function updateUser(string $uid, $data): User
+    {
         $user = $this->getUserByUsername($uid);
 
-        if (isset($data["profile_photo"])){
+        if (isset($data["profile_photo"])) {
             StorageHelper::deleteProfilePhoto($uid);
             $data["profile_photo"] = StorageHelper::saveProfilePhoto($uid, $data["profile_photo"]);
         }
@@ -72,11 +76,11 @@ class UserService
         return $this->getUserByUsername($uid);
     }
 
-    private function validateAtIdUffs($user)
+    private function validateAtIdUffs($uid, $password)
     {
         $credentials = [
-            'user' => $user["uid"],
-            'password' => $user["password"],
+            'user' => $uid,
+            'password' => $password,
         ];
 
         $auth = new AuthIdUFFS();
