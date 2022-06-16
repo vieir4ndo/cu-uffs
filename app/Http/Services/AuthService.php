@@ -61,23 +61,24 @@ class AuthService
         ];
     }
 
-    public function resetPasswordRequest(string $uid)
+    public function forgotPassword(string $uid) : void
     {
         $this->user = $this->service->getUserByUsername($uid, false);
 
-        if ($this->user->type != UserType::ThirdPartyEmployee->value)
-            return null;
-            //throw new Exception("User not allowed to reset password. Please continue at <a href='https://id.uffs.edu.br/id/XUI/?realm=/#passwordReset/'>IdUFFS</a>.");
+        if ($this->user->type != UserType::ThirdPartyEmployee->value) {
+            throw new Exception("User not allowed to reset password. Please continue at <a href='https://id.uffs.edu.br/id/XUI/?realm=/#passwordReset/'>IdUFFS</a>.");
+        }
 
         $this->user->tokens()->delete();
         $token = $this->user->createToken($uid)->plainTextToken;
-        $redirectTo = env("APP_URL") . "reset-password?token={$token}";
+
+        $redirectTo = env("APP_URL") . "/reset-password?uid={$uid}&token={$token}";
 
         $body = [
             'Messages' => [
                 [
                     'From' => [
-                        'Email' => env("MAILJET_SENDERMAIL"),
+                        'Email' => env("MAILJET_SENDEREMAIL"),
                         'Name' => env("APP_NAME")
                     ],
                     'To' => [
@@ -87,18 +88,27 @@ class AuthService
                         ]
                     ],
                     'Subject' => "Recuperação de senha ". env("APP_NAME"),
-                    'HTMLPart' => "Clique <a href='{{$redirectTo}}'>aqui</a> para recuperar sua senha."
+                    'HTMLPart' => "Token: {$token} </br>Uid: {$uid}</br>Mandem esses caras e a nova senha pra api /reset-password/{uid} e se quiserem um layout bonitinho aqui, favo encaminhar, aguardo url do front pra concatenar e direicionar o pessoal pra lá."
                 ]
             ]
         ];
 
         $response = $this->mailJetClient->post(Resources::$Email, ['body' => $body]);
 
-        return $response->success();
+        if (!$response->success()){
+            throw new Exception("It wasn't possible to send your email. Please try again later.");
+        }
+
     }
 
-    public function resetPassword(string $token, string $uid, string $newpassword)
+    public function resetPassword(string $uid, string $newpassword)
     {
+        $this->user = $this->service->getUserByUsername($uid, false);
 
+        $data = [
+            'password' => Hash::make($newpassword)
+        ];
+
+        $this->user->update($data);
     }
 }

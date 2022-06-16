@@ -23,7 +23,10 @@ Route::middleware('auth:sanctum')->delete('/user/{uid}', [UserController::class,
     ->name('api.user.delete');
 Route::middleware('auth:sanctum')->put('/user/{uid}', [UserController::class, 'updateProfilePicture'])
     ->name('api.user.updateProfilePicture');
+Route::middleware('auth:sanctum')->post('/reset-password/{uid}', [AuthController::class, 'resetPassword'])
+    ->name('api.auth.reset-password');
 
 Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
 Route::post('/user', [UserController::class, 'createUser'])->name('api.user.create');
+Route::post('/forgot-password/{uid}', [AuthController::class, 'forgotPassword'])->name('api.auth.forgot-password');
 
