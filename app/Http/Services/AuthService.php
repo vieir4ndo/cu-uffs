@@ -30,6 +30,7 @@ class AuthService
             }
         }
 
+        $this->user->tokens()->delete();
         return $this->user->createToken($uid)->plainTextToken;
     }
 
