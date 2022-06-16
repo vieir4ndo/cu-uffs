@@ -6,16 +6,21 @@ use App\Enums\UserType;
 use App\Models\User;
 use CCUFFS\Auth\AuthIdUFFS;
 use Illuminate\Support\Facades\Hash;
+use Mailjet\Client;
+use Mailjet\Resources;
 use PHPUnit\Util\Exception;
 
 class AuthService
 {
     private UserService $service;
     private User $user;
+    private Client $mailJetClient;
+
 
     public function __construct(UserService $userService)
     {
         $this->service = $userService;
+        $this->mailJetClient = new Client(env("MAILJET_SECRETKEY", "xpto"), env("MAILJET_PUBLICKEY", "xpto"), true, ['version' => 'v3.1']);
     }
 
     public function login($uid, $password)
@@ -54,5 +59,46 @@ class AuthService
         return [
             'password' => $password
         ];
+    }
+
+    public function resetPasswordRequest(string $uid)
+    {
+        $this->user = $this->service->getUserByUsername($uid, false);
+
+        if ($this->user->type != UserType::ThirdPartyEmployee->value)
+            return null;
+            //throw new Exception("User not allowed to reset password. Please continue at <a href='https://id.uffs.edu.br/id/XUI/?realm=/#passwordReset/'>IdUFFS</a>.");
+
+        $this->user->tokens()->delete();
+        $token = $this->user->createToken($uid)->plainTextToken;
+        $redirectTo = env("APP_URL") . "reset-password?token={$token}";
+
+        $body = [
+            'Messages' => [
+                [
+                    'From' => [
+                        'Email' => env("MAILJET_SENDERMAIL"),
+                        'Name' => env("APP_NAME")
+                    ],
+                    'To' => [
+                        [
+                            'Email' => $this->user->email,
+                            "Name" => $this->user->name
+                        ]
+                    ],
+                    'Subject' => "Recuperação de senha ". env("APP_NAME"),
+                    'HTMLPart' => "Clique <a href='{{$redirectTo}}'>aqui</a> para recuperar sua senha."
+                ]
+            ]
+        ];
+
+        $response = $this->mailJetClient->post(Resources::$Email, ['body' => $body]);
+
+        return $response->success();
+    }
+
+    public function resetPassword(string $token, string $uid, string $newpassword)
+    {
+
     }
 }
