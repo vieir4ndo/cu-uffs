@@ -1,8 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\ApiUserSitesController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,19 +15,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::post('/user', [UserController::class, 'createUser'])
-    ->name('api.user.create');
-Route::get('/user/{uid}', [UserController::class, 'getUser'])
+Route::middleware('auth:sanctum')->get('/user/{uid}', [UserController::class, 'getUser'])
     ->name('api.user.get');
-Route::patch('/user/{uid}', [UserController::class, 'updateUser'])
+Route::middleware('auth:sanctum')->patch('/user/{uid}', [UserController::class, 'updateUser'])
     ->name('api.user.update');
-Route::delete('/user/{uid}', [UserController::class, 'deleteUser'])
+Route::middleware('auth:sanctum')->delete('/user/{uid}', [UserController::class, 'deleteUser'])
     ->name('api.user.delete');
-Route::put('/user/{uid}', [UserController::class, 'updateProfilePicture'])
+Route::middleware('auth:sanctum')->put('/user/{uid}', [UserController::class, 'updateProfilePicture'])
     ->name('api.user.updateProfilePicture');
 
+Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
+Route::post('/user', [UserController::class, 'createUser'])->name('api.user.create');
 

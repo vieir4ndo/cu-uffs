@@ -27,7 +27,6 @@ class JetstreamServiceProvider extends ServiceProvider
         $userRepository = new UserRepository();
         $barcodeService = new BarcodeService();
         $this->userService = new UserService($userRepository, $barcodeService);
-        //
     }
 
     /**
