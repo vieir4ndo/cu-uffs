@@ -2,9 +2,10 @@
 
 namespace App\Http\Repositories;
 
+use App\Interfaces\Repositories\IUserRepository;
 use App\Models\User;
 
-class UserRepository
+class UserRepository implements IUserRepository
 {
     public function createUser($user){
         return User::create($user);

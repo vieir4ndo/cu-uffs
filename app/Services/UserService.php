@@ -4,13 +4,14 @@ namespace App\Http\Services;
 
 use App\Enums\UserType;
 use App\Http\Repositories\UserRepository;
+use App\Interfaces\Services\IUserService;
 use App\Models\User;
 use CCUFFS\Auth\AuthIdUFFS;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use App\Helpers\StorageHelper;
 
-class UserService
+class UserService implements IUserService
 {
     private UserRepository $repository;
     private BarcodeService $barcodeService;

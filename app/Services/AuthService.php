@@ -3,24 +3,22 @@
 namespace App\Http\Services;
 
 use App\Enums\UserType;
+use App\Interfaces\Services\IAuthService;
 use App\Models\User;
 use CCUFFS\Auth\AuthIdUFFS;
 use Illuminate\Support\Facades\Hash;
-use Mailjet\Client;
-use Mailjet\Resources;
-use PHPUnit\Util\Exception;
+use Exception;
 
-class AuthService
+class AuthService implements IAuthService
 {
     private UserService $service;
     private User $user;
-    private Client $mailJetClient;
+    private MailjetService $mailjetService;
 
-
-    public function __construct(UserService $userService)
+    public function __construct(UserService $userService, MailjetService $mailjetService)
     {
         $this->service = $userService;
-        $this->mailJetClient = new Client(env("MAILJET_SECRETKEY", "xpto"), env("MAILJET_PUBLICKEY", "xpto"), true, ['version' => 'v3.1']);
+        $this->mailjetService = $mailjetService;
     }
 
     public function login($uid, $password)
@@ -61,7 +59,7 @@ class AuthService
         ];
     }
 
-    public function forgotPassword(string $uid) : void
+    public function forgotPassword(string $uid): void
     {
         $this->user = $this->service->getUserByUsername($uid, false);
 
@@ -74,31 +72,10 @@ class AuthService
 
         $redirectTo = env("APP_URL") . "/reset-password?uid={$uid}&token={$token}";
 
-        $body = [
-            'Messages' => [
-                [
-                    'From' => [
-                        'Email' => env("MAILJET_SENDEREMAIL"),
-                        'Name' => env("APP_NAME")
-                    ],
-                    'To' => [
-                        [
-                            'Email' => $this->user->email,
-                            "Name" => $this->user->name
-                        ]
-                    ],
-                    'Subject' => "Recuperação de senha ". env("APP_NAME"),
-                    'HTMLPart' => "Token: {$token} </br>Uid: {$uid}</br>Mandem esses caras e a nova senha pra api /reset-password/{uid} e se quiserem um layout bonitinho aqui, favo encaminhar, aguardo url do front pra concatenar e direicionar o pessoal pra lá."
-                ]
-            ]
-        ];
+        $message = "Token: {$token} </br>Uid: {$uid}</br>Mandem esses caras e a nova senha pra api /reset-password/{uid} e se quiserem um layout bonitinho aqui, favo encaminhar, aguardo url do front pra concatenar e direicionar o pessoal pra lá.";
+        $subject = "Recuperação de senha " . env("APP_NAME");
 
-        $response = $this->mailJetClient->post(Resources::$Email, ['body' => $body]);
-
-        if (!$response->success()){
-            throw new Exception("It wasn't possible to send your email. Please try again later.");
-        }
-
+        $this->mailjetService->send($this->user->email, $this->user->name, $subject, $message);
     }
 
     public function resetPassword(string $uid, string $newpassword)
