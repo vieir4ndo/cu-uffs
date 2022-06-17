@@ -24,11 +24,12 @@ O C.U. possui um conjunto modesto de features:
 
 Para executar o projeto, você precisa ter o seguinte instalado (preceisa `php >= 8.1`).:
 
--   [Git](https://git-scm.com);
--   [PHP 8.x](https://www.php.net/downloads);
--   [Composer](https://getcomposer.org/download/);
--   [NodeJS](https://nodejs.org/en/);
--   [NPM](https://www.npmjs.com/package/npm);
+- [Git](https://git-scm.com);
+- [PHP 8.x](https://www.php.net/downloads);
+- [Composer](https://getcomposer.org/download/);
+- [NodeJS](https://nodejs.org/en/);
+- [NPM](https://www.npmjs.com/package/npm);
+- [ImageMagick](https://imagemagick.org/script/download.php)
 
 > _IMPORTANTE:_ se sua distribuição linux não tem PHP 8.x disponível, rode `sudo add-apt-repository ppa:ondrej/php` antes de começar.
 
@@ -36,7 +37,6 @@ Você precisa de várias extensões PHP instaladas também:
 
 ```
 sudo apt-get update
-sudo apt install imagemagick
 sudo apt install php8.1-cli php8.1-mbstring php8.1-zip php8.1-xml php8.1-curl php8.1-pgsql php8.1-curl php-imagick php8.1-pdo_pgsql
 ```
 
