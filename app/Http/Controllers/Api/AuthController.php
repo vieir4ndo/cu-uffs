@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Services\AuthService;
+use App\Services\AuthService;
 use App\Models\Api\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;

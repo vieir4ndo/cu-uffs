@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Api\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
-use App\Http\Services\UserService;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 

@@ -3,11 +3,12 @@
 namespace App\Providers;
 
 use App\Enums\UserType;
-use App\Http\Repositories\UserRepository;
-use App\Http\Services\AuthService;
-use App\Http\Services\BarcodeService;
-use App\Http\Services\UserService;
+use App\Services\AuthService;
+use App\Services\BarcodeService;
+use App\Services\MailjetService;
+use App\Services\UserService;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Fortify;
@@ -31,8 +32,9 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         $userRepository = new UserRepository();
         $barcodeService = new BarcodeService();
+        $mailJetService = new MailjetService();
         $this->userService = new UserService($userRepository, $barcodeService);
-        $this->authService = new AuthService($this->userService);
+        $this->authService = new AuthService($this->userService, $mailJetService);
     }
 
     /**
@@ -56,28 +58,29 @@ class JetstreamServiceProvider extends ServiceProvider
     protected function configureLogin()
     {
         Fortify::authenticateUsing(function (Request $request) {
-            $this->user = $this->userService->getUserByUsername($request->input('email'),false);
+            $this->user = $this->userService->getUserByUsername($request->input('email'), false);
             $password = $request->input('password');
 
             if (empty($this->user)) {
                 return null;
             }
 
-            if ($this->user->type == UserType::default->value) {
-                return null;
-            } else if ($this->user->type == UserType::RUEmployee->value) {
-                try {
-                    $data = $this->authService->authWithIdUFFS($this->user->uid, $password);
-                    $this->user->update($data);
-                    return $this->user;
-                } catch (Exception) {
+            switch ($this->user->type) {
+                case UserType::RUEmployee->value:
+                    try {
+                        $data = $this->authService->authWithIdUFFS($this->user->uid, $password);
+                        $this->user->update($data);
+                        return $this->user;
+                    } catch (Exception) {
+                        return null;
+                    }
+                case UserType::ThirdPartyEmployee->value:
+                    if (Hash::check($password, $this->user->password)) {
+                        return $this->user;
+                    }
                     return null;
-                }
-            } else {
-                if (Hash::check($password, $this->user->password)) {
-                    return $this->user;
-                }
-                return null;
+                default:
+                    return null;
             }
         });
     }

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Enums\UserType;
-use App\Http\Repositories\UserRepository;
+use App\Repositories\UserRepository;
 use App\Interfaces\Services\IUserService;
 use App\Models\User;
 use CCUFFS\Auth\AuthIdUFFS;
@@ -59,8 +59,10 @@ class UserService implements IUserService
     {
         $user = $this->getUserByUsername($uid);
 
-        StorageHelper::deleteProfilePhoto($uid);
-        StorageHelper::deleteBarCode($uid);
+        StorageHelper::deleteProfilePhoto($user->uid);
+        StorageHelper::deleteBarCode($user->uid);
+
+        $user->tokens()->delete();
 
         return $this->repository->deleteUserByUsername($user->uid);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 use App\Interfaces\Services\IBarcodeService;
 use Milon\Barcode\DNS1D;
 
