@@ -37,7 +37,7 @@ class UserService implements IUserService
 
         $this->repository->createUser($user);
 
-        return $user;
+        return $this->getUserByUsername($user["uid"]);
     }
 
     public function getUserByUsername(string $uid, $withFiles = true): \App\Models\User
@@ -46,6 +46,21 @@ class UserService implements IUserService
 
         if (empty($user))
             throw new Exception("User not found.");
+
+        if ($withFiles) {
+            $user->profile_photo = StorageHelper::getFile($user->profile_photo);
+            $user->bar_code = StorageHelper::getFile($user->bar_code);
+        }
+
+        return $user;
+    }
+
+    public function getUserByUsernameFirstOrDefault(string $uid, $withFiles = true): ?\App\Models\User
+    {
+        $user = $this->repository->getUserByUsername($uid);
+
+        if (empty($user))
+            return null;
 
         if ($withFiles) {
             $user->profile_photo = StorageHelper::getFile($user->profile_photo);

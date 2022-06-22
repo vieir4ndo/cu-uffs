@@ -15,12 +15,11 @@ use Laravel\Fortify\Fortify;
 use App\Actions\Jetstream\DeleteUser;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Jetstream\Jetstream;
-use PHPUnit\Util\Exception;
 
 class JetstreamServiceProvider extends ServiceProvider
 {
     private UserService $userService;
-    private User $user;
+    private $user;
     private AuthService $authService;
 
     /**
@@ -46,7 +45,6 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         $this->configurePermissions();
         $this->configureLogin();
-
         Jetstream::deleteUsersUsing(DeleteUser::class);
     }
 
@@ -58,27 +56,25 @@ class JetstreamServiceProvider extends ServiceProvider
     protected function configureLogin()
     {
         Fortify::authenticateUsing(function (Request $request) {
-            $this->user = $this->userService->getUserByUsername($request->input('email'), false);
+            $this->user = $this->userService->getUserByUsernameFirstOrDefault($request->input('email'), false);
             $password = $request->input('password');
 
-            if (empty($this->user)) {
+            if ($this->user == null) {
                 return null;
             }
 
             switch ($this->user->type) {
                 case UserType::RUEmployee->value:
-                    try {
-                        $data = $this->authService->authWithIdUFFS($this->user->uid, $password);
-                        $this->user->update($data);
-                        return $this->user;
-                    } catch (Exception) {
+                    $data = $this->authService->authWithIdUFFS($this->user->uid, $password);
+                    if ($data == null) {
                         return null;
                     }
+                    $this->user->update($data);
+                    return $this->user;
                 case UserType::ThirdPartyEmployee->value:
                     if (Hash::check($password, $this->user->password)) {
                         return $this->user;
                     }
-                    return null;
                 default:
                     return null;
             }

@@ -27,6 +27,11 @@ class AuthService implements IAuthService
 
         if ($this->user->type == UserType::RUEmployee->value or $this->user->type == UserType::default->value) {
             $data = $this->authWithIdUFFS($uid, $password);
+
+            if ($data == null) {
+                throw new Exception("The password is incorrect.");
+            }
+
             $this->user->update($data);
         } else {
             if (!Hash::check($password, $this->user->password)) {
@@ -49,7 +54,7 @@ class AuthService implements IAuthService
         $user_data = $auth->login($credentials);
 
         if (!$user_data) {
-            throw new Exception("The password is incorrect.");
+            return null;
         }
 
         $password = Hash::make($user_data->pessoa_id);
