@@ -63,21 +63,22 @@ class JetstreamServiceProvider extends ServiceProvider
                 return null;
             }
 
-            switch ($this->user->type) {
-                case UserType::RUEmployee->value:
+            if (in_array($this->user->type, config("user.users_allowed_login"))) {
+                if (in_array($this->user->type, config("user.users_auth_iduffs"))) {
                     $data = $this->authService->authWithIdUFFS($this->user->uid, $password);
                     if ($data == null) {
                         return null;
                     }
                     $this->user->update($data);
                     return $this->user;
-                case UserType::ThirdPartyEmployee->value:
+                } else {
                     if (Hash::check($password, $this->user->password)) {
                         return $this->user;
                     }
-                default:
-                    return null;
+                }
             }
+
+            return null;
         });
     }
 

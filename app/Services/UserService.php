@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\UserType;
 use App\Repositories\UserRepository;
 use App\Interfaces\Services\IUserService;
 use App\Models\User;
@@ -27,7 +26,7 @@ class UserService implements IUserService
      */
     public function createUser($user)
     {
-        if ($user["type"] == UserType::default->value or $user["type"] == UserType::RUEmployee->value) {
+        if (in_array($user["type"], config("user.users_auth_iduffs"))) {
             $this->validateAtIdUffs($user["uid"], $user["password"]);
         }
 

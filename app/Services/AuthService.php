@@ -25,7 +25,7 @@ class AuthService implements IAuthService
     {
         $this->user = $this->service->getUserByUsername($uid, false);
 
-        if ($this->user->type == UserType::RUEmployee->value or $this->user->type == UserType::default->value) {
+        if (in_array($this->user->type, config("user.users_auth_iduffs"))) {
             $data = $this->authWithIdUFFS($uid, $password);
 
             if ($data == null) {
@@ -68,7 +68,7 @@ class AuthService implements IAuthService
     {
         $this->user = $this->service->getUserByUsername($uid, false);
 
-        if ($this->user->type != UserType::ThirdPartyEmployee->value) {
+        if (in_array($this->user->type, config("user.users_auth_iduffs"))) {
             throw new Exception("User not allowed to reset password. Please continue at <a href='https://id.uffs.edu.br/id/XUI/?realm=/#passwordReset/'>IdUFFS</a>.");
         }
 
