@@ -2,7 +2,13 @@
 
 namespace App\Providers;
 
+use App\Enums\UserType;
+use App\Services\AuthService;
+use App\Services\BarcodeService;
+use App\Services\MailjetService;
+use App\Services\UserService;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Fortify;
@@ -12,6 +18,10 @@ use Laravel\Jetstream\Jetstream;
 
 class JetstreamServiceProvider extends ServiceProvider
 {
+    private UserService $userService;
+    private $user;
+    private AuthService $authService;
+
     /**
      * Register any application services.
      *
@@ -19,7 +29,11 @@ class JetstreamServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $userRepository = new UserRepository();
+        $barcodeService = new BarcodeService();
+        $mailJetService = new MailjetService();
+        $this->userService = new UserService($userRepository, $barcodeService);
+        $this->authService = new AuthService($this->userService, $mailJetService);
     }
 
     /**
@@ -31,52 +45,40 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         $this->configurePermissions();
         $this->configureLogin();
-
         Jetstream::deleteUsersUsing(DeleteUser::class);
     }
 
     /**
-     * 
+     *
      *
      * @return void
      */
     protected function configureLogin()
     {
         Fortify::authenticateUsing(function (Request $request) {
-            $validator = $request->validate([
-                'email' => 'required',
-                'password' => 'required'
-            ]);
+            $this->user = $this->userService->getUserByUsernameFirstOrDefault($request->input('email'), false);
+            $password = $request->input('password');
 
-            $credentials = [
-                'user' => $request->input('email'),
-                'password' => $request->input('password'),
-            ];
-    
-            $auth = new \CCUFFS\Auth\AuthIdUFFS();
-            $user_data = $auth->login($credentials);
-
-            if(!$user_data) {
+            if ($this->user == null) {
                 return null;
             }
 
-            $password = Hash::make($user_data->pessoa_id);
-
-            $user = User::where(['uid' => $user_data->uid])->first();
-            $data = [
-                'uid' => $user_data->uid,
-                'email' => $user_data->email,
-                'name' => $user_data->name,
-                'password' => $password
-            ];
-
-            if($user) {
-                $user->update($data);
-            } else {
-                $user = User::create($data);
+            if (in_array($this->user->type, config("user.users_allowed_login"))) {
+                if (in_array($this->user->type, config("user.users_auth_iduffs"))) {
+                    $data = $this->authService->authWithIdUFFS($this->user->uid, $password);
+                    if ($data == null) {
+                        return null;
+                    }
+                    $this->user->update($data);
+                    return $this->user;
+                } else {
+                    if (Hash::check($password, $this->user->password)) {
+                        return $this->user;
+                    }
+                }
             }
 
-            return $user;
+            return null;
         });
     }
 

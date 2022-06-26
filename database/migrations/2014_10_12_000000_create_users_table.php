@@ -17,22 +17,13 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('uid')->unique();
+            $table->text('enrollment_id')->unique();
             $table->string('email')->unique();
-            $table->string('enrollment_id')->nullable();
-            $table->text('bio')->nullable();
-            $table->string('google')->nullable();
-            $table->string('github')->nullable();
-            $table->string('twitter')->nullable();
-            $table->string('facebook')->nullable();
-            $table->string('instagram')->nullable();
-            $table->string('linkedin')->nullable();
-            $table->string('lattes')->nullable();
-            $table->string('website')->nullable();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->foreignId('current_team_id')->nullable();
-            $table->text('profile_photo_path')->nullable();
+            $table->text('profile_photo');
+            $table->text('bar_code');
+            $table->integer('type')->default(0);
             $table->timestamps();
         });
     }

@@ -27,23 +27,19 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'enrollment_id',
-        'bio',
-        'google',
-        'github',
-        'twitter',
-        'facebook',
-        'instagram',
-        'linkedin',
-        'lattes',
-        'website'
+        'type',
+        'bar_code',
+        'profile_photo',
+        'enrollment_id'
     ];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
+
      */
+
     protected $hidden = [
         'password',
         'remember_token',
@@ -64,16 +60,8 @@ class User extends Authenticatable
      * The accessors to append to the model's array form.
      *
      * @var array
+     * protected $appends = [
+    'profile_photo_url'    ];
      */
-    protected $appends = [
-        'profile_photo_url',
-    ];
 
-    /**
-     * Sites que esse usuário possui
-     */
-    public function sites()
-    {
-        return $this->hasMany(Site::class);
-    }
 }

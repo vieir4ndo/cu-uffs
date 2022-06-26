@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\PersonalAccessToken;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        Sanctum::ignoreMigrations();
     }
 
     /**
@@ -26,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
     {
         // Fix wrong style/mix urls when being served from reverse proxy
         URL::forceRootUrl(config('app.url'));
+        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
     }
 }

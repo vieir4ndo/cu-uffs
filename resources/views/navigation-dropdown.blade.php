@@ -24,7 +24,7 @@
                     <x-slot name="trigger">
                         @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
                             <button class="float-left mr-2 text-sm border-2 rounded-full border-gray-400 focus:outline-none  transition duration-150 ease-in-out">
-                                <img class="h-8 w-8 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
+                                <img class="h-8 w-8 rounded-full object-cover" src="data:image/png;base64, {{ Storage::get(Auth::user()->profile_photo) }}" alt="{{ Auth::user()->name }}" />
                             </button>
                         @endif
 
@@ -126,7 +126,7 @@
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="flex items-center px-4">
                 <div class="flex-shrink-0">
-                    <img class="h-10 w-10 rounded-full" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
+                    <img class="h-10 w-10 rounded-full" src="data:image/png;base64, {{ \Illuminate\Support\Facades\Storage::get(Auth::user()->profile_photo) }}" alt="{{ Auth::user()->name }}" />
                 </div>
 
                 <div class="ml-3">

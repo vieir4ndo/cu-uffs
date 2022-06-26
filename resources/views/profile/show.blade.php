@@ -11,11 +11,6 @@
                 @livewire('update-profile-personal-information')
 
                 <x-jet-section-border />
-
-                <div class="mt-10 sm:mt-0">
-                    @livewire('profile.update-profile-information-form')
-                    <x-jet-section-border />
-                </div>
             @endif
 
             @if (Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::updatePasswords()))
@@ -38,11 +33,6 @@
                 @livewire('profile.logout-other-browser-sessions-form')
             </div>
 
-            <x-jet-section-border />
-
-            <div class="mt-10 sm:mt-0">
-                @livewire('profile.delete-user-form')
-            </div>
         </div>
     </div>
 </x-app-layout>
