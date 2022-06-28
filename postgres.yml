@@ -7,7 +7,7 @@ services:
     ports:
         - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: Questor@2022
+      POSTGRES_PASSWORD: Senha@2022
     networks:
         snr:
             ipv4_address: 172.16.238.10
