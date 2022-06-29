@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
+use App\Interfaces\Services\IAiPassportPhotoService;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 
-class AiPassportPhotoService
+class AiPassportPhotoService implements IAiPassportPhotoService
 {
     private $client;
     private string $apiUrl = "https://api.aipassportphoto.com/api/get-signed-url?specCode=brazil-idphoto";
@@ -15,7 +16,7 @@ class AiPassportPhotoService
         $this->client = new Client();
     }
 
-    public function validatePhoto($base64Photo)
+    public function validatePhoto($base64Photo) : string
     {
         $res = $this->client->get($this->apiUrl);
 
@@ -24,8 +25,6 @@ class AiPassportPhotoService
         }
 
         $signedUrl = json_decode($res->getBody())->signedUrl;
-
-        //dump($signedUrl);
 
         $res = $this->client->post($signedUrl,
             [
