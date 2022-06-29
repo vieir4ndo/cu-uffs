@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Enums\UserType;
+use App\Services\AiPassportPhotoService;
 use App\Services\AuthService;
 use App\Services\BarcodeService;
 use App\Services\MailjetService;
@@ -32,7 +33,8 @@ class JetstreamServiceProvider extends ServiceProvider
         $userRepository = new UserRepository();
         $barcodeService = new BarcodeService();
         $mailJetService = new MailjetService();
-        $this->userService = new UserService($userRepository, $barcodeService);
+        $aiPassportPhotoService = new AiPassportPhotoService();
+        $this->userService = new UserService($userRepository, $barcodeService, $aiPassportPhotoService);
         $this->authService = new AuthService($this->userService, $mailJetService);
     }
 

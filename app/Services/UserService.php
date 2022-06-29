@@ -14,11 +14,13 @@ class UserService implements IUserService
 {
     private UserRepository $repository;
     private BarcodeService $barcodeService;
+    private AiPassportPhotoService $aiPassportPhotoService;
 
-    public function __construct(UserRepository $userRepository, BarcodeService $barcodeService)
+    public function __construct(UserRepository $userRepository, BarcodeService $barcodeService, AiPassportPhotoService $aiPassportPhotoService)
     {
         $this->repository = $userRepository;
         $this->barcodeService = $barcodeService;
+        $this->aiPassportPhotoService = $aiPassportPhotoService;
     }
 
     /**
@@ -29,6 +31,8 @@ class UserService implements IUserService
         if (in_array($user["type"], config("user.users_auth_iduffs"))) {
             $this->validateAtIdUffs($user["uid"], $user["password"]);
         }
+
+        $user["profile_photo"] = $this->aiPassportPhotoService->validatePhoto($user["profile_photo"]);
 
         $user["password"] = Hash::make($user["password"]);
         $user["profile_photo"] = StorageHelper::saveProfilePhoto($user["uid"], $user["profile_photo"]);

@@ -14,7 +14,7 @@
         "ccuffs/auth-iduffs": "^1.1",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^7.0.1",
+        "guzzlehttp/guzzle": "^7.4",
         "laravel/framework": "^8.21",
         "laravel/jetstream": "^1.6",
         "laravel/sanctum": "^2.6",
@@ -23,7 +23,8 @@
         "livewire/livewire": "^2.0",
         "mailjet/mailjet-apiv3-php": "^1.5",
         "milon/barcode": "^9.0",
-        "owenvoke/blade-fontawesome": "^1.6"
+        "owenvoke/blade-fontawesome": "^1.6",
+      "ext-json": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
