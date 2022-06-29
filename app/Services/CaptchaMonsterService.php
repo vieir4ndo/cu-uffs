@@ -20,7 +20,6 @@ class CaptchaMonsterService implements ICaptchaMonsterService
 
     public function breakRecaptcha(string $websiteUrl, string $websiteKey): string
     {
-
         $taskId = $this->createTask($websiteUrl, $websiteKey);
 
         $captcha = $this->getTaskById($taskId);

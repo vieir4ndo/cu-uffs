@@ -15,12 +15,19 @@ class UserService implements IUserService
     private UserRepository $repository;
     private BarcodeService $barcodeService;
     private AiPassportPhotoService $aiPassportPhotoService;
+    private IdUffsService $idUffsService;
 
-    public function __construct(UserRepository $userRepository, BarcodeService $barcodeService, AiPassportPhotoService $aiPassportPhotoService)
+    public function __construct(
+        UserRepository         $userRepository,
+        BarcodeService         $barcodeService,
+        AiPassportPhotoService $aiPassportPhotoService,
+        IdUffsService          $idUffsService
+    )
     {
         $this->repository = $userRepository;
         $this->barcodeService = $barcodeService;
         $this->aiPassportPhotoService = $aiPassportPhotoService;
+        $this->idUffsService = $idUffsService;
     }
 
     /**
@@ -29,7 +36,8 @@ class UserService implements IUserService
     public function createUser($user)
     {
         if (in_array($user["type"], config("user.users_auth_iduffs"))) {
-            $this->validateAtIdUffs($user["uid"], $user["password"]);
+            $this->idUffsService->isActive($user["enrollment_id"]);
+            $this->idUffsService->validateAtIdUffs($user["uid"], $user["password"]);
         }
 
         $user["profile_photo"] = $this->aiPassportPhotoService->validatePhoto($user["profile_photo"]);
@@ -97,21 +105,6 @@ class UserService implements IUserService
         $this->repository->updateUserByUsername($user->uid, $data);
 
         return $this->getUserByUsername($uid);
-    }
-
-    private function validateAtIdUffs($uid, $password)
-    {
-        $credentials = [
-            'user' => $uid,
-            'password' => $password,
-        ];
-
-        $auth = new AuthIdUFFS();
-        $user_data = $auth->login($credentials);
-
-        if (!$user_data) {
-            throw new Exception("The IdUFFS password does not match the one informed.");
-        }
     }
 
 }
