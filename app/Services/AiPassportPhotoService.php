@@ -39,7 +39,7 @@ class AiPassportPhotoService
         $jsonResponse = json_decode($res->getBody());
 
         if ($jsonResponse->message != "GOOD") {
-            throw new \Exception("Profile photo does not follow the guidelines: {$jsonResponse->message}");
+            throw new \Exception("Profile photo does not follow the guidelines: {$jsonResponse->message}.");
         }
 
         $res = $this->client->request('GET', $jsonResponse->photoUrl);
