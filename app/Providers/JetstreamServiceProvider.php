@@ -36,7 +36,7 @@ class JetstreamServiceProvider extends ServiceProvider
         $mailJetService = new MailjetService();
         $aiPassportPhotoService = new AiPassportPhotoService();
         $idUffsService = new IdUffsService();
-        $this->userService = new UserService($userRepository, $barcodeService, $aiPassportPhotoService);
+        $this->userService = new UserService($userRepository, $barcodeService, $aiPassportPhotoService, $idUffsService);
         $this->authService = new AuthService($this->userService, $mailJetService, $idUffsService);
     }
 

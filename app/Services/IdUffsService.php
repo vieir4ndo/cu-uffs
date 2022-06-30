@@ -44,7 +44,7 @@ class IdUffsService implements IIdUffsService
         ];
     }
 
-    public function isActive(string $enrollment_id): bool
+    public function isActive(string $enrollment_id)
     {
         $response = $this->client->get($this->activeUserApi);
 
@@ -58,7 +58,9 @@ class IdUffsService implements IIdUffsService
             ]
         );
 
-        return StringHelper::checkIfContains($response->getBody(), "Vínculo ativo");
+        if (!StringHelper::checkIfContains($response->getBody(), "Vínculo ativo")){
+            throw new Exception("User is not active at IdUFFS");
+        }
     }
 
     private function getIsActivePayload(string $enrollment_id, string $viewState, string $recaptcha)
