@@ -116,10 +116,7 @@ class UserController
         return [
             "uid" => ['required', 'string', 'unique:users'],
             'email' => ['required','email',  'unique:users'],
-            'password' => [
-                'required',
-                'string',
-            ],
+            'password' => [ 'required', 'string'],
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'int'],
             'profile_photo' => ['required', 'string'],

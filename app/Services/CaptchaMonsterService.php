@@ -24,12 +24,12 @@ class CaptchaMonsterService implements ICaptchaMonsterService
 
         $captcha = $this->getTaskById($taskId);
 
-        return $captcha;
+        return $captcha->gRecaptchaResponse;
     }
 
     private function createTask(string $websiteUrl, string $websiteKey)
     {
-        $res = $this->client->post($this->apiUrl,
+        $res = $this->client->post("{$this->apiUrl}/createTask",
             [
                 RequestOptions::JSON => [
                     "clientKey" => $this->apiKey,
@@ -55,7 +55,7 @@ class CaptchaMonsterService implements ICaptchaMonsterService
     {
 
         do {
-            $res = $this->client->post($this->apiUrl,
+            $res = $this->client->post("{$this->apiUrl}/getTaskResult",
                 [
                     RequestOptions::JSON => [
                         "clientKey" => $this->apiKey,
@@ -76,7 +76,7 @@ class CaptchaMonsterService implements ICaptchaMonsterService
             throw new \Exception("There was a problem breaking your captcha: {$jsonResponse->errorId}");
         }
 
-        return $jsonResponse->solution->text;
+        return $jsonResponse->solution;
     }
 
 

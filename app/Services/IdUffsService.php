@@ -52,13 +52,14 @@ class IdUffsService implements IIdUffsService
 
         $captcha = $this->captchaMonsterService->breakRecaptcha($this->activeUserApi, $this->googleKey);
 
-        $response = $this->client->post($this->activeUserApi,
+        $response = $this->client->post("{$this->activeUserApi}",
             [
-                RequestOptions::BODY => $this->getIsActivePayload($enrollment_id, $viewState, $captcha)
+                RequestOptions::FORM_PARAMS => $this->getIsActivePayload($enrollment_id, $viewState, $captcha),
+                RequestOptions::HEADERS => $this->getIsActiveHeaders()
             ]
         );
 
-        if (!StringHelper::checkIfContains($response->getBody(), "Vínculo ativo")){
+        if (!StringHelper::checkIfContains($response->getBody(), "Vínculo ativo")) {
             throw new Exception("User is not active at IdUFFS");
         }
     }
@@ -71,6 +72,34 @@ class IdUffsService implements IIdUffsService
             'formValidar:botaoValidar' => '',
             'g-recaptcha-response' => $recaptcha,
             'javax.faces.ViewState' => $viewState
+        ];
+    }
+
+    private function getIsActiveHeaders()
+    {
+        return [
+            "Connection" => "Keep-Alive",
+            "Content-Encoding" => "gzip",
+            "Content-Type" => "text/html;charset=UTF-8",
+            "Keep-Alive" => "timeout=5, max=100",
+            "Server" => "Apache",
+            "Vary" => "Accept-Encoding",
+            "Accept" => "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "Accept-Encoding" => "gzip, deflate, br",
+            "Accept-Language" => "en-US,en;q=0.9,pt;q=0.8",
+            "Cache-Control" => "max-age=0",
+            "Host" => "sci.uffs.edu.br",
+            "Origin" => "https://sci.uffs.edu.br",
+            "Referer" => "https://sci.uffs.edu.br//validar_vinculo.jsf",
+            "sec-ch-ua" => '.Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
+            "sec-ch-ua-mobile" => "?0",
+            "sec-ch-ua-platform" => "Windows",
+            "Sec-Fetch-Dest" => "document",
+            "Sec-Fetch-Mode" => "navigate",
+            "Sec-Fetch-Site" => "same-origin",
+            "Sec-Fetch-User" => "?1",
+            "Upgrade-Insecure-Requests" => "1",
+            "User-Agent" => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
         ];
     }
 
