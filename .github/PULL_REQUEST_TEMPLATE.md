@@ -17,7 +17,7 @@ Insert your description here.
 - [ ] Load tests
 
 # Checklist
-- [x] My code follows the style guidelines of this project
-- [x] I have performed a self-review of my own code
-- [x] My changes generate no new warnings
-- [x] My changes meet the demand acceptance criteria
+- [ ] My code follows the style guidelines of this project
+- [ ] I have performed a self-review of my own code
+- [ ] My changes generate no new warnings
+- [ ] My changes meet the demand acceptance criteria
