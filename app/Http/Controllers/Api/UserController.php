@@ -156,7 +156,8 @@ class UserController
             'name' => ['string', 'max:255'],
             'type' => ['int'],
             'profile_photo' => ['string'],
-            'enrollment_id' => ['string', 'max:10', 'min:10','unique:users']
+            'enrollment_id' => ['string', 'max:10', 'min:10',
+                Rule::unique('users')->ignore($enrollment_id, 'enrollment_id')]
         ];
     }
 
