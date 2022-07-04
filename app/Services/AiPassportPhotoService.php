@@ -29,7 +29,7 @@ class AiPassportPhotoService implements IAiPassportPhotoService
         $res = $this->client->post($signedUrl,
             [
                 RequestOptions::JSON => [
-                    "imageBase64" => "data:image/jpeg;base64, {$base64Photo}",
+                    "imageBase64" => "{$base64Photo}",
                     "specCode" => "brazil-idphoto"
                 ]
             ]
@@ -43,7 +43,7 @@ class AiPassportPhotoService implements IAiPassportPhotoService
 
         $res = $this->client->request('GET', $jsonResponse->photoUrl);
 
-        return base64_encode($res->getBody());
+        return "data:image/png;base64," . base64_encode($res->getBody());
     }
 
 }

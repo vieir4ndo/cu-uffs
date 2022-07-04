@@ -40,6 +40,7 @@ class IdUffsService implements IIdUffsService
         $password = Hash::make($user_data->pessoa_id);
 
         return [
+            'email' => $user_data->email,
             'password' => $password
         ];
     }
@@ -55,7 +56,7 @@ class IdUffsService implements IIdUffsService
         $response = $this->client->post("{$this->activeUserApi}",
             [
                 RequestOptions::FORM_PARAMS => $this->getIsActivePayload($enrollment_id, $viewState, $captcha),
-                RequestOptions::HEADERS => $this->getIsActiveHeaders()
+                RequestOptions::HEADERS => $response->getHeaders()
             ]
         );
 
@@ -75,14 +76,10 @@ class IdUffsService implements IIdUffsService
         ];
     }
 
-    private function getIsActiveHeaders()
+    private function getIsActiveHeaders($cookie)
     {
         return [
-            "Connection" => "Keep-Alive",
-            "Content-Encoding" => "gzip",
             "Content-Type" => "text/html;charset=UTF-8",
-            "Keep-Alive" => "timeout=5, max=100",
-            "Server" => "Apache",
             "Vary" => "Accept-Encoding",
             "Accept" => "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
             "Accept-Encoding" => "gzip, deflate, br",

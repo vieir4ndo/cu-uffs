@@ -8,6 +8,6 @@ class BarcodeService implements IBarcodeService
 {
     public function generateBase64($code)
     {
-        return DNS1D::getBarcodePNG("$code", 'C39');
+        return "data:image/png;base64," . DNS1D::getBarcodePNG("$code", 'C39');
     }
 }

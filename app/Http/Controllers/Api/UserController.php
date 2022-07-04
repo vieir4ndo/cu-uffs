@@ -31,9 +31,9 @@ class UserController
                 "enrollment_id" => $request->enrollment_id
             ];
 
-            $validation = Validator::make($user, $this->createUserRules());
+            $validation = Validator::make($user, $this->createUserRules($request->type));
 
-            if ($validation->fails() ) {
+            if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
@@ -56,20 +56,20 @@ class UserController
         }
     }
 
-    public function updateProfilePicture(Request $request, string $uid)
+    public function changeUserActivity(Request $request, string $uid)
     {
         try {
             $user = [
-                "profile_photo" => $request->profile_photo,
+                "active" => $request->active,
             ];
 
-            $validation = Validator::make($user, $this->updateProfilePictureRules());
+            $validation = Validator::make($user, $this->changeUserActivityUserRules());
 
-            if ($validation->fails() ) {
+            if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $savedUser = $this->service->updateUser($uid, $user);
+            $savedUser = $this->service->deactivateUser($uid, $user);
 
             return ApiResponse::ok($savedUser);
         } catch (Exception $e) {
@@ -80,15 +80,30 @@ class UserController
     public function updateUser(Request $request, string $uid)
     {
         try {
-            $user = [
-                "email" => $request->email,
-                "name" => $request->name,
-                "type" => $request->type,
-            ];
+            $user = [];
+            if ($request->email) {
+                $user["email"] = $request->email;
+            }
 
-            $validation = Validator::make($user, $this->updateUserRules($uid));
+            if ($request->name) {
+                $user["name"] = $request->name;
+            }
 
-            if ($validation->fails() ) {
+            if ($request->type) {
+                $user["type"] = $request->type;
+            }
+
+            if ($request->enrollment_id) {
+                $user["enrollment_id"] = $request->enrollment_id;
+            }
+
+            if ($request->profile_photo) {
+                $user["profile_photo"] = $request->profile_photo;
+            }
+
+            $validation = Validator::make($user, $this->updateUserRules($uid, $request->enrollment_id));
+
+            if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
@@ -111,34 +126,46 @@ class UserController
         }
     }
 
-    private function createUserRules()
+    private function createUserRules($type)
     {
         return [
             "uid" => ['required', 'string', 'unique:users'],
-            'email' => ['required','email',  'unique:users'],
-            'password' => [ 'required', 'string'],
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'string'],
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'int'],
             'profile_photo' => ['required', 'string'],
-            'enrollment_id' => ['required', 'string', 'max:10', 'min:10',  'unique:users']
+            'enrollment_id' => Rule::requiredIf(function() use ($type) {
+                return (in_array($type, config("user.users_auth_iduffs"))) ? ['required', 'string', 'max:10', 'min:10',  'unique:users'] : null;
+            })
         ];
     }
 
-    private function updateProfilePictureRules()
+    private function changeUserActivityUserRules()
     {
         return [
-            'profile_photo' => ['required', 'string'],
+            'active' => ['required', 'bool'],
         ];
     }
 
-    private function updateUserRules($uid)
+    private function updateUserRules($uid, $enrollment_id): array
     {
-        return [
-            'email' => ['required','email',
+        $rules =  [
+            'email' => ['email',
                 Rule::unique('users')->ignore($uid, 'uid')],
-            'name' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'int'],
+            'name' => ['string', 'max:255'],
+            'type' => ['int'],
+            'profile_photo' => ['string'],
         ];
+
+        if (empty($enrollment_id)){
+            $rules[] = ['enrollment_id' => ['string', 'max:10', 'min:10',
+                Rule::unique('users')->ignore($enrollment_id, 'enrollment_id')]];
+        }else {
+            $rules[] = ['enrollment_id' => ['string', 'max:10', 'min:10','unique:users']];
+        }
+
+        return $rules;
     }
 
 }

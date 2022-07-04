@@ -40,10 +40,15 @@ class UserService implements IUserService
             $this->idUffsService->validateAtIdUffs($user["uid"], $user["password"]);
         }
 
+        if (in_array($user["type"], config("user.users_generate_enrollment_id"))) {
+            $user["enrollment_id"] = bin2hex(random_bytes(5));
+        }
+
         $user["profile_photo"] = $this->aiPassportPhotoService->validatePhoto($user["profile_photo"]);
+        $user["profile_photo"] = StorageHelper::saveProfilePhoto($user["uid"], $user["profile_photo"]);
 
         $user["password"] = Hash::make($user["password"]);
-        $user["profile_photo"] = StorageHelper::saveProfilePhoto($user["uid"], $user["profile_photo"]);
+
         $user["bar_code"] = StorageHelper::saveBarCode($user["uid"], $this->barcodeService->generateBase64($user["enrollment_id"]));
 
         $this->repository->createUser($user);
@@ -95,12 +100,27 @@ class UserService implements IUserService
 
     public function updateUser(string $uid, $data): User
     {
-        $user = $this->getUserByUsername($uid);
+        $user = $this->getUserByUsername($uid, false);
+
+        if (isset($data["enrollment_id"]) and $data["enrollment_id"] != $user->enrollment_id) {
+            StorageHelper::deleteBarCode($uid);
+            $data["bar_code"] = StorageHelper::saveBarCode($user->uid, $this->barcodeService->generateBase64($data["enrollment_id"]));
+        }
 
         if (isset($data["profile_photo"])) {
             StorageHelper::deleteProfilePhoto($uid);
-            $data["profile_photo"] = StorageHelper::saveProfilePhoto($uid, $data["profile_photo"]);
+            $data["profile_photo"] = $this->aiPassportPhotoService->validatePhoto($data["profile_photo"]);
+            $data["profile_photo"] = StorageHelper::saveProfilePhoto($user->uid, $data["profile_photo"]);
         }
+
+        $this->repository->updateUserByUsername($user->uid, $data);
+
+        return $this->getUserByUsername($uid);
+    }
+
+    public function deactivateUser(string $uid, $data): User
+    {
+        $user = $this->getUserByUsername($uid, false);
 
         $this->repository->updateUserByUsername($user->uid, $data);
 
