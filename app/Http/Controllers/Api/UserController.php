@@ -150,22 +150,14 @@ class UserController
 
     private function updateUserRules($uid, $enrollment_id): array
     {
-        $rules =  [
+        return  [
             'email' => ['email',
                 Rule::unique('users')->ignore($uid, 'uid')],
             'name' => ['string', 'max:255'],
             'type' => ['int'],
             'profile_photo' => ['string'],
+            'enrollment_id' => ['string', 'max:10', 'min:10','unique:users']
         ];
-
-        if (empty($enrollment_id)){
-            $rules[] = ['enrollment_id' => ['string', 'max:10', 'min:10',
-                Rule::unique('users')->ignore($enrollment_id, 'enrollment_id')]];
-        }else {
-            $rules[] = ['enrollment_id' => ['string', 'max:10', 'min:10','unique:users']];
-        }
-
-        return $rules;
     }
 
 }
