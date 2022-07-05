@@ -36,7 +36,8 @@ class CaptchaMonsterService implements ICaptchaMonsterService
                     "task" => [
                         "type" => "NoCaptchaTaskProxyless",
                         "websiteURL" => $websiteUrl,
-                        "websiteKey" => $websiteKey
+                        "websiteKey" => $websiteKey,
+                        "isInvisible" => "Yes"
                     ]
                 ]
             ]
