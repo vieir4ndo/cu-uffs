@@ -33,17 +33,36 @@ class UserService implements IUserService
     /**
      * @throws Exception
      */
-    public function createUser($user)
+    public function createUserWithIdUFFS($user)
     {
-        if (in_array($user["type"], config("user.users_auth_iduffs"))) {
-            $this->idUffsService->isActive($user["enrollment_id"]);
-            $this->idUffsService->validateAtIdUffs($user["uid"], $user["password"]);
+        $this->idUffsService->isActive($user["enrollment_id"]);
+        $user_data = $this->idUffsService->authWithIdUFFS($user["uid"], $user["password"]);
+
+        if (!$user_data) {
+            throw new Exception("The IdUFFS password does not match the one informed.");
         }
 
-        if (in_array($user["type"], config("user.users_generate_enrollment_id"))) {
-            $user["enrollment_id"] = bin2hex(random_bytes(5));
-        }
+        $user["name"] = $user_data["name"];
+        $user["email"] = $user_data["email"];
+        $user["password"] = $user_data["password"];
 
+        return $this->createUserBase($user);
+    }
+
+    public function createUserWithoutIdUFFS($user)
+    {
+        $user["enrollment_id"] = bin2hex(random_bytes(5));
+
+        return $this->createUserBase($user);
+    }
+
+    /**
+     * @param $user
+     * @return User
+     * @throws Exception
+     */
+    public function createUserBase($user): User
+    {
         $user["profile_photo"] = $this->aiPassportPhotoService->validatePhoto($user["profile_photo"]);
         $user["profile_photo"] = StorageHelper::saveProfilePhoto($user["uid"], $user["profile_photo"]);
 
@@ -98,24 +117,43 @@ class UserService implements IUserService
         return $this->repository->deleteUserByUsername($user->uid);
     }
 
-    public function updateUser(string $uid, $data): User
-    {
+    public function updateUserWithIdUFFS(string $uid, $data): User{
         $user = $this->getUserByUsername($uid, false);
 
+        if (!in_array($user->type, config('user.users_auth_iduffs'))){
+            throw new Exception('Cannot update user through this endpoint.');
+        }
+
+        return $this->updateUser($user, $data);
+    }
+
+    public function updateUserWithoutIdUFFS(string $uid, $data): User{
+        $user = $this->getUserByUsername($uid, false);
+
+        if (!in_array($user->type, config('user.users_auth_locally'))){
+            throw new Exception('Cannot update user through this endpoint.');
+        }
+
+        return $this->updateUser($user, $data);
+    }
+
+
+    private function updateUser(User $user, $data): User
+    {
         if (isset($data["enrollment_id"]) and $data["enrollment_id"] != $user->enrollment_id) {
-            StorageHelper::deleteBarCode($uid);
+            StorageHelper::deleteBarCode($user->uid);
             $data["bar_code"] = StorageHelper::saveBarCode($user->uid, $this->barcodeService->generateBase64($data["enrollment_id"]));
         }
 
         if (isset($data["profile_photo"])) {
-            StorageHelper::deleteProfilePhoto($uid);
+            StorageHelper::deleteProfilePhoto($user->uid);
             $data["profile_photo"] = $this->aiPassportPhotoService->validatePhoto($data["profile_photo"]);
             $data["profile_photo"] = StorageHelper::saveProfilePhoto($user->uid, $data["profile_photo"]);
         }
 
         $this->repository->updateUserByUsername($user->uid, $data);
 
-        return $this->getUserByUsername($uid);
+        return $this->getUserByUsername($user->uid);
     }
 
     public function deactivateUser(string $uid, $data): User

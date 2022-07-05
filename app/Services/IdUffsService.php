@@ -38,6 +38,7 @@ class IdUffsService implements IIdUffsService
         $password = Hash::make($user_data->pessoa_id);
 
         return [
+            'name' => $user_data->name,
             'email' => $user_data->email,
             'password' => $password
         ];
@@ -74,21 +75,4 @@ class IdUffsService implements IIdUffsService
         ];
     }
 
-    /**
-     * @throws Exception
-     */
-    public function validateAtIdUffs($uid, $password)
-    {
-        $credentials = [
-            'user' => $uid,
-            'password' => $password,
-        ];
-
-        $auth = new AuthIdUFFS();
-        $user_data = $auth->login($credentials);
-
-        if (!$user_data) {
-            throw new Exception("The IdUFFS password does not match the one informed.");
-        }
-    }
 }

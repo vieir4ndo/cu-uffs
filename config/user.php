@@ -11,7 +11,7 @@ return [
         \App\Enums\UserType::RUEmployee->value
     ],
 
-    'users_generate_enrollment_id' => [
+    'users_auth_locally' => [
         \App\Enums\UserType::ThirdPartyEmployee->value,
         \App\Enums\UserType::ThirdPartyCashierEmployee->value,
     ],

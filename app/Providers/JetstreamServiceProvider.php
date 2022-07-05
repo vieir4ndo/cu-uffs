@@ -2,14 +2,12 @@
 
 namespace App\Providers;
 
-use App\Enums\UserType;
 use App\Services\AiPassportPhotoService;
 use App\Services\AuthService;
 use App\Services\BarcodeService;
 use App\Services\IdUffsService;
 use App\Services\MailjetService;
 use App\Services\UserService;
-use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;

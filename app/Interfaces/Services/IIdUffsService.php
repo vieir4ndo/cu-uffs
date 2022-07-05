@@ -8,5 +8,4 @@ interface IIdUffsService
 
     function isActive(string $enrollment_id);
 
-    function validateAtIdUffs($uid, $password);
 }

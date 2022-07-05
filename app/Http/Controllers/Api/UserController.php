@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Api\ApiResponse;
+use App\Traits\UserTypeTrait;
 use Exception;
 use Illuminate\Http\Request;
 use App\Services\UserService;
@@ -18,7 +19,7 @@ class UserController
         $this->service = $userService;
     }
 
-    public function createUser(Request $request)
+    public function createUserWithoutIdUFFS(Request $request)
     {
         try {
             $user = [
@@ -26,18 +27,42 @@ class UserController
                 "email" => $request->email,
                 "name" => $request->name,
                 "password" => $request->password,
-                "type" => $request->type,
+                "type" => ($request->type != 0) ? $request->type : null,
                 "profile_photo" => $request->profile_photo,
-                "enrollment_id" => $request->enrollment_id
             ];
 
-            $validation = Validator::make($user, $this->createUserRules($request->type));
+            $validation = Validator::make($user, $this->createUserWitoutIdUFFSRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $savedUser = $this->service->createUser($user);
+            $savedUser = $this->service->createUserWithoutIdUFFS($user);
+
+            return ApiResponse::ok($savedUser);
+        } catch (Exception $e) {
+            return ApiResponse::badRequest($e->getMessage());
+        }
+    }
+
+    public function createUserWithIdUFFS(Request $request)
+    {
+        try {
+            $user = [
+                "uid" => $request->uid,
+                "password" => $request->password,
+                "type" => ($request->type != 0) ? $request->type : null,
+                "profile_photo" => $request->profile_photo,
+                "enrollment_id" => $request->enrollment_id
+            ];
+
+            $validation = Validator::make($user, $this->createUserWithIdUFFSRules());
+
+            if ($validation->fails()) {
+                return ApiResponse::badRequest($validation->errors()->all());
+            }
+
+            $savedUser = $this->service->createUserWithIdUFFS($user);
 
             return ApiResponse::ok($savedUser);
         } catch (Exception $e) {
@@ -77,19 +102,12 @@ class UserController
         }
     }
 
-    public function updateUser(Request $request, string $uid)
+    public function updateUserWithIdUFFS(Request $request, string $uid)
     {
         try {
             $user = [];
-            if ($request->email) {
-                $user["email"] = $request->email;
-            }
 
-            if ($request->name) {
-                $user["name"] = $request->name;
-            }
-
-            if ($request->type) {
+            if ($request->type and $request->type != 0) {
                 $user["type"] = $request->type;
             }
 
@@ -101,13 +119,13 @@ class UserController
                 $user["profile_photo"] = $request->profile_photo;
             }
 
-            $validation = Validator::make($user, $this->updateUserRules($uid, $request->enrollment_id));
+            $validation = Validator::make($user, $this->updateUserWithIdUFFSRules($request->enrollment_id));
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $savedUser = $this->service->updateUser($uid, $user);
+            $savedUser = $this->service->updateUserWithIdUFFS($uid, $user);
 
             return ApiResponse::ok($savedUser);
         } catch (Exception $e) {
@@ -115,29 +133,60 @@ class UserController
         }
     }
 
-    public function deleteUser($uid)
+    public function updateUserWithoutIdUFFS(Request $request, string $uid)
     {
         try {
-            $result = $this->service->deleteUserByUsername($uid);
+            $user = [];
+            if ($request->email) {
+                $user["email"] = $request->email;
+            }
 
-            return ApiResponse::ok(null, $result);
+            if ($request->name) {
+                $user["name"] = $request->name;
+            }
+
+            if ($request->type and $request->type != 0) {
+                $user["type"] = $request->type;
+            }
+
+            if ($request->profile_photo) {
+                $user["profile_photo"] = $request->profile_photo;
+            }
+
+            $validation = Validator::make($user, $this->updateUserWithoutIdUFFSRules($request->email));
+
+            if ($validation->fails()) {
+                return ApiResponse::badRequest($validation->errors()->all());
+            }
+
+            $savedUser = $this->service->updateUserWithoutIdUFFS($uid, $user);
+
+            return ApiResponse::ok($savedUser);
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
     }
 
-    private function createUserRules($type)
+    private function createUserWithIdUFFSRules()
+    {
+        return [
+            "uid" => ['required', 'string', 'unique:users'],
+            'password' => ['required', 'string'],
+            'type' => [Rule::in(config('user.users_auth_iduffs')),'required'],
+            'profile_photo' => ['required', 'string'],
+            'enrollment_id' => ['required', 'string', 'max:10', 'min:10',  'unique:users']
+        ];
+    }
+
+    private function createUserWitoutIdUFFSRules()
     {
         return [
             "uid" => ['required', 'string', 'unique:users'],
             'email' => ['required', 'email', 'unique:users'],
             'password' => ['required', 'string'],
             'name' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'int'],
+            'type' => [Rule::in(config('user.users_auth_locally')),'required'],
             'profile_photo' => ['required', 'string'],
-            'enrollment_id' => Rule::requiredIf(function() use ($type) {
-                return (in_array($type, config("user.users_auth_iduffs"))) ? ['required', 'string', 'max:10', 'min:10',  'unique:users'] : null;
-            })
         ];
     }
 
@@ -148,16 +197,22 @@ class UserController
         ];
     }
 
-    private function updateUserRules($uid, $enrollment_id): array
+    private function updateUserWithIdUFFSRules($enrollment_id): array
     {
         return  [
-            'email' => ['email',
-                Rule::unique('users')->ignore($uid, 'uid')],
-            'name' => ['string', 'max:255'],
-            'type' => ['int'],
+            'type' => [Rule::in(config('user.users_auth_iduffs'))],
             'profile_photo' => ['string'],
-            'enrollment_id' => ['string', 'max:10', 'min:10',
-                Rule::unique('users')->ignore($enrollment_id, 'enrollment_id')]
+            'enrollment_id' => [Rule::unique('users')->ignore($enrollment_id, 'enrollment_id'), 'string', 'max:10', 'min:10']
+        ];
+    }
+
+    private function updateUserWithoutIdUFFSRules($email): array
+    {
+        return  [
+            'email' => [Rule::unique('users')->ignore($email, 'email'), 'email'],
+            'name' => ['string', 'max:255'],
+            'type' => [Rule::in(config('user.users_auth_locally'))],
+            'profile_photo' => ['string'],
         ];
     }
 
