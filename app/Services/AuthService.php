@@ -14,11 +14,13 @@ class AuthService implements IAuthService
     private UserService $service;
     private User $user;
     private MailjetService $mailjetService;
+    private IdUffsService $idUffsService;
 
-    public function __construct(UserService $userService, MailjetService $mailjetService)
+    public function __construct(UserService $userService, MailjetService $mailjetService, IdUffsService $idUffsService)
     {
         $this->service = $userService;
         $this->mailjetService = $mailjetService;
+        $this->idUffsService = $idUffsService;
     }
 
     public function login($uid, $password)
@@ -26,13 +28,13 @@ class AuthService implements IAuthService
         $this->user = $this->service->getUserByUsername($uid, false);
 
         if (in_array($this->user->type, config("user.users_auth_iduffs"))) {
-            $data = $this->authWithIdUFFS($uid, $password);
+            $data = $this->idUffsService->authWithIdUFFS($uid, $password);
 
             if ($data == null) {
                 throw new Exception("The password is incorrect.");
             }
 
-            $this->user->update($data);
+            $this->service->updateUser($this->user, $data);
         } else {
             if (!Hash::check($password, $this->user->password)) {
                 throw new Exception("The password is incorrect.");
@@ -41,27 +43,6 @@ class AuthService implements IAuthService
 
         $this->user->tokens()->delete();
         return $this->user->createToken($uid)->plainTextToken;
-    }
-
-    public function authWithIdUFFS($uid, $password)
-    {
-        $credentials = [
-            'user' => $uid,
-            'password' => $password,
-        ];
-
-        $auth = new AuthIdUFFS();
-        $user_data = $auth->login($credentials);
-
-        if (!$user_data) {
-            return null;
-        }
-
-        $password = Hash::make($user_data->pessoa_id);
-
-        return [
-            'password' => $password
-        ];
     }
 
     public function forgotPassword(string $uid): void

@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
-use App\Enums\UserType;
+use App\Services\AiPassportPhotoService;
 use App\Services\AuthService;
 use App\Services\BarcodeService;
+use App\Services\IdUffsService;
 use App\Services\MailjetService;
 use App\Services\UserService;
-use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -32,8 +32,10 @@ class JetstreamServiceProvider extends ServiceProvider
         $userRepository = new UserRepository();
         $barcodeService = new BarcodeService();
         $mailJetService = new MailjetService();
-        $this->userService = new UserService($userRepository, $barcodeService);
-        $this->authService = new AuthService($this->userService, $mailJetService);
+        $aiPassportPhotoService = new AiPassportPhotoService();
+        $idUffsService = new IdUffsService();
+        $this->userService = new UserService($userRepository, $barcodeService, $aiPassportPhotoService, $idUffsService);
+        $this->authService = new AuthService($this->userService, $mailJetService, $idUffsService);
     }
 
     /**

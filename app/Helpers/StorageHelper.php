@@ -20,6 +20,17 @@ class StorageHelper
     /**
      * @throws \Exception
      */
+    public static function saveTestFile(string $fileName, string $base64): string
+    {
+        $path = "/test/{$fileName}";
+
+        return StorageHelper::saveFile($path, $base64);
+    }
+
+
+    /**
+     * @throws \Exception
+     */
     public static function deleteProfilePhoto(string $fileName): void
     {
         $path = "/profile_photos/{$fileName}.txt";

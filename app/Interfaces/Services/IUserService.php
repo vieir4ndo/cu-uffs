@@ -1,16 +1,23 @@
 <?php
+
 namespace App\Interfaces\Services;
 
 use App\Models\User;
 
 interface IUserService
 {
-    function createUser($user);
+    function createUserWithoutIdUFFS($user);
 
-    function getUserByUsername(string $uid, $withFiles = true): \App\Models\User;
+    function createUserWithIdUFFS($user);
+
+    function getUserByUsername(string $uid, $withFiles = true): User;
 
     function deleteUserByUsername(string $uid): bool;
 
-    function updateUser(string $uid, $data): User;
+    function updateUserWithIdUFFS(string $uid, $data): User;
+
+    function updateUserWithoutIdUFFS(string $uid, $data): User;
+
+    function deactivateUser(string $uid, $data): User;
 
 }
