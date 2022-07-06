@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\UserType;
 use App\Helpers\StringHelper;
 use App\Interfaces\Services\IIdUffsService;
 use CCUFFS\Auth\AuthIdUFFS;
@@ -49,18 +50,28 @@ class IdUffsService implements IIdUffsService
      */
     public function isActive(string $enrollment_id)
     {
-        if (env('SHOULD_VALIDATE_ENROLLMENT_ID', true)) {
-            $response = $this->client->get($this->activeUserApi);
+        $response = $this->client->get($this->activeUserApi);
 
-            $viewState = StringHelper::getText('/id\="javax.faces.ViewState" value\="(.*?)"/i', $response->getBody());
+        $viewState = StringHelper::getText('/id\="javax.faces.ViewState" value\="(.*?)"/i', $response->getBody());
 
-            $captcha = $this->captchaMonsterService->breakRecaptcha($this->activeUserApi, $this->googleKey);
+        $captcha = $this->captchaMonsterService->breakRecaptcha($this->activeUserApi, $this->googleKey);
 
-            $response = $this->client->post("{$this->activeUserApi}", $this->getIsActivePayload($enrollment_id, $viewState, $captcha));
+        $response = $this->client->post("{$this->activeUserApi}", $this->getIsActivePayload($enrollment_id, $viewState, $captcha));
 
-            if (!StringHelper::checkIfContains($response->getBody(), "Vínculo ativo")) {
-                throw new Exception("Enrollment_id is not active at IdUFFS.");
-            }
+        if (!StringHelper::checkIfContains($response->getBody(), "Vínculo ativo")) {
+            return null;
+        }
+
+        if (StringHelper::checkIfContains($response->getBody(), '<p class="descricaoVinculo">Estudante</p>')) {
+            return [
+                "type" => UserType::Student->value,
+                "course" => StringHelper::getText("/Matrícula {$enrollment_id} - (.*?)<\/span>/i", $response->getBody())
+            ];
+        } else {
+            return [
+                "type" => UserType::Employee->value,
+                "course" => null
+            ];
         }
     }
 

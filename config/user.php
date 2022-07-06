@@ -7,7 +7,8 @@ return [
     ],
 
     'users_auth_iduffs' => [
-        \App\Enums\UserType::default->value,
+        \App\Enums\UserType::Employee->value,
+        \App\Enums\UserType::Student->value,
         \App\Enums\UserType::RUEmployee->value
     ],
 

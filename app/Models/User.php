@@ -30,7 +30,10 @@ class User extends Authenticatable
         'type',
         'bar_code',
         'profile_photo',
-        'enrollment_id'
+        'enrollment_id',
+        'active',
+        'birth_date',
+        'course'
     ];
 
     /**

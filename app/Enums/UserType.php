@@ -4,8 +4,9 @@ namespace App\Enums;
 
 enum UserType: int
 {
-    case default = 1;
-    case RUEmployee = 2;
-    case ThirdPartyEmployee = 3;
-    case ThirdPartyCashierEmployee = 4;
+    case Employee = 1;
+    case Student = 2;
+    case RUEmployee = 3;
+    case ThirdPartyEmployee = 4;
+    case ThirdPartyCashierEmployee = 5;
 }

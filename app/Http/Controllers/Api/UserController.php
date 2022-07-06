@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Api\ApiResponse;
-use App\Traits\UserTypeTrait;
 use Exception;
 use Illuminate\Http\Request;
 use App\Services\UserService;
@@ -29,6 +28,7 @@ class UserController
                 "password" => $request->password,
                 "type" => ($request->type != 0) ? $request->type : null,
                 "profile_photo" => $request->profile_photo,
+                "birth_date" => $request->birth_date
             ];
 
             $validation = Validator::make($user, $this->createUserWitoutIdUFFSRules());
@@ -51,9 +51,9 @@ class UserController
             $user = [
                 "uid" => $request->uid,
                 "password" => $request->password,
-                "type" => ($request->type != 0) ? $request->type : null,
                 "profile_photo" => $request->profile_photo,
-                "enrollment_id" => $request->enrollment_id
+                "enrollment_id" => $request->enrollment_id,
+                "birth_date" => $request->birth_date
             ];
 
             $validation = Validator::make($user, $this->createUserWithIdUFFSRules());
@@ -105,19 +105,14 @@ class UserController
     public function updateUserWithIdUFFS(Request $request, string $uid)
     {
         try {
-            $user = [];
+            $user = [
+                "type" => ($request->type and $request->type != 0) ? $request->type : null,
+                "enrollment_id" => $request->enrollment_id,
+                "profile_photo" => $request->profile_photo,
+                "birth_date" => $request->birth_date,
+            ];
 
-            if ($request->type and $request->type != 0) {
-                $user["type"] = $request->type;
-            }
-
-            if ($request->enrollment_id) {
-                $user["enrollment_id"] = $request->enrollment_id;
-            }
-
-            if ($request->profile_photo) {
-                $user["profile_photo"] = $request->profile_photo;
-            }
+            $user = array_filter($user);
 
             $validation = Validator::make($user, $this->updateUserWithIdUFFSRules($request->enrollment_id));
 
@@ -136,22 +131,15 @@ class UserController
     public function updateUserWithoutIdUFFS(Request $request, string $uid)
     {
         try {
-            $user = [];
-            if ($request->email) {
-                $user["email"] = $request->email;
-            }
+            $user = [
+                "email" => $request->email,
+                "name" => $request->name,
+                "type" => $request->type,
+                "profile_photo" => $request->profile_photo,
+                "birth_date" => $request->birth_date,
+            ];
 
-            if ($request->name) {
-                $user["name"] = $request->name;
-            }
-
-            if ($request->type and $request->type != 0) {
-                $user["type"] = $request->type;
-            }
-
-            if ($request->profile_photo) {
-                $user["profile_photo"] = $request->profile_photo;
-            }
+            $user = array_filter($user);
 
             $validation = Validator::make($user, $this->updateUserWithoutIdUFFSRules($request->email));
 
@@ -172,9 +160,9 @@ class UserController
         return [
             "uid" => ['required', 'string', 'unique:users'],
             'password' => ['required', 'string'],
-            'type' => [Rule::in(config('user.users_auth_iduffs')),'required'],
             'profile_photo' => ['required', 'string'],
-            'enrollment_id' => ['required', 'string', 'max:10', 'min:10',  'unique:users']
+            'enrollment_id' => ['required', 'string', 'max:10', 'min:10', 'unique:users'],
+            'birth_date' => ['required', 'date']
         ];
     }
 
@@ -185,8 +173,9 @@ class UserController
             'email' => ['required', 'email', 'unique:users'],
             'password' => ['required', 'string'],
             'name' => ['required', 'string', 'max:255'],
-            'type' => [Rule::in(config('user.users_auth_locally')),'required'],
+            'type' => [Rule::in(config('user.users_auth_locally')), 'required'],
             'profile_photo' => ['required', 'string'],
+            'birth_date' => ['required', 'date']
         ];
     }
 
@@ -199,20 +188,22 @@ class UserController
 
     private function updateUserWithIdUFFSRules($enrollment_id): array
     {
-        return  [
+        return [
             'type' => [Rule::in(config('user.users_auth_iduffs'))],
             'profile_photo' => ['string'],
-            'enrollment_id' => [Rule::unique('users')->ignore($enrollment_id, 'enrollment_id'), 'string', 'max:10', 'min:10']
+            'enrollment_id' => [Rule::unique('users')->ignore($enrollment_id, 'enrollment_id'), 'string', 'max:10', 'min:10'],
+            'birth_date' => ['date']
         ];
     }
 
     private function updateUserWithoutIdUFFSRules($email): array
     {
-        return  [
+        return [
             'email' => [Rule::unique('users')->ignore($email, 'email'), 'email'],
             'name' => ['string', 'max:255'],
             'type' => [Rule::in(config('user.users_auth_locally'))],
             'profile_photo' => ['string'],
+            'birth_date' => ['date']
         ];
     }
 

@@ -25,6 +25,8 @@ class CreateUsersTable extends Migration
             $table->text('bar_code');
             $table->integer('type')->default(0);
             $table->boolean('active')->default(true);
+            $table->text('course')->nullable();
+            $table->date('birth_date');
             $table->timestamps();
         });
     }

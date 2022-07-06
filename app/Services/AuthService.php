@@ -34,7 +34,7 @@ class AuthService implements IAuthService
                 throw new Exception("The password is incorrect.");
             }
 
-            $this->service->updateUser($this->user->uid, $data);
+            $this->service->updateUser($this->user, $data);
         } else {
             if (!Hash::check($password, $this->user->password)) {
                 throw new Exception("The password is incorrect.");

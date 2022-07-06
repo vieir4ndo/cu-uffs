@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\UserRepository;
 use App\Interfaces\Services\IUserService;
 use App\Models\User;
+use Carbon\Carbon;
 use CCUFFS\Auth\AuthIdUFFS;
 use Exception;
 use Illuminate\Support\Facades\Hash;
@@ -35,16 +36,23 @@ class UserService implements IUserService
      */
     public function createUserWithIdUFFS($user)
     {
-        $this->idUffsService->isActive($user["enrollment_id"]);
-        $user_data = $this->idUffsService->authWithIdUFFS($user["uid"], $user["password"]);
+        $user_data_from_auth = $this->idUffsService->authWithIdUFFS($user["uid"], $user["password"]);
 
-        if (!$user_data) {
+        if (!$user_data_from_auth) {
             throw new Exception("The IdUFFS password does not match the one informed.");
         }
 
-        $user["name"] = $user_data["name"];
-        $user["email"] = $user_data["email"];
-        $user["password"] = $user_data["password"];
+        $user_data_from_enrollment = $this->idUffsService->isActive($user["enrollment_id"]);
+
+        if (empty($user_data_from_enrollment)){
+            throw new Exception("Enrollment_id is not active at IdUFFS.");
+        }
+
+        $user["type"] = $user_data_from_enrollment["type"];
+        $user["course"] = $user_data_from_enrollment["course"];
+        $user["name"] = $user_data_from_auth["name"];
+        $user["email"] = $user_data_from_auth["email"];
+        $user["password"] = $user_data_from_auth["password"];
 
         return $this->createUserBase($user);
     }
@@ -66,9 +74,13 @@ class UserService implements IUserService
         $user["profile_photo"] = $this->aiPassportPhotoService->validatePhoto($user["profile_photo"]);
         $user["profile_photo"] = StorageHelper::saveProfilePhoto($user["uid"], $user["profile_photo"]);
 
+        $user["bar_code"] = StorageHelper::saveBarCode($user["uid"], $this->barcodeService->generateBase64($user["enrollment_id"]));
+
         $user["password"] = Hash::make($user["password"]);
 
-        $user["bar_code"] = StorageHelper::saveBarCode($user["uid"], $this->barcodeService->generateBase64($user["enrollment_id"]));
+        $user["birth_date"] = Carbon::parse($user["birth_date"]);
+
+        $user["active"] = true;
 
         $this->repository->createUser($user);
 
@@ -121,25 +133,33 @@ class UserService implements IUserService
         $user = $this->getUserByUsername($uid, false);
 
         if (!in_array($user->type, config('user.users_auth_iduffs'))){
-            throw new Exception('Cannot update user through this endpoint.');
+            $app_url = env('app_url');
+            throw new Exception("Cannot update user through this endpoint, please use {$app_url}/api/user.");
         }
 
         return $this->updateUser($user, $data);
     }
 
     public function updateUserWithoutIdUFFS(string $uid, $data): User{
+
+
         $user = $this->getUserByUsername($uid, false);
 
         if (!in_array($user->type, config('user.users_auth_locally'))){
-            throw new Exception('Cannot update user through this endpoint.');
+            $app_url = env('app_url');
+            throw new Exception("Cannot update user through this endpoint, please use {$app_url}/api/user/iduffs.");
         }
 
         return $this->updateUser($user, $data);
     }
 
 
-    private function updateUser(User $user, $data): User
+    public function updateUser(User $user, $data): User
     {
+        if (isset($data["birth_date"])){
+            $data["birth_date"] = Carbon::parse($data["birth_date"]);
+        }
+
         if (isset($data["enrollment_id"]) and $data["enrollment_id"] != $user->enrollment_id) {
             StorageHelper::deleteBarCode($user->uid);
             $data["bar_code"] = StorageHelper::saveBarCode($user->uid, $this->barcodeService->generateBase64($data["enrollment_id"]));
