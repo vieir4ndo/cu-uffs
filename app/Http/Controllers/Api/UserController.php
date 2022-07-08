@@ -41,7 +41,7 @@ class UserController
 
             $this->userCreationService->create($user);
 
-            //UserCreation::dispatch($user["uid"]);
+            UserCreation::dispatch($user["uid"]);
 
             return ApiResponse::accepted();
         } catch (Exception $e) {
