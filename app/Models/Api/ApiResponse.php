@@ -29,4 +29,12 @@ class ApiResponse
             "messages" => $messages
         ], 204);
     }
+
+    public static function accepted($data = null){
+        return response()->json([
+            "success" => true,
+            "data" => $data,
+            "messages" => null
+        ], 202);
+    }
 }

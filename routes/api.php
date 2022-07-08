@@ -23,6 +23,10 @@ Route::middleware('auth:sanctum')->post('/reset-password/{uid}', [AuthController
 
 Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
 Route::post('/user/iduffs', [UserController::class, 'createUserWithIdUFFS'])->name('api.user.createWithIdUFFS');
+
+//Route::post('/user/teste')->uses('Api/UserController@createUserWithIdUFFSAsync')->name('route-name');
+Route::post('/user/teste', [UserController::class, 'createUserWithIdUFFSAsync'])->name('api.user.createWithIdUFFS');
+
 Route::post('/user', [UserController::class, 'createUserWithoutIdUFFS'])->name('api.user.createWithoutIdUFFS');
 Route::post('/forgot-password/{uid}', [AuthController::class, 'forgotPassword'])->name('api.auth.forgot-password');
 
