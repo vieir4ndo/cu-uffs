@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\UserCreationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,11 +23,8 @@ Route::middleware('auth:sanctum')->put('/user/{uid}', [UserController::class, 'c
 Route::middleware('auth:sanctum')->post('/reset-password/{uid}', [AuthController::class, 'resetPassword'])->name('api.auth.reset-password');
 
 Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
-Route::post('/user/iduffs', [UserController::class, 'createUserWithIdUFFS'])->name('api.user.createWithIdUFFS');
-
-//Route::post('/user/teste')->uses('Api/UserController@createUserWithIdUFFSAsync')->name('route-name');
-Route::post('/user/teste', [UserController::class, 'createUserWithIdUFFSAsync'])->name('api.user.createWithIdUFFS');
-
+Route::post('/user/iduffs', [UserCreationController::class, 'createUserWithIdUFFS'])->name('api.user.createWithIdUFFS');
 Route::post('/user', [UserController::class, 'createUserWithoutIdUFFS'])->name('api.user.createWithoutIdUFFS');
+Route::get('/user/creation/{uid}', [UserCreationController::class, 'getUserCreation'])->name('api.user.getUserCreation');
 Route::post('/forgot-password/{uid}', [AuthController::class, 'forgotPassword'])->name('api.auth.forgot-password');
 

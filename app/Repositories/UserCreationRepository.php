@@ -16,6 +16,9 @@ class UserCreationRepository
         return UserCreation::where("uid", $uid)->first();
     }
 
+    public function getStatusAndMessageByUid(string $uid){
+        return UserCreation::where("uid", $uid)->select('uid', 'status', 'message')->first();
+    }
     public function update($uid, $data)
     {
         return UserCreation::where('uid', $uid)->update($data);

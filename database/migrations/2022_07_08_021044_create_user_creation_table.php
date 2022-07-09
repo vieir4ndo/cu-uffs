@@ -17,7 +17,7 @@ class CreateUserCreationTable extends Migration
             $table->uuid("uid")->unique();
             $table->integer("status");
             $table->text("message")->nullable();
-            $table->json("payload");
+            $table->longText("payload");
             $table->timestamps();
         });
     }

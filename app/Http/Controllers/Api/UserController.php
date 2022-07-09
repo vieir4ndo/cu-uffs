@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Jobs\User\UserCreation;
 use App\Models\Api\ApiResponse;
-use App\Services\UserCreationService;
 use Exception;
 use Illuminate\Http\Request;
 use App\Services\UserService;
@@ -14,39 +12,10 @@ use Illuminate\Validation\Rule;
 class UserController
 {
     private UserService $service;
-    private UserCreationService $userCreationService;
 
-    public function __construct(UserService $userService, UserCreationService $userCreationService)
+    public function __construct(UserService $userService)
     {
         $this->service = $userService;
-        $this->userCreationService = $userCreationService;
-    }
-
-    public function createUserWithIdUFFSAsync(Request $request)
-    {
-        try {
-            $user = [
-                "uid" => $request->uid,
-                "password" => $request->password,
-                "profile_photo" => $request->profile_photo,
-                "enrollment_id" => $request->enrollment_id,
-                "birth_date" => $request->birth_date
-            ];
-
-            $validation = Validator::make($user, $this->createUserWithIdUFFSRules());
-
-            if ($validation->fails()) {
-                return ApiResponse::badRequest($validation->errors()->all());
-            }
-
-            $this->userCreationService->create($user);
-
-            UserCreation::dispatch($user["uid"]);
-
-            return ApiResponse::accepted();
-        } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
-        }
     }
 
     public function createUserWithoutIdUFFS(Request $request)
@@ -69,31 +38,6 @@ class UserController
             }
 
             $savedUser = $this->service->createUserWithoutIdUFFS($user);
-
-            return ApiResponse::ok($savedUser);
-        } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
-        }
-    }
-
-    public function createUserWithIdUFFS(Request $request)
-    {
-        try {
-            $user = [
-                "uid" => $request->uid,
-                "password" => $request->password,
-                "profile_photo" => $request->profile_photo,
-                "enrollment_id" => $request->enrollment_id,
-                "birth_date" => $request->birth_date
-            ];
-
-            $validation = Validator::make($user, $this->createUserWithIdUFFSRules());
-
-            if ($validation->fails()) {
-                return ApiResponse::badRequest($validation->errors()->all());
-            }
-
-            $savedUser = $this->service->createUserWithIdUFFS($user);
 
             return ApiResponse::ok($savedUser);
         } catch (Exception $e) {
@@ -184,17 +128,6 @@ class UserController
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
-    }
-
-    private function createUserWithIdUFFSRules()
-    {
-        return [
-            "uid" => ['required', 'string', 'unique:users'],
-            'password' => ['required', 'string'],
-            'profile_photo' => ['required', 'string'],
-            'enrollment_id' => ['required', 'string', 'max:10', 'min:10', 'unique:users'],
-            'birth_date' => ['required', 'date']
-        ];
     }
 
     private function createUserWitoutIdUFFSRules()

@@ -14,8 +14,4 @@ class UserCreation extends Model
         'message',
         'payload'
     ];
-
-    protected $casts = [
-        'payload' => 'array'
-    ];
 }

@@ -3,9 +3,6 @@
 namespace App\Services;
 
 use App\Enums\UserCreationStatus;
-use App\Helpers\StorageHelper;
-use App\Models\User;
-use App\Models\UserCreation;
 use App\Repositories\UserCreationRepository;
 
 class UserCreationService
@@ -17,8 +14,17 @@ class UserCreationService
         $this->userCreationRepository = $repository;
     }
 
-    public function getByUid(string $uid){
-        return $this->userCreationRepository->getByUid($uid);
+    public function getByUid(string $uid, bool $shouldReturnPayloadAsArray = true)
+    {
+        $data = $this->userCreationRepository->getByUid($uid);
+        if ($shouldReturnPayloadAsArray)
+            $data->payload = json_decode($data->payload, true);
+        return $data;
+    }
+
+    public function getStatusAndMessageByUid(string $uid)
+    {
+        return $this->userCreationRepository->getStatusAndMessageByUid($uid);
     }
 
     /**
@@ -28,7 +34,7 @@ class UserCreationService
     {
         $oldUserCreation = $this->userCreationRepository->getByUid($user["uid"]);
 
-        if ($oldUserCreation != null and $oldUserCreation->status == UserCreationStatus::Suceed->value){
+        if ($oldUserCreation != null and $oldUserCreation->status == UserCreationStatus::Suceed->value) {
             throw new \Exception("User already has an account.");
         }
 
@@ -36,13 +42,13 @@ class UserCreationService
             $this->userCreationRepository->create([
                 "uid" => $user["uid"],
                 "status" => UserCreationStatus::Solicitaded,
-                "payload" => $user,
+                "payload" => json_encode($user),
+                "message" => null
             ]);
-        }
-        else {
+        } else {
             $this->userCreationRepository->update($user["uid"], [
                 "status" => UserCreationStatus::Solicitaded,
-                "payload" => $user,
+                "payload" => json_encode($user),
                 "message" => null
             ]);
         }
@@ -50,11 +56,13 @@ class UserCreationService
 
     public function updatePayloadByUid(string $uid, $user)
     {
-        $data = [
-            "payload" => json_encode($user),
-        ];
+        $creationUserBd = $this->getByUid($uid, false);
 
-        $this->userCreationRepository->update($uid, $data);
+        $this->userCreationRepository->update($uid, [
+            "status" => $creationUserBd->status,
+            "payload" => json_encode($user),
+            "message" => $creationUserBd->message
+        ]);
     }
 
     public function updateStatusAndMessageByUid(string $uid, $status, $message = null)
