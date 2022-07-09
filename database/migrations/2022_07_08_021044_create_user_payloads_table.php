@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserCreationTable extends Migration
+class CreateUserPayloadsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateUserCreationTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_creation', function (Blueprint $table) {
+        Schema::create('user_payloads', function (Blueprint $table) {
             $table->uuid("uid")->unique();
             $table->integer("status");
             $table->text("message")->nullable();
-            $table->longText("payload");
+            $table->text("payload")->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateUserCreationTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_creation');
+        Schema::dropIfExists('user_payloads');
     }
 }

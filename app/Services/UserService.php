@@ -116,7 +116,7 @@ class UserService implements IUserService
     {
         $user = $this->getUserByUsername($uid, false);
 
-        if (!in_array($user->type, config('user.users_auth_locally'))) {
+        if (in_array($user->type, config('user.users_auth_iduffs'))) {
             $app_url = env('app_url');
             throw new Exception("Cannot update user through this endpoint, please use {$app_url}/api/user/iduffs.");
         }

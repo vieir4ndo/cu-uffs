@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Jobs\User;
+namespace App\Jobs\UserWithIdUFFS;
 
 use App\Enums\UserCreationStatus;
-use App\Services\UserCreationService;
+use App\Services\UserPayloadService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -34,7 +34,7 @@ class StartUserCreationJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(UserCreationService $userCreationService)
+    public function handle(UserPayloadService $userCreationService)
     {
         try {
             Log::info("Starting job {$this->className}");

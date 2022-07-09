@@ -3,13 +3,14 @@
 namespace App\Services;
 
 use App\Enums\UserCreationStatus;
-use App\Repositories\UserCreationRepository;
+use App\Helpers\StorageHelper;
+use App\Repositories\UserPayloadRepository;
 
-class UserCreationService
+class UserPayloadService
 {
     private $userCreationRepository;
 
-    public function __construct(UserCreationRepository $repository)
+    public function __construct(UserPayloadRepository $repository)
     {
         $this->userCreationRepository = $repository;
     }
@@ -17,8 +18,10 @@ class UserCreationService
     public function getByUid(string $uid, bool $shouldReturnPayloadAsArray = true)
     {
         $data = $this->userCreationRepository->getByUid($uid);
-        if ($shouldReturnPayloadAsArray)
-            $data->payload = json_decode($data->payload, true);
+
+        $payload = StorageHelper::getFile($data->payload);
+        $data->payload = json_decode($payload, $shouldReturnPayloadAsArray);
+
         return $data;
     }
 
@@ -38,17 +41,19 @@ class UserCreationService
             throw new \Exception("User already has an account.");
         }
 
+        $payload = StorageHelper::saveUserPayload($user["uid"], json_encode($user));
+
         if ($oldUserCreation == null) {
             $this->userCreationRepository->create([
                 "uid" => $user["uid"],
                 "status" => UserCreationStatus::Solicitaded,
-                "payload" => json_encode($user),
+                "payload" => $payload,
                 "message" => null
             ]);
         } else {
             $this->userCreationRepository->update($user["uid"], [
                 "status" => UserCreationStatus::Solicitaded,
-                "payload" => json_encode($user),
+                "payload" => $payload,
                 "message" => null
             ]);
         }
@@ -56,12 +61,17 @@ class UserCreationService
 
     public function updatePayloadByUid(string $uid, $user)
     {
-        $creationUserBd = $this->getByUid($uid, false);
+        StorageHelper::deleteUserPayload($uid);
+
+        StorageHelper::saveUserPayload($uid, json_encode($user));
+    }
+
+    public function deletePayloadByUid(string $uid)
+    {
+        StorageHelper::deleteUserPayload($uid);
 
         $this->userCreationRepository->update($uid, [
-            "status" => $creationUserBd->status,
-            "payload" => json_encode($user),
-            "message" => $creationUserBd->message
+            "payload" => null
         ]);
     }
 

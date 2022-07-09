@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Jobs\User;
+namespace App\Jobs\UserWithIdUFFS;
 
 use App\Enums\UserCreationStatus;
-use App\Helpers\StorageHelper;
-use App\Services\BarcodeService;
-use App\Services\UserCreationService;
+use App\Services\IdUffsService;
+use App\Services\UserPayloadService;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -13,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use phpDocumentor\Reflection\Types\This;
 
-class GenerateAndSaveBarCodeJob implements ShouldQueue
+class ValidateIdUFFSCredentialsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
@@ -36,34 +36,34 @@ class GenerateAndSaveBarCodeJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(UserCreationService $userCreationService, BarcodeService $barcodeService)
+    public function handle(UserPayloadService $userCreationService, IdUffsService $idUffsService)
     {
         try {
             Log::info("Starting job {$this->className}");
 
-            $userCreationService->updateStatusAndMessageByUid($this->uid, UserCreationStatus::GeneratingBarCode);
+            $userCreationService->updateStatusAndMessageByUid($this->uid, UserCreationStatus::ValidatingIdUFFSCredentials);
 
             $userDb = $userCreationService->getByUid($this->uid);
 
-            $barcodePath = StorageHelper::saveBarCode($this->uid, $barcodeService->generateBase64($userDb->payload["enrollment_id"]));
+            $user_data_from_auth = $idUffsService->authWithIdUFFS($this->uid, $userDb->payload["password"]);
+
+            if (!$user_data_from_auth) {
+                throw new Exception("The IdUFFS password does not match the one informed.");
+            }
 
             $user = [
                 "uid" => $this->uid,
-                "password" => $userDb->payload["password"],
+                "password" => $user_data_from_auth["password"],
                 "profile_photo" => $userDb->payload["profile_photo"],
                 "enrollment_id" => $userDb->payload["enrollment_id"],
                 "birth_date" => $userDb->payload["birth_date"],
-                "name" => $userDb->payload["name"],
-                "email" => $userDb->payload["email"],
-                "type" => $userDb->payload["type"],
-                "course" => $userDb->payload["course"],
-                "bar_code" => $barcodePath,
-                "status_enrollment_id" => $userDb->payload["status_enrollment_id"],
+                "name" => $user_data_from_auth["name"],
+                "email"=>$user_data_from_auth["email"]
             ];
 
             $userCreationService->updatePayloadByUid($this->uid, $user);
 
-            FinishUserCreationJob::dispatch($this->uid);
+            ValidateEnrollmentIdAtIdUFFSJob::dispatch($this->uid);
             Log::info("Finished job {$this->className}");
         } catch (\Exception $e) {
             Log::error("Error on job {$this->className}");

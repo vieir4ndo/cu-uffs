@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Jobs\User;
+namespace App\Jobs\UserWithIdUFFS;
 
 use App\Enums\UserCreationStatus;
 use App\Services\IdUffsService;
-use App\Services\UserCreationService;
+use App\Services\UserPayloadService;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -36,7 +36,7 @@ class ValidateEnrollmentIdAtIdUFFSJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(UserCreationService $userCreationService, IdUffsService $idUffsService)
+    public function handle(UserPayloadService $userCreationService, IdUffsService $idUffsService)
     {
         try {
             Log::info("Starting job {$this->className}");

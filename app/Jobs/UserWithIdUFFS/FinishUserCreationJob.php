@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Jobs\User;
+namespace App\Jobs\UserWithIdUFFS;
 
 use App\Enums\UserCreationStatus;
 use App\Repositories\UserRepository;
-use App\Services\UserCreationService;
+use App\Services\UserPayloadService;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -37,7 +37,7 @@ class FinishUserCreationJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(UserCreationService $userCreationService, UserRepository $repository)
+    public function handle(UserPayloadService $userCreationService, UserRepository $repository)
     {
         try {
             Log::info("Starting job {$this->className}");
@@ -61,7 +61,7 @@ class FinishUserCreationJob implements ShouldQueue
 
             $repository->createUser($user);
 
-            $userCreationService->updatePayloadByUid($this->uid, null);
+            $userCreationService->deletePayloadByUid($this->uid);
             $userCreationService->updateStatusAndMessageByUid($this->uid, UserCreationStatus::Suceed);
 
             Log::info("Finished job {$this->className}");

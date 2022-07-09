@@ -4,10 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserCreation extends Model
+class UserPayload extends Model
 {
-    protected $table = 'user_creation';
-
     protected $fillable = [
         'uid',
         'status',

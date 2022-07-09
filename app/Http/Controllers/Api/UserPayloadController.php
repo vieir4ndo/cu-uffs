@@ -3,18 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\UserCreationStatus;
-use App\Jobs\User\StartUserCreationJob;
+use App\Jobs\UserWithIdUFFS\StartUserCreationJob;
 use App\Models\Api\ApiResponse;
-use App\Services\UserCreationService;
+use App\Services\UserPayloadService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class UserCreationController
+class UserPayloadController
 {
-    private UserCreationService $userCreationService;
+    private UserPayloadService $userCreationService;
 
-    public function __construct(UserCreationService $userCreationService)
+    public function __construct(UserPayloadService $userCreationService)
     {
         $this->userCreationService = $userCreationService;
     }

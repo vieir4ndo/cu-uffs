@@ -137,7 +137,7 @@ class UserController
             'email' => ['required', 'email', 'unique:users'],
             'password' => ['required', 'string'],
             'name' => ['required', 'string', 'max:255'],
-            'type' => [Rule::in(config('user.users_auth_locally')), 'required'],
+            'type' => [Rule::notIn(config('user.users_auth_iduffs')), 'required'],
             'profile_photo' => ['required', 'string'],
             'birth_date' => ['required', 'date']
         ];
@@ -165,7 +165,7 @@ class UserController
         return [
             'email' => [Rule::unique('users')->ignore($email, 'email'), 'email'],
             'name' => ['string', 'max:255'],
-            'type' => [Rule::in(config('user.users_auth_locally'))],
+            'type' => [Rule::notIn(config('user.users_auth_iduffs'))],
             'profile_photo' => ['string'],
             'birth_date' => ['date']
         ];
