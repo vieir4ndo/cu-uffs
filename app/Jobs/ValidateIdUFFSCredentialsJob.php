@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Jobs\UserWithIdUFFS;
+namespace App\Jobs;
 
-use App\Enums\UserCreationStatus;
+use App\Enums\UserOperationStatus;
 use App\Services\IdUffsService;
 use App\Services\UserPayloadService;
 use Exception;
@@ -36,39 +36,33 @@ class ValidateIdUFFSCredentialsJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(UserPayloadService $userCreationService, IdUffsService $idUffsService)
+    public function handle(UserPayloadService $userPayloadService, IdUffsService $idUffsService)
     {
         try {
             Log::info("Starting job {$this->className}");
 
-            $userCreationService->updateStatusAndMessageByUid($this->uid, UserCreationStatus::ValidatingIdUFFSCredentials);
+            $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::ValidatingIdUFFSCredentials);
 
-            $userDb = $userCreationService->getByUid($this->uid);
+            $user = $userPayloadService->getByUid($this->uid)->payload;
 
-            $user_data_from_auth = $idUffsService->authWithIdUFFS($this->uid, $userDb->payload["password"]);
+            $user_data_from_auth = $idUffsService->authWithIdUFFS($this->uid, $user["password"]);
 
             if (!$user_data_from_auth) {
                 throw new Exception("The IdUFFS password does not match the one informed.");
             }
 
-            $user = [
-                "uid" => $this->uid,
-                "password" => $user_data_from_auth["password"],
-                "profile_photo" => $userDb->payload["profile_photo"],
-                "enrollment_id" => $userDb->payload["enrollment_id"],
-                "birth_date" => $userDb->payload["birth_date"],
-                "name" => $user_data_from_auth["name"],
-                "email"=>$user_data_from_auth["email"]
-            ];
+            $user["password"] = $user_data_from_auth["password"];
+            $user["name"] = $user_data_from_auth["name"];
+            $user["email"] = $user_data_from_auth["email"];
 
-            $userCreationService->updatePayloadByUid($this->uid, $user);
+            $userPayloadService->updatePayloadByUid($this->uid, $user);
 
             ValidateEnrollmentIdAtIdUFFSJob::dispatch($this->uid);
             Log::info("Finished job {$this->className}");
         } catch (\Exception $e) {
             Log::error("Error on job {$this->className}");
 
-            $userCreationService->updateStatusAndMessageByUid($this->uid, UserCreationStatus::Failed, "Failed at {$this->className} with message: {$e->getMessage()}");
+            $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Failed, "Failed at {$this->className} with message: {$e->getMessage()}");
         }
     }
 }

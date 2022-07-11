@@ -2,22 +2,24 @@
 
 namespace App\Services;
 
-use App\Enums\UserCreationStatus;
+use App\Enums\UserOperationStatus;
 use App\Helpers\StorageHelper;
 use App\Repositories\UserPayloadRepository;
 
 class UserPayloadService
 {
-    private $userCreationRepository;
+    private UserPayloadRepository $userPayloadRepository;
+    private UserService $userService;
 
-    public function __construct(UserPayloadRepository $repository)
+    public function __construct(UserPayloadRepository $repository, UserService $userService)
     {
-        $this->userCreationRepository = $repository;
+        $this->userPayloadRepository = $repository;
+        $this->userService = $userService;
     }
 
     public function getByUid(string $uid, bool $shouldReturnPayloadAsArray = true)
     {
-        $data = $this->userCreationRepository->getByUid($uid);
+        $data = $this->userPayloadRepository->getByUid($uid);
 
         $payload = StorageHelper::getFile($data->payload);
         $data->payload = json_decode($payload, $shouldReturnPayloadAsArray);
@@ -25,38 +27,40 @@ class UserPayloadService
         return $data;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getStatusAndMessageByUid(string $uid)
     {
-        return $this->userCreationRepository->getStatusAndMessageByUid($uid);
+        $user = $this->userService->getUserByUsernameFirstOrDefault($uid);
+
+        if ($user) {
+            throw new \Exception("User already has an account.");
+        }
+
+        return $this->userPayloadRepository->getStatusByUid($uid);
     }
 
     /**
      * @throws \Exception
      */
-    public function create($user): void
+    public function create($user, $operation): void
     {
-        $oldUserCreation = $this->userCreationRepository->getByUid($user["uid"]);
+        $userDb = $this->userService->getUserByUsernameFirstOrDefault($user["uid"]);
 
-        if ($oldUserCreation != null and $oldUserCreation->status == UserCreationStatus::Suceed->value) {
+        if ($userDb) {
             throw new \Exception("User already has an account.");
         }
 
         $payload = StorageHelper::saveUserPayload($user["uid"], json_encode($user));
 
-        if ($oldUserCreation == null) {
-            $this->userCreationRepository->create([
-                "uid" => $user["uid"],
-                "status" => UserCreationStatus::Solicitaded,
-                "payload" => $payload,
-                "message" => null
-            ]);
-        } else {
-            $this->userCreationRepository->update($user["uid"], [
-                "status" => UserCreationStatus::Solicitaded,
-                "payload" => $payload,
-                "message" => null
-            ]);
-        }
+        $this->userPayloadRepository->updateOrCreate([
+            "uid" => $user["uid"],
+            "status" => UserOperationStatus::Solicitaded,
+            "message" => null,
+            "payload" => $payload,
+            "operation" => $operation
+        ]);
     }
 
     public function updatePayloadByUid(string $uid, $user)
@@ -70,7 +74,7 @@ class UserPayloadService
     {
         StorageHelper::deleteUserPayload($uid);
 
-        $this->userCreationRepository->update($uid, [
+        $this->userPayloadRepository->update($uid, [
             "payload" => null
         ]);
     }
@@ -82,6 +86,6 @@ class UserPayloadService
             "message" => $message
         ];
 
-        $this->userCreationRepository->update($uid, $data);
+        $this->userPayloadRepository->update($uid, $data);
     }
 }

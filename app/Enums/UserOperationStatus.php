@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum UserCreationStatus: int
+enum UserOperationStatus: int
 {
     case Solicitaded = 1;
     case Starting = 2;

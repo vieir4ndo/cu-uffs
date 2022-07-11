@@ -10,6 +10,7 @@ class UserPayload extends Model
         'uid',
         'status',
         'message',
-        'payload'
+        'payload',
+        'operation'
     ];
 }
