@@ -48,7 +48,7 @@ class IdUffsService implements IIdUffsService
     /**
      * @throws Exception
      */
-    public function isActive(string $enrollment_id)
+    public function isActive(string $enrollment_id, string $name)
     {
         $response = $this->client->get($this->activeUserApi);
 
@@ -58,17 +58,19 @@ class IdUffsService implements IIdUffsService
 
         $response = $this->client->post("{$this->activeUserApi}", $this->getIsActivePayload($enrollment_id, $viewState, $captcha));
 
-        if (!StringHelper::checkIfContains($response->getBody(), "Vínculo ativo")) {
+        if (!StringHelper::checkIfContains($response->getBody(), "Vínculo ativo") || !StringHelper::checkIfContains($response->getBody(),  $name)) {
             return null;
         }
 
         if (StringHelper::checkIfContains($response->getBody(), '<p class="descricaoVinculo">Estudante</p>')) {
             return [
+                "status_enrollment_id" => true,
                 "type" => UserType::Student->value,
                 "course" => StringHelper::getText("/Matrícula {$enrollment_id} - (.*?)<\/span>/i", $response->getBody())
             ];
         } else {
             return [
+                "status_enrollment_id" => true,
                 "type" => UserType::Employee->value,
                 "course" => null
             ];

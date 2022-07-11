@@ -24,5 +24,6 @@ Route::middleware('auth:sanctum')->post('/reset-password/{uid}', [AuthController
 Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
 Route::post('/user/iduffs', [UserController::class, 'createUserWithIdUFFS'])->name('api.user.createWithIdUFFS');
 Route::post('/user', [UserController::class, 'createUserWithoutIdUFFS'])->name('api.user.createWithoutIdUFFS');
+Route::get('/user/operation/{uid}', [UserController::class, 'getUserOperationStatus'])->name('api.user.getUserCreation');
 Route::post('/forgot-password/{uid}', [AuthController::class, 'forgotPassword'])->name('api.auth.forgot-password');
 

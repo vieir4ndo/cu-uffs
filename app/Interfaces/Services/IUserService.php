@@ -8,8 +8,6 @@ interface IUserService
 {
     function createUserWithoutIdUFFS($user);
 
-    function createUserWithIdUFFS($user);
-
     function getUserByUsername(string $uid, $withFiles = true): User;
 
     function deleteUserByUsername(string $uid): bool;

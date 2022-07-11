@@ -20,7 +20,7 @@ class JetstreamServiceProvider extends ServiceProvider
 {
     private UserService $userService;
     private $user;
-    private AuthService $authService;
+    private $idUffsService;
 
     /**
      * Register any application services.
@@ -29,13 +29,6 @@ class JetstreamServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $userRepository = new UserRepository();
-        $barcodeService = new BarcodeService();
-        $mailJetService = new MailjetService();
-        $aiPassportPhotoService = new AiPassportPhotoService();
-        $idUffsService = new IdUffsService();
-        $this->userService = new UserService($userRepository, $barcodeService, $aiPassportPhotoService, $idUffsService);
-        $this->authService = new AuthService($this->userService, $mailJetService, $idUffsService);
     }
 
     /**
@@ -43,8 +36,10 @@ class JetstreamServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(UserService $userService, IdUffsService $idUffsService)
     {
+        $this->userService = $userService;
+        $this->idUffsService = $idUffsService;
         $this->configurePermissions();
         $this->configureLogin();
         Jetstream::deleteUsersUsing(DeleteUser::class);
@@ -67,11 +62,11 @@ class JetstreamServiceProvider extends ServiceProvider
 
             if (in_array($this->user->type, config("user.users_allowed_login"))) {
                 if (in_array($this->user->type, config("user.users_auth_iduffs"))) {
-                    $data = $this->authService->authWithIdUFFS($this->user->uid, $password);
+                    $data = $this->idUffsService->authWithIdUFFS($this->user->uid, $password);
                     if ($data == null) {
                         return null;
                     }
-                    $this->user->update($data);
+                    $this->userService->updateUser($this->user, $data);
                     return $this->user;
                 } else {
                     if (Hash::check($password, $this->user->password)) {

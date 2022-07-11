@@ -33,7 +33,8 @@ class User extends Authenticatable
         'enrollment_id',
         'active',
         'birth_date',
-        'course'
+        'course',
+        'status_enrollment_id'
     ];
 
     /**

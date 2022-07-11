@@ -10,6 +10,24 @@ class StorageHelper
     /**
      * @throws \Exception
      */
+    public static function saveUserPayload(string $fileName, string $data): string
+    {
+        $path = "/user_payloads/{$fileName}.txt";
+
+        return StorageHelper::saveFile($path, $data);
+    }
+    /**
+     * @throws \Exception
+     */
+    public static function deleteUserPayload(string $fileName): void
+    {
+        $path = "/user_payloads/{$fileName}.txt";
+
+        StorageHelper::deleteFile($path);
+    }
+    /**
+     * @throws \Exception
+     */
     public static function saveProfilePhoto(string $fileName, string $base64): string
     {
         $path = "/profile_photos/{$fileName}.txt";

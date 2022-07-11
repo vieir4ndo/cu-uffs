@@ -16,45 +16,16 @@ class UserService implements IUserService
     private UserRepository $repository;
     private BarcodeService $barcodeService;
     private AiPassportPhotoService $aiPassportPhotoService;
-    private IdUffsService $idUffsService;
 
     public function __construct(
         UserRepository         $userRepository,
         BarcodeService         $barcodeService,
         AiPassportPhotoService $aiPassportPhotoService,
-        IdUffsService          $idUffsService
     )
     {
         $this->repository = $userRepository;
         $this->barcodeService = $barcodeService;
         $this->aiPassportPhotoService = $aiPassportPhotoService;
-        $this->idUffsService = $idUffsService;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function createUserWithIdUFFS($user)
-    {
-        $user_data_from_auth = $this->idUffsService->authWithIdUFFS($user["uid"], $user["password"]);
-
-        if (!$user_data_from_auth) {
-            throw new Exception("The IdUFFS password does not match the one informed.");
-        }
-
-        $user_data_from_enrollment = $this->idUffsService->isActive($user["enrollment_id"]);
-
-        if (empty($user_data_from_enrollment)){
-            throw new Exception("Enrollment_id is not active at IdUFFS.");
-        }
-
-        $user["type"] = $user_data_from_enrollment["type"];
-        $user["course"] = $user_data_from_enrollment["course"];
-        $user["name"] = $user_data_from_auth["name"];
-        $user["email"] = $user_data_from_auth["email"];
-        $user["password"] = $user_data_from_auth["password"];
-
-        return $this->createUserBase($user);
     }
 
     public function createUserWithoutIdUFFS($user)
@@ -129,10 +100,11 @@ class UserService implements IUserService
         return $this->repository->deleteUserByUsername($user->uid);
     }
 
-    public function updateUserWithIdUFFS(string $uid, $data): User{
+    public function updateUserWithIdUFFS(string $uid, $data): User
+    {
         $user = $this->getUserByUsername($uid, false);
 
-        if (!in_array($user->type, config('user.users_auth_iduffs'))){
+        if (!in_array($user->type, config('user.users_auth_iduffs'))) {
             $app_url = env('app_url');
             throw new Exception("Cannot update user through this endpoint, please use {$app_url}/api/user.");
         }
@@ -140,12 +112,11 @@ class UserService implements IUserService
         return $this->updateUser($user, $data);
     }
 
-    public function updateUserWithoutIdUFFS(string $uid, $data): User{
-
-
+    public function updateUserWithoutIdUFFS(string $uid, $data): User
+    {
         $user = $this->getUserByUsername($uid, false);
 
-        if (!in_array($user->type, config('user.users_auth_locally'))){
+        if (in_array($user->type, config('user.users_auth_iduffs'))) {
             $app_url = env('app_url');
             throw new Exception("Cannot update user through this endpoint, please use {$app_url}/api/user/iduffs.");
         }
@@ -156,7 +127,7 @@ class UserService implements IUserService
 
     public function updateUser(User $user, $data): User
     {
-        if (isset($data["birth_date"])){
+        if (isset($data["birth_date"])) {
             $data["birth_date"] = Carbon::parse($data["birth_date"]);
         }
 
