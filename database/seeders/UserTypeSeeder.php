@@ -14,22 +14,22 @@ class UserTypeSeeder extends Seeder
      */
     public function run()
     {
-        UserType::insert([
+        UserType::insert([[
             'id' => 1,
-            'description' => 'Servidor'
+            'description' => 'Servidor',
         ], [
             'id' => 2,
-            'description' => 'Estudante'
+            'description' => 'Estudante',
         ], [
             'id' => 3,
-            'description' => 'Servidor'
+            'description' => 'Servidor Restaurante Universitário',
         ], [
             'id' => 4,
-            'description' => 'Servidor Terceirizado'
+            'description' => 'Servidor Terceirizado Restaurante Universitário',
         ], [
-                'id' => 5,
-                'description' => 'Servidor Terceirizado'
-            ]
+            'id' => 5,
+            'description' => 'Servidor Terceirizado Restaurante Universitário',
+        ]]
         );
     }
 }

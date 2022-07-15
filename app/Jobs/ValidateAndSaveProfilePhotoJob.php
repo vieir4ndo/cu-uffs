@@ -48,7 +48,9 @@ class ValidateAndSaveProfilePhotoJob implements ShouldQueue
 
             $user = $userDb->payload;
 
-            if (in_array($userDb->operation, [Operation::UserCreationWithoutIdUFFS->value, Operation::UserCreationWithIdUFFS->value]) && !$user["profile_photo"]){
+            if (in_array($userDb->operation, [Operation::UserUpdateWithoutIdUFFS->value, Operation::UserUpdateWithIdUFFS->value]) && !$user["profile_photo"]) {
+                Log::info("Update does not require profile photo validation");
+            } else {
 
                 $photoValidated = $aiPassportPhotoService->validatePhoto($user["profile_photo"]);
                 $photoValidatedPath = StorageHelper::saveProfilePhoto($this->uid, $photoValidated);

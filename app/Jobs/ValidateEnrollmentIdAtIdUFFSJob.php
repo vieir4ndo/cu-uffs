@@ -28,7 +28,7 @@ class ValidateEnrollmentIdAtIdUFFSJob implements ShouldQueue
      */
     public function __construct($uid)
     {
-        $this->className = get_class((object)This::class);
+        $this->className = get_class((object) This::class);
         $this->uid = $uid;
     }
 
@@ -48,7 +48,9 @@ class ValidateEnrollmentIdAtIdUFFSJob implements ShouldQueue
 
             $user = $userDb->payload;
 
-            if (in_array($userDb->operation, [Operation::UserCreationWithoutIdUFFS->value, Operation::UserCreationWithIdUFFS->value]) && $user["enrollment_id"]) {
+            if (in_array($userDb->operation, [Operation::UserUpdateWithoutIdUFFS->value, Operation::UserUpdateWithIdUFFS->value]) && !$user["enrollment_id"]) {
+                Log::info("Update does not require enrollment id validation");
+            } else {
 
                 $user_data_from_enrollment = $idUffsService->isActive($user["enrollment_id"], $user["name"]);
 
@@ -64,8 +66,7 @@ class ValidateEnrollmentIdAtIdUFFSJob implements ShouldQueue
             }
             ValidateAndSaveProfilePhotoJob::dispatch($this->uid);
             Log::info("Finished job {$this->className}");
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             Log::error("Error on job {$this->className}");
 
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Failed, "Failed at {$this->className} with message: {$e->getMessage()}");

@@ -48,7 +48,7 @@ class FinishUserCreationJob implements ShouldQueue
             $user["birth_date"] = Carbon::parse($user["birth_date"]);
             $user["active"] = true;
 
-            $repository->createUser($user);
+            $repository->createOrUpdate($user);
 
             $userPayloadService->deletePayloadByUid($this->uid);
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Suceed);
