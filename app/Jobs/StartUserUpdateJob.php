@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\UserUpdate;
 
 use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
-use App\Helpers\StorageHelper;
-use App\Services\BarcodeService;
+use App\Jobs\UserCreation\ValidateAndSaveProfilePhotoJob;
+use App\Jobs\UserCreation\ValidateEnrollmentIdAtIdUFFSJob;
+use App\Jobs\UserCreation\ValidateIdUFFSCredentialsJob;
 use App\Services\UserPayloadService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,12 +15,12 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use phpDocumentor\Reflection\Types\This;
 
-class GenerateAndSaveBarCodeJob implements ShouldQueue
+class StartUserUpdateJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
-    private string $uid;
-    private string $className;
+    protected string $uid;
+    protected string $className;
 
     /**
      * Create a new job instance.
@@ -37,31 +38,24 @@ class GenerateAndSaveBarCodeJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(UserPayloadService $userPayloadService, BarcodeService $barcodeService)
+    public function handle(UserPayloadService $userPayloadService)
     {
         try {
             Log::info("Starting job {$this->className}");
 
-            $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::GeneratingBarCode);
+            $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Starting);
 
             $userDb = $userPayloadService->getByUid($this->uid);
 
-            $user = $userDb->payload;
-
-            if (in_array($userDb->operation, [Operation::UserCreationWithoutIdUFFS->value, Operation::UserCreationWithIdUFFS->value]) && !$user["enrollment_id"]) {
-                $barcodePath = StorageHelper::saveBarCode($this->uid, $barcodeService->generateBase64($user["enrollment_id"]));
-
-                $user["bar_code"] = $barcodePath;
-
-                $userPayloadService->updatePayloadByUid($this->uid, $user);
+            if ($userDb->operation == Operation::UserUpdateWithIdUFFS->value) {
+                ValidateEnrollmentIdAtIdUFFSJob::dispatch($this->uid);
+            } else {
+                ValidateAndSaveProfilePhotoJob::dispatch($this->uid);
             }
-
-            FinishUserCreationJob::dispatch($this->uid);
 
             Log::info("Finished job {$this->className}");
         } catch (\Exception $e) {
             Log::error("Error on job {$this->className}");
-
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Failed, "Failed at {$this->className} with message: {$e->getMessage()}");
         }
     }

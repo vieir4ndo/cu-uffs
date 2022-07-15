@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->text('profile_photo');
             $table->text('bar_code');
-            $table->integer('type')->default(0);
+            $table->foreignId('type')->constrained('user_types');
             $table->boolean('active')->default(true);
             $table->boolean('status_enrollment_id');
             $table->text('course')->nullable();

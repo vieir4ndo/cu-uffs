@@ -44,17 +44,26 @@ class StartUserCreationJob implements ShouldQueue
 
             $userDb = $userPayloadService->getByUid($this->uid);
 
-            if ($userDb->operation == Operation::UserCreationWithIdUFFS->value) {
-                ValidateIdUFFSCredentialsJob::dispatch($this->uid);
-            } else {
-                $user = $userDb->payload;
+            switch ($userDb->operation) {
+                case Operation::UserCreationWithIdUFFS->value:
+                    ValidateIdUFFSCredentialsJob::dispatch($this->uid);
+                    break;
+                case Operation::UserUpdateWithIdUFFS->value:
+                    ValidateEnrollmentIdAtIdUFFSJob::dispatch($this->uid);
+                    break;
+                case Operation::UserCreationWithoutIdUFFS->value:
+                    $user = $userDb->payload;
 
-                $user["enrollment_id"] = bin2hex(random_bytes(5));
-                $user["status_enrollment_id"] = true;
+                    $user["enrollment_id"] = bin2hex(random_bytes(5));
+                    $user["status_enrollment_id"] = true;
 
-                $userPayloadService->updatePayloadByUid($this->uid, $user);
+                    $userPayloadService->updatePayloadByUid($this->uid, $user);
 
-                ValidateAndSaveProfilePhotoJob::dispatch($this->uid);
+                    ValidateAndSaveProfilePhotoJob::dispatch($this->uid);
+                    break;
+                case Operation::UserUpdateWithoutIdUFFS->value:
+                    ValidateAndSaveProfilePhotoJob::dispatch($this->uid);
+                    break;
             }
 
             Log::info("Finished job {$this->className}");
