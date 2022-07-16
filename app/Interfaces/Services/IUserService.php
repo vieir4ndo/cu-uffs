@@ -18,4 +18,5 @@ interface IUserService
 
     function deactivateUser(string $uid, $data): User;
 
+    function getAllUsersWithIdUFFS();
 }

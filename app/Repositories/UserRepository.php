@@ -31,4 +31,8 @@ class UserRepository implements IUserRepository
 
         return $this->getUserByUsername($uid);
     }
+
+    public function getAllUsersWithIdUFFS(){
+        return User::select('uid')->where('type', [config('user.users_auth_iduffs')])->get();
+    }
 }
