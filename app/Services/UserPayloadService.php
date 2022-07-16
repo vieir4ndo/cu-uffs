@@ -36,7 +36,7 @@ class UserPayloadService
         $user = $this->userService->getUserByUsernameFirstOrDefault($uid);
 
         if ($user) {
-            throw new \Exception("User already has an account.");
+            return null;
         }
 
         return $this->userPayloadRepository->getStatusByUid($uid);

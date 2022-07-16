@@ -45,7 +45,7 @@ class UserController
             $created = $this->userPayloadService->create($user, Operation::UserCreationWithIdUFFS);
 
             if (!$created){
-                return ApiResponse::ok("User already has an account.");
+                return ApiResponse::conflict("User already has an account.");
             }
 
             StartCreateOrUpdateUserJob::dispatch($user["uid"]);
@@ -79,7 +79,7 @@ class UserController
             $created = $this->userPayloadService->create($user, Operation::UserCreationWithoutIdUFFS);
 
             if (!$created){
-                return ApiResponse::ok("User already has an account.");
+                return ApiResponse::conflict("User already has an account.");
             }
 
             StartCreateOrUpdateUserJob::dispatch($user["uid"]);
@@ -93,9 +93,13 @@ class UserController
     public function getUserOperationStatus($uid)
     {
         try {
-            $userCreation = $this->userPayloadService->getStatusAndMessageByUid($uid);
+            $operation = $this->userPayloadService->getStatusAndMessageByUid($uid);
 
-            return ApiResponse::Ok($userCreation);
+            if (empty($operation)){
+                return ApiResponse::noContent("User has no operation in progress.");
+            }
+
+            return ApiResponse::Ok($operation);
         } catch (\Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
