@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
+use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Services\UserPayloadService;
 use Carbon\Carbon;
@@ -12,7 +14,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use phpDocumentor\Reflection\Types\This;
 
 class FinishUserCreationJob implements ShouldQueue
 {
@@ -28,7 +29,7 @@ class FinishUserCreationJob implements ShouldQueue
      */
     public function __construct($uid)
     {
-        $this->className = get_class((object)This::class);
+        $this->className = FinishUserCreationJob::class;
         $this->uid = $uid;
     }
 
@@ -42,16 +43,38 @@ class FinishUserCreationJob implements ShouldQueue
         try {
             Log::info("Starting job {$this->className}");
 
-            $user = $userPayloadService->getByUid($this->uid)->payload;
+            $userPayload = $userPayloadService->getByUid($this->uid);
 
-            $user["password"] = Hash::make($user["password"]);
-            $user["birth_date"] = Carbon::parse($user["birth_date"]);
-            $user["active"] = true;
+            $user = $userPayload->payload;
+
+            if (in_array($userPayload->operation, [Operation::UserCreationWithoutIdUFFS, Operation::UserCreationWithIdUFFS])) {
+
+                $user["password"] = Hash::make($user["password"]);
+                $user["birth_date"] = Carbon::parse($user["birth_date"]);
+                $user["active"] = true;
+
+            } else {
+                $userDb = $repository->getUserByUsername($this->uid);
+
+                $user = [
+                    "uid" => $this->uid,
+                    "profile_photo" => array_key_exists("profile_photo", $user) ? $user["profile_photo"] : $userDb->profile_photo,
+                    "enrollment_id" => array_key_exists("enrollment_id", $user) ? $user["enrollment_id"] : $userDb->enrollment_id,
+                    "birth_date" => array_key_exists("birth_date", $user) ? Carbon::parse($user["birth_date"]) : $userDb->birth_date,
+                    "course" => array_key_exists("course", $user) ? $user["course"] : $userDb->course,
+                    "bar_code" => array_key_exists("bar_code", $user) ? $user["bar_code"] : $userDb->bar_code,
+                    "status_enrollment_id" => array_key_exists("status_enrollment_id", $user) ? $user["status_enrollment_id"] : $userDb->status_enrollment_id,
+                    "type" => array_key_exists("type", $user) ? $user["type"] : $userDb->type,
+                    "name" => array_key_exists("name", $user) ? $user["name"] : $userDb->name,
+                    "email" => array_key_exists("email", $user) ? $user["email"] : $userDb->email,
+                ];
+            }
 
             $repository->createOrUpdate($user);
 
-            $userPayloadService->deletePayloadByUid($this->uid);
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Suceed);
+
+            //$userPayloadService->deleteByUid($this->uid);
 
             Log::info("Finished job {$this->className}");
         } catch (\Exception $e) {

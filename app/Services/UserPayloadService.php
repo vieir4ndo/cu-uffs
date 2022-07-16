@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
 use App\Helpers\StorageHelper;
 use App\Repositories\UserPayloadRepository;
@@ -44,12 +45,12 @@ class UserPayloadService
     /**
      * @throws \Exception
      */
-    public function create($user, $operation): void
+    public function create($user, $operation) : bool
     {
         $userDb = $this->userService->getUserByUsernameFirstOrDefault($user["uid"]);
 
-        if ($userDb) {
-            throw new \Exception("User already has an account.");
+        if ($userDb and in_array($operation, [Operation::UserCreationWithIdUFFS, Operation::UserCreationWithoutIdUFFS])) {
+            return false;
         }
 
         $payload = StorageHelper::saveUserPayload($user["uid"], json_encode($user));
@@ -61,6 +62,8 @@ class UserPayloadService
             "payload" => $payload,
             "operation" => $operation
         ]);
+
+        return true;
     }
 
     public function updatePayloadByUid(string $uid, $user)
@@ -87,5 +90,11 @@ class UserPayloadService
         ];
 
         $this->userPayloadRepository->update($uid, $data);
+    }
+
+    public function deleteByUid(string $uid){
+        $this->deletePayloadByUid($uid);
+
+        $this->userPayloadRepository->delete($uid);
     }
 }

@@ -7,27 +7,12 @@ use App\Models\User;
 
 class UserRepository implements IUserRepository
 {
-    public function createOrUpdate($data)
+    public function createOrUpdate($user)
     {
-        if ($data["type"] == null) {
-            $user = $this->getUserByUsername($data["uid"]);
-        }
+        $uid = $user["uid"];
+        unset($user["uid"]);
 
-        return User::updateOrCreate(
-            ["uid" => $data["uid"]],
-            [
-                "password" => $data["password"] ?? $user->email,
-                "profile_photo" => $data["profile_photo"] ?? $user->email,
-                "enrollment_id" => $data["enrollment_id"] ?? $user->email,
-                "birth_date" => $data["birth_date"] ?? $user->email,
-                "course" => $data["course"] ?? $user->email,
-                "bar_code" => $data["bar_code"] ?? $user->email,
-                "status_enrollment_id" => $data["status_enrollment_id"] ?? $user->email,
-                "type" => $data["type"] ??  $user->type,
-                "name" => $data["name"] ?? $user->name,
-                "email" => $data["email"] ?? $user->email,
-            ]
-        );
+        return User::updateOrCreate(["uid" => $uid], $user);
     }
 
     public function getUserByUsername(string $uid)

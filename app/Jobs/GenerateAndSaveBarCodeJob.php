@@ -12,7 +12,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use phpDocumentor\Reflection\Types\This;
 
 class GenerateAndSaveBarCodeJob implements ShouldQueue
 {
@@ -28,7 +27,7 @@ class GenerateAndSaveBarCodeJob implements ShouldQueue
      */
     public function __construct($uid)
     {
-        $this->className = get_class((object)This::class);
+        $this->className = GenerateAndSaveBarCodeJob::class;
         $this->uid = $uid;
     }
 
@@ -48,7 +47,7 @@ class GenerateAndSaveBarCodeJob implements ShouldQueue
 
             $user = $userDb->payload;
 
-            if (in_array($userDb->operation, [Operation::UserUpdateWithoutIdUFFS->value, Operation::UserUpdateWithIdUFFS->value]) && !$user["enrollment_id"]) {
+            if (in_array($userDb->operation, [Operation::UserUpdateWithoutIdUFFS->value, Operation::UserUpdateWithIdUFFS->value]) && !array_key_exists("enrollment_id", $user)) {
                 Log::info("Update does not require bar code generation");
             } else {
                 $barcodePath = StorageHelper::saveBarCode($this->uid, $barcodeService->generateBase64($user["enrollment_id"]));

@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Jobs\UserUpdate;
+namespace App\Jobs;
 
 use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
-use App\Jobs\UserCreation\ValidateAndSaveProfilePhotoJob;
-use App\Jobs\UserCreation\ValidateEnrollmentIdAtIdUFFSJob;
-use App\Jobs\UserCreation\ValidateIdUFFSCredentialsJob;
 use App\Services\UserPayloadService;
+use App\Services\UserService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -29,7 +27,7 @@ class StartUserUpdateJob implements ShouldQueue
      */
     public function __construct($uid)
     {
-        $this->className = get_class((object)This::class);
+        $this->className = StartUserUpdateJob::class;
         $this->uid = $uid;
     }
 
@@ -38,16 +36,24 @@ class StartUserUpdateJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(UserPayloadService $userPayloadService)
+    public function handle(UserPayloadService $userPayloadService, UserService $userService)
     {
         try {
             Log::info("Starting job {$this->className}");
 
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Starting);
 
-            $userDb = $userPayloadService->getByUid($this->uid);
+            $userPayload = $userPayloadService->getByUid($this->uid);
 
-            if ($userDb->operation == Operation::UserUpdateWithIdUFFS->value) {
+            if ($userPayload->operation == Operation::UserUpdateWithIdUFFS->value) {
+                $userDb = $userService->getUserByUsername($this->uid);
+
+                $user = $userPayload->payload;
+
+                $user["name"] = $userDb->name;
+
+                $userPayloadService->updatePayloadByUid($this->uid, $user);
+
                 ValidateEnrollmentIdAtIdUFFSJob::dispatch($this->uid);
             } else {
                 ValidateAndSaveProfilePhotoJob::dispatch($this->uid);

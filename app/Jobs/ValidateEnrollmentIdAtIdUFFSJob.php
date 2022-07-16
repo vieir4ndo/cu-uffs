@@ -6,6 +6,7 @@ use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
 use App\Services\IdUffsService;
 use App\Services\UserPayloadService;
+use App\Services\UserService;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -28,7 +29,7 @@ class ValidateEnrollmentIdAtIdUFFSJob implements ShouldQueue
      */
     public function __construct($uid)
     {
-        $this->className = get_class((object) This::class);
+        $this->className = ValidateEnrollmentIdAtIdUFFSJob::class;
         $this->uid = $uid;
     }
 
@@ -48,7 +49,7 @@ class ValidateEnrollmentIdAtIdUFFSJob implements ShouldQueue
 
             $user = $userDb->payload;
 
-            if (in_array($userDb->operation, [Operation::UserUpdateWithoutIdUFFS->value, Operation::UserUpdateWithIdUFFS->value]) && !$user["enrollment_id"]) {
+            if (in_array($userDb->operation, [Operation::UserUpdateWithoutIdUFFS->value, Operation::UserUpdateWithIdUFFS->value]) && !array_key_exists("enrollment_id", $user)) {
                 Log::info("Update does not require enrollment id validation");
             } else {
 
@@ -58,7 +59,7 @@ class ValidateEnrollmentIdAtIdUFFSJob implements ShouldQueue
                     throw new Exception("Enrollment_id is not active or does not belong to the IdUFFS informed.");
                 }
 
-                $user["type"] = $user_data_from_enrollment["type"];
+                $user["type"] = array_key_exists('type', $user) ? $user["type"] : $user_data_from_enrollment["type"];
                 $user["course"] = $user_data_from_enrollment["course"];
                 $user["status_enrollment_id"] = $user_data_from_enrollment["status_enrollment_id"];
 

@@ -26,7 +26,7 @@ class StartUserCreationJob implements ShouldQueue
      */
     public function __construct($uid)
     {
-        $this->className = get_class((object)This::class);
+        $this->className = StartUserCreationJob::class;
         $this->uid = $uid;
     }
 
@@ -48,12 +48,8 @@ class StartUserCreationJob implements ShouldQueue
                 case Operation::UserCreationWithIdUFFS->value:
                     ValidateIdUFFSCredentialsJob::dispatch($this->uid);
                     break;
-                case Operation::UserUpdateWithIdUFFS->value:
-                    ValidateEnrollmentIdAtIdUFFSJob::dispatch($this->uid);
-                    break;
                 case Operation::UserCreationWithoutIdUFFS->value:
                     $user = $userDb->payload;
-
                     $user["enrollment_id"] = bin2hex(random_bytes(5));
                     $user["status_enrollment_id"] = true;
 
@@ -61,8 +57,7 @@ class StartUserCreationJob implements ShouldQueue
 
                     ValidateAndSaveProfilePhotoJob::dispatch($this->uid);
                     break;
-                case Operation::UserUpdateWithoutIdUFFS->value:
-                    ValidateAndSaveProfilePhotoJob::dispatch($this->uid);
+                default:
                     break;
             }
 

@@ -28,7 +28,7 @@ class ValidateAndSaveProfilePhotoJob implements ShouldQueue
      */
     public function __construct($uid)
     {
-        $this->className = get_class((object)This::class);
+        $this->className = ValidateAndSaveProfilePhotoJob::class;
         $this->uid = $uid;
     }
 
@@ -48,7 +48,7 @@ class ValidateAndSaveProfilePhotoJob implements ShouldQueue
 
             $user = $userDb->payload;
 
-            if (in_array($userDb->operation, [Operation::UserUpdateWithoutIdUFFS->value, Operation::UserUpdateWithIdUFFS->value]) && !$user["profile_photo"]) {
+            if (in_array($userDb->operation, [Operation::UserUpdateWithoutIdUFFS->value, Operation::UserUpdateWithIdUFFS->value]) && !array_key_exists("profile_photo", $user)) {
                 Log::info("Update does not require profile photo validation");
             } else {
 
