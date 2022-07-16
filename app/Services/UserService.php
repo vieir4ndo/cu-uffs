@@ -160,4 +160,7 @@ class UserService implements IUserService
         return $this->getUserByUsername($uid);
     }
 
+    public function getAllUsersWithIdUFFS(){
+        return $this->repository->getAllUsersWithIdUFFS();
+    }
 }
