@@ -27,7 +27,7 @@ class ValidateIdUFFSCredentialsJob implements ShouldQueue
      */
     public function __construct($uid)
     {
-        $this->className = get_class((object)This::class);
+        $this->className = ValidateIdUFFSCredentialsJob::class;
         $this->uid = $uid;
     }
 

@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
+use App\Helpers\OperationHelper;
 use App\Helpers\StorageHelper;
 use App\Services\AiPassportPhotoService;
 use App\Services\UserPayloadService;
@@ -27,7 +29,7 @@ class ValidateAndSaveProfilePhotoJob implements ShouldQueue
      */
     public function __construct($uid)
     {
-        $this->className = get_class((object)This::class);
+        $this->className = ValidateAndSaveProfilePhotoJob::class;
         $this->uid = $uid;
     }
 
@@ -43,16 +45,24 @@ class ValidateAndSaveProfilePhotoJob implements ShouldQueue
 
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::ValidatingProfilePhoto);
 
-            $user = $userPayloadService->getByUid($this->uid)->payload;
+            $userDb = $userPayloadService->getByUid($this->uid);
 
-            $photoValidated = $aiPassportPhotoService->validatePhoto($user["profile_photo"]);
-            $photoValidatedPath = StorageHelper::saveProfilePhoto($this->uid, $photoValidated);
+            $user = $userDb->payload;
 
-            $user["profile_photo"] = $photoValidatedPath;
+            if (OperationHelper::IsUpdateUserOperation($userDb->operation) && !array_key_exists("profile_photo", $user)) {
+                Log::info("Update does not require profile photo validation");
+            } else {
 
-            $userPayloadService->updatePayloadByUid($this->uid, $user);
+                $photoValidated = $aiPassportPhotoService->validatePhoto($user["profile_photo"]);
+                $photoValidatedPath = StorageHelper::saveProfilePhoto($this->uid, $photoValidated);
+
+                $user["profile_photo"] = $photoValidatedPath;
+
+                $userPayloadService->updatePayloadByUid($this->uid, $user);
+            }
 
             GenerateAndSaveBarCodeJob::dispatch($this->uid);
+
             Log::info("Finished job {$this->className}");
         } catch (\Exception $e) {
             Log::error("Error on job {$this->className}");

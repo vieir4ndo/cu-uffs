@@ -4,7 +4,7 @@ namespace App\Models\Api;
 
 class ApiResponse
 {
-    public static function ok($data, $success = true)
+    public static function ok($data, $success = true): \Illuminate\Http\JsonResponse
     {
         return response()->json([
             "success" => $success,
@@ -13,7 +13,7 @@ class ApiResponse
         ], 200);
     }
 
-    public static function badRequest($messages)
+    public static function badRequest($messages): \Illuminate\Http\JsonResponse
     {
         return response()->json([
             "success" => false,
@@ -22,7 +22,17 @@ class ApiResponse
         ], 400);
     }
 
-    public static function noContent($messages){
+    public static function conflict($messages): \Illuminate\Http\JsonResponse
+    {
+        return response()->json([
+            "success" => false,
+            "data" => null,
+            "messages" => $messages
+        ], 409);
+    }
+
+    public static function noContent($messages): \Illuminate\Http\JsonResponse
+    {
         return response()->json([
             "success" => true,
             "data" => null,
@@ -30,7 +40,8 @@ class ApiResponse
         ], 204);
     }
 
-    public static function accepted($data = null){
+    public static function accepted($data = null): \Illuminate\Http\JsonResponse
+    {
         return response()->json([
             "success" => true,
             "data" => $data,

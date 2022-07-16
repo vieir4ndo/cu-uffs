@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\Operation;
-use App\Jobs\StartUserCreationJob;
+use App\Jobs\StartCreateOrUpdateUserJob;
+use App\Jobs\StartUserUpdateJob;
 use App\Models\Api\ApiResponse;
 use App\Services\UserPayloadService;
 use App\Services\UserService;
@@ -41,9 +42,13 @@ class UserController
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $this->userPayloadService->create($user, Operation::UserCreationWithIdUFFS);
+            $created = $this->userPayloadService->create($user, Operation::UserCreationWithIdUFFS);
 
-            StartUserCreationJob::dispatch($user["uid"]);
+            if (!$created){
+                return ApiResponse::conflict("User already has an account.");
+            }
+
+            StartCreateOrUpdateUserJob::dispatch($user["uid"]);
 
             return ApiResponse::accepted();
         } catch (Exception $e) {
@@ -71,9 +76,13 @@ class UserController
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $this->userPayloadService->create($user, Operation::UserCreationWithoutIdUFFS);
+            $created = $this->userPayloadService->create($user, Operation::UserCreationWithoutIdUFFS);
 
-            StartUserCreationJob::dispatch($user["uid"]);
+            if (!$created){
+                return ApiResponse::conflict("User already has an account.");
+            }
+
+            StartCreateOrUpdateUserJob::dispatch($user["uid"]);
 
             return ApiResponse::accepted();
         } catch (Exception $e) {
@@ -84,9 +93,13 @@ class UserController
     public function getUserOperationStatus($uid)
     {
         try {
-            $userCreation = $this->userPayloadService->getStatusAndMessageByUid($uid);
+            $operation = $this->userPayloadService->getStatusAndMessageByUid($uid);
 
-            return ApiResponse::Ok($userCreation);
+            if (empty($operation)){
+                return ApiResponse::noContent("User has no operation in progress.");
+            }
+
+            return ApiResponse::Ok($operation);
         } catch (\Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
@@ -132,6 +145,7 @@ class UserController
                 "enrollment_id" => $request->enrollment_id,
                 "profile_photo" => $request->profile_photo,
                 "birth_date" => $request->birth_date,
+                "uid"=> $uid
             ];
 
             $user = array_filter($user);
@@ -142,9 +156,11 @@ class UserController
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $savedUser = $this->service->updateUserWithIdUFFS($uid, $user);
+            $this->userPayloadService->create($user, Operation::UserUpdateWithIdUFFS);
 
-            return ApiResponse::ok($savedUser);
+            StartCreateOrUpdateUserJob::dispatch($uid);
+
+            return ApiResponse::accepted();
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
@@ -159,6 +175,7 @@ class UserController
                 "type" => $request->type,
                 "profile_photo" => $request->profile_photo,
                 "birth_date" => $request->birth_date,
+                "uid"=> $uid
             ];
 
             $user = array_filter($user);
@@ -169,9 +186,11 @@ class UserController
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $savedUser = $this->service->updateUserWithoutIdUFFS($uid, $user);
+            $this->userPayloadService->create($user, Operation::UserUpdateWithoutIdUFFS);
 
-            return ApiResponse::ok($savedUser);
+            StartCreateOrUpdateUserJob::dispatch($uid);
+
+            return ApiResponse::accepted();
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }

@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
+use App\Helpers\OperationHelper;
 use App\Helpers\StorageHelper;
 use App\Services\BarcodeService;
 use App\Services\UserPayloadService;
@@ -11,7 +13,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use phpDocumentor\Reflection\Types\This;
 
 class GenerateAndSaveBarCodeJob implements ShouldQueue
 {
@@ -27,7 +28,7 @@ class GenerateAndSaveBarCodeJob implements ShouldQueue
      */
     public function __construct($uid)
     {
-        $this->className = get_class((object)This::class);
+        $this->className = GenerateAndSaveBarCodeJob::class;
         $this->uid = $uid;
     }
 
@@ -43,15 +44,22 @@ class GenerateAndSaveBarCodeJob implements ShouldQueue
 
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::GeneratingBarCode);
 
-            $user = $userPayloadService->getByUid($this->uid)->payload;
+            $userDb = $userPayloadService->getByUid($this->uid);
 
-            $barcodePath = StorageHelper::saveBarCode($this->uid, $barcodeService->generateBase64($user["enrollment_id"]));
+            $user = $userDb->payload;
 
-            $user["bar_code"] = $barcodePath;
+            if (OperationHelper::IsUpdateUserOperation($userDb->operation) && !array_key_exists("enrollment_id", $user)) {
+                Log::info("Update does not require bar code generation");
+            } else {
+                $barcodePath = StorageHelper::saveBarCode($this->uid, $barcodeService->generateBase64($user["enrollment_id"]));
 
-            $userPayloadService->updatePayloadByUid($this->uid, $user);
+                $user["bar_code"] = $barcodePath;
 
-            FinishUserCreationJob::dispatch($this->uid);
+                $userPayloadService->updatePayloadByUid($this->uid, $user);
+            }
+
+            FinishCreateOrUpdateUserJob::dispatch($this->uid);
+
             Log::info("Finished job {$this->className}");
         } catch (\Exception $e) {
             Log::error("Error on job {$this->className}");

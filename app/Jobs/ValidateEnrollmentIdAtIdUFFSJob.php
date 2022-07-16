@@ -2,9 +2,12 @@
 
 namespace App\Jobs;
 
+use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
+use App\Helpers\OperationHelper;
 use App\Services\IdUffsService;
 use App\Services\UserPayloadService;
+use App\Services\UserService;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -27,7 +30,7 @@ class ValidateEnrollmentIdAtIdUFFSJob implements ShouldQueue
      */
     public function __construct($uid)
     {
-        $this->className = get_class((object)This::class);
+        $this->className = ValidateEnrollmentIdAtIdUFFSJob::class;
         $this->uid = $uid;
     }
 
@@ -43,24 +46,29 @@ class ValidateEnrollmentIdAtIdUFFSJob implements ShouldQueue
 
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::ValidatingEnrollmentId);
 
-            $user = $userPayloadService->getByUid($this->uid)->payload;
+            $userDb = $userPayloadService->getByUid($this->uid);
 
-            $user_data_from_enrollment = $idUffsService->isActive($user["enrollment_id"], $user["name"]);
+            $user = $userDb->payload;
 
-            if (empty($user_data_from_enrollment)){
-                throw new Exception("Enrollment_id is not active or does not belong to the IdUFFS informed.");
+            if (OperationHelper::IsUpdateUserOperation($userDb->operation) && !array_key_exists("enrollment_id", $user)) {
+                Log::info("Update does not require enrollment id validation");
+            } else {
+
+                $user_data_from_enrollment = $idUffsService->isActive($user["enrollment_id"], $user["name"]);
+
+                if (empty($user_data_from_enrollment)) {
+                    throw new Exception("Enrollment_id is not active or does not belong to the IdUFFS informed.");
+                }
+
+                $user["type"] = array_key_exists('type', $user) ? $user["type"] : $user_data_from_enrollment["type"];
+                $user["course"] = $user_data_from_enrollment["course"];
+                $user["status_enrollment_id"] = $user_data_from_enrollment["status_enrollment_id"];
+
+                $userPayloadService->updatePayloadByUid($this->uid, $user);
             }
-
-            $user["type"] = $user_data_from_enrollment["type"];
-            $user["course"] = $user_data_from_enrollment["course"];
-            $user["status_enrollment_id"] = $user_data_from_enrollment["status_enrollment_id"];
-
-            $userPayloadService->updatePayloadByUid($this->uid, $user);
-
             ValidateAndSaveProfilePhotoJob::dispatch($this->uid);
             Log::info("Finished job {$this->className}");
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             Log::error("Error on job {$this->className}");
 
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Failed, "Failed at {$this->className} with message: {$e->getMessage()}");

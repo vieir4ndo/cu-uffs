@@ -39,4 +39,8 @@ class UserPayloadRepository
     {
         return UserPayload::where('uid', $uid)->update($data);
     }
+
+    public function delete($uid){
+        return UserPayload::where('uid', $uid)->delete();
+    }
 }
