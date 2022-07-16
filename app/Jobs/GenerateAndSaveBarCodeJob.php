@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
+use App\Helpers\OperationHelper;
 use App\Helpers\StorageHelper;
 use App\Services\BarcodeService;
 use App\Services\UserPayloadService;
@@ -47,7 +48,7 @@ class GenerateAndSaveBarCodeJob implements ShouldQueue
 
             $user = $userDb->payload;
 
-            if (in_array($userDb->operation, [Operation::UserUpdateWithoutIdUFFS->value, Operation::UserUpdateWithIdUFFS->value]) && !array_key_exists("enrollment_id", $user)) {
+            if (OperationHelper::IsUpdateUserOperation($userDb->operation) && !array_key_exists("enrollment_id", $user)) {
                 Log::info("Update does not require bar code generation");
             } else {
                 $barcodePath = StorageHelper::saveBarCode($this->uid, $barcodeService->generateBase64($user["enrollment_id"]));
@@ -57,7 +58,7 @@ class GenerateAndSaveBarCodeJob implements ShouldQueue
                 $userPayloadService->updatePayloadByUid($this->uid, $user);
             }
 
-            FinishUserCreationJob::dispatch($this->uid);
+            FinishCreateOrUpdateUserJob::dispatch($this->uid);
 
             Log::info("Finished job {$this->className}");
         } catch (\Exception $e) {

@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
 use App\Services\UserPayloadService;
+use App\Services\UserService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -12,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use phpDocumentor\Reflection\Types\This;
 
-class StartUserCreationJob implements ShouldQueue
+class StartCreateOrUpdateUserJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
@@ -26,7 +27,7 @@ class StartUserCreationJob implements ShouldQueue
      */
     public function __construct($uid)
     {
-        $this->className = StartUserCreationJob::class;
+        $this->className = StartCreateOrUpdateUserJob::class;
         $this->uid = $uid;
     }
 
@@ -35,21 +36,21 @@ class StartUserCreationJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(UserPayloadService $userPayloadService)
+    public function handle(UserPayloadService $userPayloadService, UserService $userService)
     {
         try {
             Log::info("Starting job {$this->className}");
 
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Starting);
 
-            $userDb = $userPayloadService->getByUid($this->uid);
+            $userPayload = $userPayloadService->getByUid($this->uid);
 
-            switch ($userDb->operation) {
+            switch ($userPayload->operation) {
                 case Operation::UserCreationWithIdUFFS->value:
                     ValidateIdUFFSCredentialsJob::dispatch($this->uid);
                     break;
                 case Operation::UserCreationWithoutIdUFFS->value:
-                    $user = $userDb->payload;
+                    $user = $userPayload->payload;
                     $user["enrollment_id"] = bin2hex(random_bytes(5));
                     $user["status_enrollment_id"] = true;
 
@@ -57,8 +58,20 @@ class StartUserCreationJob implements ShouldQueue
 
                     ValidateAndSaveProfilePhotoJob::dispatch($this->uid);
                     break;
+                case Operation::UserUpdateWithIdUFFS->value:
+                        $userDb = $userService->getUserByUsername($this->uid);
+
+                        $user["name"] = $userDb->name;
+
+                        $userPayloadService->updatePayloadByUid($this->uid, $user);
+
+                        ValidateEnrollmentIdAtIdUFFSJob::dispatch($this->uid);
+                        break;
+                case Operation::UserUpdateWithoutIdUFFS->value:
+                        ValidateAndSaveProfilePhotoJob::dispatch($this->uid);
+                        break;
                 default:
-                    break;
+                    throw new \Exception('Invalid operation.');
             }
 
             Log::info("Finished job {$this->className}");

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\Operation;
-use App\Jobs\StartUserCreationJob;
+use App\Jobs\StartCreateOrUpdateUserJob;
 use App\Jobs\StartUserUpdateJob;
 use App\Models\Api\ApiResponse;
 use App\Services\UserPayloadService;
@@ -48,7 +48,7 @@ class UserController
                 return ApiResponse::ok("User already has an account.");
             }
 
-            StartUserCreationJob::dispatch($user["uid"]);
+            StartCreateOrUpdateUserJob::dispatch($user["uid"]);
 
             return ApiResponse::accepted();
         } catch (Exception $e) {
@@ -82,7 +82,7 @@ class UserController
                 return ApiResponse::ok("User already has an account.");
             }
 
-            StartUserCreationJob::dispatch($user["uid"]);
+            StartCreateOrUpdateUserJob::dispatch($user["uid"]);
 
             return ApiResponse::accepted();
         } catch (Exception $e) {
@@ -154,7 +154,7 @@ class UserController
 
             $this->userPayloadService->create($user, Operation::UserUpdateWithIdUFFS);
 
-            StartUserUpdateJob::dispatch($uid);
+            StartCreateOrUpdateUserJob::dispatch($uid);
 
             return ApiResponse::accepted();
         } catch (Exception $e) {
@@ -184,7 +184,7 @@ class UserController
 
             $this->userPayloadService->create($user, Operation::UserUpdateWithoutIdUFFS);
 
-            StartUserUpdateJob::dispatch($uid);
+            StartCreateOrUpdateUserJob::dispatch($uid);
 
             return ApiResponse::accepted();
         } catch (Exception $e) {

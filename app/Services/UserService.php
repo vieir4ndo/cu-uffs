@@ -53,9 +53,13 @@ class UserService implements IUserService
 
         $user["active"] = true;
 
-        $this->repository->createUser($user);
+        $this->repository->createOrUpdate($user);
 
         return $this->getUserByUsername($user["uid"]);
+    }
+
+    public function createOrUpdate($user){
+        $this->repository->createOrUpdate($user);
     }
 
     public function getUserByUsername(string $uid, $withFiles = true): \App\Models\User

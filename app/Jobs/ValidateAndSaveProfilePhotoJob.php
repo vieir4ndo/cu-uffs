@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
+use App\Helpers\OperationHelper;
 use App\Helpers\StorageHelper;
 use App\Services\AiPassportPhotoService;
 use App\Services\UserPayloadService;
@@ -48,7 +49,7 @@ class ValidateAndSaveProfilePhotoJob implements ShouldQueue
 
             $user = $userDb->payload;
 
-            if (in_array($userDb->operation, [Operation::UserUpdateWithoutIdUFFS->value, Operation::UserUpdateWithIdUFFS->value]) && !array_key_exists("profile_photo", $user)) {
+            if (OperationHelper::IsUpdateUserOperation($userDb->operation) && !array_key_exists("profile_photo", $user)) {
                 Log::info("Update does not require profile photo validation");
             } else {
 

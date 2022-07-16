@@ -7,6 +7,7 @@ use App\Enums\UserOperationStatus;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Services\UserPayloadService;
+use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,7 +16,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
-class FinishUserCreationJob implements ShouldQueue
+class FinishCreateOrUpdateUserJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
@@ -29,7 +30,7 @@ class FinishUserCreationJob implements ShouldQueue
      */
     public function __construct($uid)
     {
-        $this->className = FinishUserCreationJob::class;
+        $this->className = FinishCreateOrUpdateUserJob::class;
         $this->uid = $uid;
     }
 
@@ -38,7 +39,7 @@ class FinishUserCreationJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(UserPayloadService $userPayloadService, UserRepository $repository)
+    public function handle(UserPayloadService $userPayloadService, UserService $userService)
     {
         try {
             Log::info("Starting job {$this->className}");
@@ -54,7 +55,7 @@ class FinishUserCreationJob implements ShouldQueue
                 $user["active"] = true;
 
             } else {
-                $userDb = $repository->getUserByUsername($this->uid);
+                $userDb = $userService->getUserByUsername($this->uid, false);
 
                 $user = [
                     "uid" => $this->uid,
@@ -70,7 +71,7 @@ class FinishUserCreationJob implements ShouldQueue
                 ];
             }
 
-            $repository->createOrUpdate($user);
+            $userService->createOrUpdate($user);
 
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Suceed);
 

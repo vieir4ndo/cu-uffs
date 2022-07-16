@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
+use App\Helpers\OperationHelper;
 use App\Services\IdUffsService;
 use App\Services\UserPayloadService;
 use App\Services\UserService;
@@ -49,7 +50,7 @@ class ValidateEnrollmentIdAtIdUFFSJob implements ShouldQueue
 
             $user = $userDb->payload;
 
-            if (in_array($userDb->operation, [Operation::UserUpdateWithoutIdUFFS->value, Operation::UserUpdateWithIdUFFS->value]) && !array_key_exists("enrollment_id", $user)) {
+            if (OperationHelper::IsUpdateUserOperation($userDb->operation) && !array_key_exists("enrollment_id", $user)) {
                 Log::info("Update does not require enrollment id validation");
             } else {
 
