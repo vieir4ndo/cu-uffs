@@ -47,7 +47,7 @@ class FinishUserCreationJob implements ShouldQueue
 
             $user = $userPayload->payload;
 
-            if (in_array($userPayload->operation, [Operation::UserCreationWithoutIdUFFS, Operation::UserCreationWithIdUFFS])) {
+            if (in_array($userPayload->operation, [Operation::UserCreationWithoutIdUFFS->value, Operation::UserCreationWithIdUFFS->value])) {
 
                 $user["password"] = Hash::make($user["password"]);
                 $user["birth_date"] = Carbon::parse($user["birth_date"]);
@@ -74,7 +74,7 @@ class FinishUserCreationJob implements ShouldQueue
 
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Suceed);
 
-            //$userPayloadService->deleteByUid($this->uid);
+            $userPayloadService->deleteByUid($this->uid);
 
             Log::info("Finished job {$this->className}");
         } catch (\Exception $e) {
