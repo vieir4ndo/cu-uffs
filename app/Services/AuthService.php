@@ -68,6 +68,10 @@ class AuthService implements IAuthService
     {
         $this->user = $this->service->getUserByUsername($uid, false);
 
+        if (in_array($this->user->type, config("user.users_auth_iduffs"))) {
+            throw new Exception("User not allowed to reset password. Please continue at <a href='https://id.uffs.edu.br/id/XUI/?realm=/#passwordReset/'>IdUFFS</a>.");
+        }
+
         $data = [
             'password' => Hash::make($newpassword)
         ];
