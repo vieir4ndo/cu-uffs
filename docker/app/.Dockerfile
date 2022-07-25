@@ -44,7 +44,7 @@ RUN npm install && npm run dev
 
 EXPOSE 8000
 
-#CMD /var/www/html/php artisan serve --host=0.0.0.0
+CMD php artisan serve --host=0.0.0.0
 
 
 

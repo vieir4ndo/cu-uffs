@@ -44,7 +44,7 @@ RUN npm install && npm run dev
 
 EXPOSE 8001
 
-#CMD /var/www/html/php artisan horizon
+CMD php artisan horizon
 
 
 
