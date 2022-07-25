@@ -42,10 +42,9 @@ RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-interaction
 
 RUN npm install && npm run dev
 
-#RUN php artisan migrate
-#RUN php artisan db:seed
+EXPOSE 8001
 
-EXPOSE 8000
+#CMD /var/www/html/php artisan horizon
 
 
 
