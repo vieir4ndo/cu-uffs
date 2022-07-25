@@ -8,6 +8,7 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_PASSWORD: Senha@2022
+      POSTGRES_DB: cuuffs
 
   redis:
     image: redis:5.0.8
