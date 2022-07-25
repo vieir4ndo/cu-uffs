@@ -34,7 +34,8 @@ class User extends Authenticatable
         'active',
         'birth_date',
         'course',
-        'status_enrollment_id'
+        'status_enrollment_id',
+        'ticket_amount'
     ];
 
     /**

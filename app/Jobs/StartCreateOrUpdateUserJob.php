@@ -44,32 +44,27 @@ class StartCreateOrUpdateUserJob implements ShouldQueue
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Starting);
 
             $userPayload = $userPayloadService->getByUid($this->uid);
+            $user = $userPayload->payload;
 
             switch ($userPayload->operation) {
                 case Operation::UserCreationWithIdUFFS->value:
                     ValidateIdUFFSCredentialsJob::dispatch($this->uid);
                     break;
                 case Operation::UserCreationWithoutIdUFFS->value:
-                    $user = $userPayload->payload;
                     $user["enrollment_id"] = bin2hex(random_bytes(5));
                     $user["status_enrollment_id"] = true;
-
                     $userPayloadService->updatePayloadByUid($this->uid, $user);
-
                     ValidateAndSaveProfilePhotoJob::dispatch($this->uid);
                     break;
                 case Operation::UserUpdateWithIdUFFS->value:
-                        $userDb = $userService->getUserByUsername($this->uid);
-
-                        $user["name"] = $userDb->name;
-
-                        $userPayloadService->updatePayloadByUid($this->uid, $user);
-
-                        ValidateEnrollmentIdAtIdUFFSJob::dispatch($this->uid);
-                        break;
+                    $userDb = $userService->getUserByUsername($this->uid);
+                    $user["name"] = $userDb->name;
+                    $userPayloadService->updatePayloadByUid($this->uid, $user);
+                    ValidateEnrollmentIdAtIdUFFSJob::dispatch($this->uid);
+                    break;
                 case Operation::UserUpdateWithoutIdUFFS->value:
-                        ValidateAndSaveProfilePhotoJob::dispatch($this->uid);
-                        break;
+                    ValidateAndSaveProfilePhotoJob::dispatch($this->uid);
+                    break;
                 default:
                     throw new \Exception('Invalid operation.');
             }

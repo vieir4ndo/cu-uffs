@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\Operation;
 use App\Jobs\StartCreateOrUpdateUserJob;
-use App\Jobs\StartUserUpdateJob;
 use App\Models\Api\ApiResponse;
 use App\Services\UserPayloadService;
 use App\Services\UserService;
@@ -42,11 +41,13 @@ class UserController
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $created = $this->userPayloadService->create($user, Operation::UserCreationWithIdUFFS);
+            $created = $this->service->getUserByUsernameFirstOrDefault($user['uid']);
 
-            if (!$created){
+            if ($created){
                 return ApiResponse::conflict("User already has an account.");
             }
+
+            $this->userPayloadService->create($user, Operation::UserCreationWithIdUFFS);
 
             StartCreateOrUpdateUserJob::dispatch($user["uid"]);
 
@@ -76,11 +77,13 @@ class UserController
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $created = $this->userPayloadService->create($user, Operation::UserCreationWithoutIdUFFS);
+            $created = $this->service->getUserByUsernameFirstOrDefault($user['uid']);
 
-            if (!$created){
+            if ($created){
                 return ApiResponse::conflict("User already has an account.");
             }
+
+            $this->userPayloadService->create($user, Operation::UserCreationWithoutIdUFFS);
 
             StartCreateOrUpdateUserJob::dispatch($user["uid"]);
 
@@ -96,7 +99,14 @@ class UserController
             $operation = $this->userPayloadService->getStatusAndMessageByUid($uid);
 
             if (empty($operation)){
-                return ApiResponse::noContent("User has no operation in progress.");
+
+                $created = $this->service->getUserByUsernameFirstOrDefault($uid);
+
+                if ($created){
+                    return ApiResponse::ok("User has no operation in progress.");
+                }
+
+                return ApiResponse::noContent(null);
             }
 
             return ApiResponse::Ok($operation);
@@ -156,6 +166,12 @@ class UserController
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
+            $created = $this->service->getUserByUsernameFirstOrDefault($uid);
+
+            if (!$created){
+                return ApiResponse::conflict("User does not have an account.");
+            }
+
             $this->userPayloadService->create($user, Operation::UserUpdateWithIdUFFS);
 
             StartCreateOrUpdateUserJob::dispatch($uid);
@@ -184,6 +200,12 @@ class UserController
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
+            }
+
+            $created = $this->service->getUserByUsernameFirstOrDefault($uid);
+
+            if (!$created){
+                return ApiResponse::conflict("User does not have an account.");
             }
 
             $this->userPayloadService->create($user, Operation::UserUpdateWithoutIdUFFS);

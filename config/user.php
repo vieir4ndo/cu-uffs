@@ -2,7 +2,7 @@
 
 return [
     'users_allowed_login' => [
-        \App\Enums\UserType::ThirdPartyEmployee->value,
+        \App\Enums\UserType::ThirdPartyCashierEmployee->value,
         \App\Enums\UserType::RUEmployee->value
     ],
 
