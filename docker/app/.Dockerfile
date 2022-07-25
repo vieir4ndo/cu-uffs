@@ -36,7 +36,7 @@ RUN composer self-update --1
 RUN apt install --yes nodejs npm
 
 WORKDIR /var/www/html
-COPY .. .
+COPY . .
 
 RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-interaction
 
@@ -44,7 +44,7 @@ RUN npm install && npm run dev
 
 EXPOSE 8000
 
-RUN php artisan migrate --seed
+#RUN php artisan migrate --seed
 CMD php artisan serve --host=0.0.0.0
 
 

@@ -36,7 +36,7 @@ RUN composer self-update --1
 RUN apt install --yes nodejs npm
 
 WORKDIR /var/www/html
-COPY .. .
+COPY . .
 
 RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-interaction
 
