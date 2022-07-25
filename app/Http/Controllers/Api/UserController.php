@@ -103,10 +103,10 @@ class UserController
                 $created = $this->service->getUserByUsernameFirstOrDefault($uid);
 
                 if ($created){
-                    return ApiResponse::conflict("User already has an account.");
+                    return ApiResponse::ok("User has no operation in progress.");
                 }
 
-                return ApiResponse::noContent("User has no operation in progress.");
+                return ApiResponse::noContent(null);
             }
 
             return ApiResponse::Ok($operation);
