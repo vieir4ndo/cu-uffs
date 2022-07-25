@@ -14,6 +14,8 @@ class UserTypeSeeder extends Seeder
      */
     public function run()
     {
+        UserType::truncate();
+
         UserType::insert([[
             'id' => 1,
             'description' => 'Servidor',
