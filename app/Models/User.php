@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -69,4 +70,11 @@ class User extends Authenticatable
     'profile_photo_url'    ];
      */
 
+    public function isRUEmployee(){
+        return $this->type == UserType::RUEmployee->value;
+    }
+
+    public function isThridPartyCashierEmployee(){
+        return $this->type == UserType::ThirdPartyCashierEmployee->value;
+    }
 }

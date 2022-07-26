@@ -16,7 +16,7 @@ class CreateUserPayloadsTable extends Migration
         Schema::create('user_payloads', function (Blueprint $table) {
             $table->id();
             $table->text("uid");
-            $table->integer("operation");
+            $table->foreignId('operation')->constrained('operations');
             $table->integer("status");
             $table->text("message")->nullable();
             $table->text("payload")->nullable();

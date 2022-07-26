@@ -28,9 +28,13 @@ class AuthController
         }
     }
 
-    public function forgotPassword(string $uid)
+    public function forgotPassword(Request $request, string $uid)
     {
         try {
+            if (!$request->user()->isRUEmployee()){
+                return ApiResponse::forbidden('User is not allowed to do this operation.');
+            }
+
             $this->service->forgotPassword($uid);
 
             return ApiResponse::ok(null);

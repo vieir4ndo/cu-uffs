@@ -10,4 +10,6 @@ class Entry extends Model
         'date_time',
         'user_id'
     ];
+
+    public $timestamps = false;
 }

@@ -10,4 +10,6 @@ class UserType extends Model
         'id',
         'description'
     ];
+
+    public $timestamps = false;
 }

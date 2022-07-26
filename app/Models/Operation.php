@@ -10,4 +10,6 @@ class Operation extends Model
         'id',
         'description'
     ];
+
+    public $timestamps = false;
 }

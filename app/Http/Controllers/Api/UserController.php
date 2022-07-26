@@ -58,9 +58,13 @@ class UserController
     }
 
 
-    public function createUserWithoutIdUFFS(Request $request)
+    public function createUserWithoutIdUFFS(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
+            if (!$request->user()->isRUEmployee()){
+                return ApiResponse::forbidden('User is not allowed to do this operation.');
+            }
+
             $user = [
                 "uid" => $request->uid,
                 "email" => $request->email,
@@ -151,7 +155,6 @@ class UserController
     {
         try {
             $user = [
-                "type" => ($request->type and $request->type != 0) ? $request->type : null,
                 "enrollment_id" => $request->enrollment_id,
                 "profile_photo" => $request->profile_photo,
                 "birth_date" => $request->birth_date,
@@ -188,7 +191,6 @@ class UserController
             $user = [
                 "email" => $request->email,
                 "name" => $request->name,
-                "type" => $request->type,
                 "profile_photo" => $request->profile_photo,
                 "birth_date" => $request->birth_date,
                 "uid"=> $uid
@@ -218,6 +220,32 @@ class UserController
         }
     }
 
+    public function changeUserType(Request $request){
+        try {
+            if (!$request->user()->isRUEmployee()){
+                return ApiResponse::forbidden('User is not allowed to do this operation.');
+            }
+
+            $data = [
+                'uid' => $request->uid,
+                "type" => $request->type,
+            ];
+
+            $validation = Validator::make($data, $this->changeUserTypeRules());
+
+            if ($validation->fails()) {
+                return ApiResponse::badRequest($validation->errors()->all());
+            }
+
+            unset($data['uid']);
+            $savedUser = $this->service->changeUserType($request->uid, $data);
+
+            return ApiResponse::ok($savedUser);
+        } catch (Exception $e) {
+            return ApiResponse::badRequest($e->getMessage());
+        }
+    }
+
     private function changeUserActivityUserRules()
     {
         return [
@@ -225,10 +253,17 @@ class UserController
         ];
     }
 
+    private function changeUserTypeRules()
+    {
+        return [
+            'uid' => ['required', 'string'],
+            'type' => ['required', 'int'],
+        ];
+    }
+
     private function updateUserWithIdUFFSRules($enrollment_id): array
     {
         return [
-            'type' => [Rule::in(config('user.users_auth_iduffs'))],
             'profile_photo' => ['string'],
             'enrollment_id' => [Rule::unique('users')->ignore($enrollment_id, 'enrollment_id'), 'string', 'max:10', 'min:10'],
             'birth_date' => ['date']
@@ -240,7 +275,6 @@ class UserController
         return [
             'email' => [Rule::unique('users')->ignore($email, 'email'), 'email'],
             'name' => ['string', 'max:255'],
-            'type' => [Rule::notIn(config('user.users_auth_iduffs'))],
             'profile_photo' => ['string'],
             'birth_date' => ['date']
         ];
@@ -264,10 +298,11 @@ class UserController
             'email' => ['required', 'email', 'unique:users'],
             'password' => ['required', 'string'],
             'name' => ['required', 'string', 'max:255'],
-            'type' => [Rule::notIn(config('user.users_auth_iduffs')), 'required'],
             'profile_photo' => ['required', 'string'],
             'birth_date' => ['required', 'date']
         ];
     }
+
+
 
 }

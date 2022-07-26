@@ -163,4 +163,33 @@ class UserService implements IUserService
     public function getAllUsersWithIdUFFS(){
         return $this->repository->getAllUsersWithIdUFFS();
     }
+
+    public function changeUserType(string $uid, $data): User
+    {
+        $user = $this->getUserByUsername($uid, false);
+
+        $this->repository->updateUserByUsername($user->uid, $data);
+
+        return $this->getUserByUsername($uid);
+    }
+
+    public function getUserByEnrollmentId(string $enrollment_id, bool $withFiles = true) : User {
+        $user = $this->repository->getUserByEnrollmentId($enrollment_id);
+
+        if (empty($user))
+            throw new Exception("User not found.");
+
+        if ($withFiles) {
+            $user->profile_photo = StorageHelper::getFile($user->profile_photo);
+            $user->bar_code = StorageHelper::getFile($user->bar_code);
+        }
+
+        return $user;
+    }
+
+    public function updateTicketAmount($uid, $amount){
+        $user = $this->repository->getUserByUsername($uid);
+
+        return $this->repository->updateUserByUsername($uid, ["ticket_amount" => $user->ticket_amount + $amount]);
+    }
 }

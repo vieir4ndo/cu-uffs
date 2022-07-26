@@ -48,4 +48,12 @@ class ApiResponse
             "messages" => null
         ], 202);
     }
+
+    public static function forbidden($messages = null){
+        return response()->json([
+            "success" => false,
+            "data" => null,
+            "messages" => $messages
+        ], 403);
+    }
 }

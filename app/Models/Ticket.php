@@ -12,4 +12,8 @@ class Ticket extends Model
         'amount',
         'third_party_cashier_employee_id'
     ];
+
+    public $timestamps = false;
+    protected $primaryKey = null;
+    public $incrementing = false;
 }

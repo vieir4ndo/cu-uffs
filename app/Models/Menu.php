@@ -20,4 +20,6 @@ class Menu extends Model
         "date",
         'ru_employee_id',
     ];
+
+    public $timestamps = false;
 }
