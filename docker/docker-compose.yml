@@ -37,6 +37,7 @@ services:
       - ../resources:/var/www/html/resources
       - ../artisan:/var/www/html/artisan
       - ../.env:/var/www/html/.env
+      - ../node_modules:/var/www/html/node_modules 
     depends_on:
       - postgres
       - redis
@@ -59,6 +60,7 @@ services:
       - ../resources:/var/www/html/resources
       - ../artisan:/var/www/html/artisan
       - ../.env:/var/www/html/.env
+      - ../node_modules:/var/www/html/node_modules 
     depends_on:
       - app
 networks:
