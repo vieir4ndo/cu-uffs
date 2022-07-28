@@ -13,7 +13,6 @@ class TicketController extends Controller
 {
     private TicketService $service;
 
-
     public function __construct(TicketService $service)
     {
         $this->service = $service;

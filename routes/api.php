@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\EntryController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\TicketController;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,8 @@ Route::middleware('auth:sanctum')->post('/reset-password/{uid}', [AuthController
 
 Route::middleware('auth:sanctum')->post('/ticket/visitor', [TicketController::class, 'insertTicketsForVisitors'])->name('api.ticket.insertTicketsForVisitors');
 Route::middleware('auth:sanctum')->post('/ticket/{enrollment_id}', [TicketController::class, 'insertTickets'])->name('api.ticket.insertTickets');
+
+Route::post('/entry/{enrollment_id}', [EntryController::class, 'insertEntry'])->name('api.entry.insertEntry');
 
 Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
 Route::post('/user/iduffs', [UserController::class, 'createUserWithIdUFFS'])->name('api.user.createWithIdUFFS');

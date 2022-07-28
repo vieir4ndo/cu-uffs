@@ -20,13 +20,13 @@ class TicketService
     }
 
     public function insertTicket($enrollment_id, $data){
-        $user = $this->userService->getUserByEnrollmentId($enrollment_id);
+        $user = $this->userService->getUserByEnrollmentId($enrollment_id, false);
 
         $data["user_id"] = $user->id;
 
-        $this->repository->insert($data);
-
         $this->userService->updateTicketAmount($user->uid, $data["amount"]);
+
+        $this->repository->insert($data);
     }
 
     public function insertTicketForVisitors($data){
