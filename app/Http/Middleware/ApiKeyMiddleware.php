@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Api\ApiResponse;
 use Closure;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
@@ -13,14 +14,15 @@ class ApiKeyMiddleware
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      * @throws AuthenticationException
      */
     public function handle(Request $request, Closure $next)
     {
-        if(!$key = $request->get('api_key') or $key != config('app.api_key')){
-            throw new AuthenticationException('Invalid API key');
+        $key = $request->api_key;
+        if($key == config('app.api_key')){
+            return $next($request);
         }
-        return $next($request);
+        return ApiResponse::forbidden("Invalid API key.");
     }
 }
