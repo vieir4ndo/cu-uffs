@@ -31,4 +31,12 @@ class EntryService
         $this->repository->insert($data);
     }
 
+    public function getEntriesByUsername(string $uid){
+        $user = $this->userService->getUserByUsername($uid);
+
+        $result = $this->repository->getEntriesById($user->id);
+
+        return ["entries" => $result];
+    }
+
 }

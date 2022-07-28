@@ -32,4 +32,18 @@ class TicketService
     public function insertTicketForVisitors($data){
         $this->repository->insert($data);
     }
+
+    public function getTicketsByUsername($uid){
+        $user = $this->userService->getUserByUsername($uid);
+
+        $result = $this->repository->getTicketsById($user->id);
+
+        return ["tickets" => $result];
+    }
+
+    public function getTicketBalance($uid){
+        $user = $this->userService->getUserByUsername($uid, false);
+
+        return ["ticket_amount"=> $user->ticket_amount];
+    }
 }

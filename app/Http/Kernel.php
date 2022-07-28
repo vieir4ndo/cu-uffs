@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\ApiKeyMiddleware;
+use App\Http\Middleware\ThirdPartyCashierEmployeeMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -65,5 +66,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         "key" => ApiKeyMiddleware::class,
+        "third.party.cashier.employee" => ThirdPartyCashierEmployeeMiddleware::class,
     ];
 }

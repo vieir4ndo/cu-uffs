@@ -29,4 +29,14 @@ class EntryController
         }
     }
 
+    public function getEntries($uid){
+        try {
+            $entries = $this->service->getEntriesByUsername($uid);
+
+            return ApiResponse::ok($entries);
+        } catch (Exception $e) {
+            return ApiResponse::badRequest($e->getMessage());
+        }
+    }
+
 }

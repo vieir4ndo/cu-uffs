@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Api\ApiResponse;
 use App\Services\TicketService;
+use App\Services\UserService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -20,10 +21,6 @@ class TicketController extends Controller
 
     public function insertTickets(Request $request, $enrollment_id){
         try {
-            if (!$request->user()->isThridPartyCashierEmployee()){
-                return ApiResponse::forbidden('User is not allowed to do this operation.');
-            }
-
             $data = [
                 'third_party_cashier_employee_id' => $request->user()->id,
                 "date_time" => now(),
@@ -46,10 +43,6 @@ class TicketController extends Controller
 
     public function insertTicketsForVisitors(Request $request){
         try {
-            if (!$request->user()->isThridPartyCashierEmployee()){
-                return ApiResponse::forbidden('User is not allowed to do this operation.');
-            }
-
             $data = [
                 'third_party_cashier_employee_id' => $request->user()->id,
                 "date_time" => now(),
@@ -59,6 +52,26 @@ class TicketController extends Controller
             $this->service->insertTicketForVisitors($data);
 
             return ApiResponse::ok(null);
+        } catch (Exception $e) {
+            return ApiResponse::badRequest($e->getMessage());
+        }
+    }
+
+    public function getTickets($uid){
+        try {
+            $entries = $this->service->getTicketsByUsername($uid);
+
+            return ApiResponse::ok($entries);
+        } catch (Exception $e) {
+            return ApiResponse::badRequest($e->getMessage());
+        }
+    }
+
+    public function getTicketBalance($uid){
+        try {
+            $entries = $this->service->getTicketBalance($uid);
+
+            return ApiResponse::ok($entries);
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
