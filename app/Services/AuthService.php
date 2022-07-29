@@ -3,18 +3,21 @@
 namespace App\Services;
 
 use App\Interfaces\Services\IAuthService;
+use App\Interfaces\Services\IIdUffsService;
+use App\Interfaces\Services\IMailjetService;
+use App\Interfaces\Services\IUserService;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Exception;
 
 class AuthService implements IAuthService
 {
-    private UserService $service;
+    private IUserService $service;
     private User $user;
-    private MailjetService $mailjetService;
-    private IdUffsService $idUffsService;
+    private IMailjetService $mailjetService;
+    private IIdUffsService $idUffsService;
 
-    public function __construct(UserService $userService, MailjetService $mailjetService, IdUffsService $idUffsService)
+    public function __construct(IUserService $userService, IMailjetService $mailjetService, IIdUffsService $idUffsService)
     {
         $this->service = $userService;
         $this->mailjetService = $mailjetService;

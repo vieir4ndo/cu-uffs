@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
-use App\Repositories\UserRepository;
+use App\Interfaces\Repositories\IUserRepository;
+use App\Interfaces\Services\IAiPassportPhotoService;
+use App\Interfaces\Services\IBarcodeService;
 use App\Interfaces\Services\IUserService;
 use App\Models\User;
 use Carbon\Carbon;
@@ -12,14 +14,14 @@ use App\Helpers\StorageHelper;
 
 class UserService implements IUserService
 {
-    private UserRepository $repository;
-    private BarcodeService $barcodeService;
-    private AiPassportPhotoService $aiPassportPhotoService;
+    private IUserRepository $repository;
+    private IBarcodeService $barcodeService;
+    private IAiPassportPhotoService $aiPassportPhotoService;
 
     public function __construct(
-        UserRepository         $userRepository,
-        BarcodeService         $barcodeService,
-        AiPassportPhotoService $aiPassportPhotoService,
+        IUserRepository         $userRepository,
+        IBarcodeService         $barcodeService,
+        IAiPassportPhotoService $aiPassportPhotoService,
     )
     {
         $this->repository = $userRepository;

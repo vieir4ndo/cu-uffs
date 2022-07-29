@@ -2,17 +2,18 @@
 
 namespace App\Services;
 
+use App\Interfaces\Repositories\IEntryRepository;
 use App\Interfaces\Services\IEntryService;
-use App\Repositories\EntryRepository;
+use App\Interfaces\Services\IUserService;
 
 class EntryService implements IEntryService
 {
-    private EntryRepository $repository;
-    private UserService $userService;
+    private IEntryRepository $repository;
+    private IUserService $userService;
 
     public function __construct(
-        EntryRepository         $entryRepository,
-        UserService $userService
+        IEntryRepository         $entryRepository,
+        IUserService $userService
     )
     {
         $this->repository = $entryRepository;

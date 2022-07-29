@@ -5,15 +5,16 @@ namespace App\Services;
 use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
 use App\Helpers\StorageHelper;
+use App\Interfaces\Repositories\IUserPayloadRepository;
 use App\Interfaces\Services\IUserPayloadService;
-use App\Repositories\UserPayloadRepository;
+use App\Interfaces\Services\IUserService;
 
 class UserPayloadService implements IUserPayloadService
 {
-    private UserPayloadRepository $userPayloadRepository;
-    private UserService $userService;
+    private IUserPayloadRepository $userPayloadRepository;
+    private IUserService $userService;
 
-    public function __construct(UserPayloadRepository $repository, UserService $userService)
+    public function __construct(IUserPayloadRepository $repository, IUserService $userService)
     {
         $this->userPayloadRepository = $repository;
         $this->userService = $userService;

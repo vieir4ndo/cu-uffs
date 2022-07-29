@@ -2,18 +2,16 @@
 
 namespace App\Services;
 
+use App\Interfaces\Repositories\ITicketRepository;
 use App\Interfaces\Services\ITicketService;
-use App\Repositories\TicketRepository;
+use App\Interfaces\Services\IUserService;
 
 class TicketService implements ITicketService
 {
-    private TicketRepository $repository;
-    private UserService $userService;
+    private ITicketRepository $repository;
+    private IUserService $userService;
 
-    public function __construct(
-        TicketRepository         $ticketRepository,
-        UserService $userService
-    )
+    public function __construct(ITicketRepository $ticketRepository, IUserService $userService )
     {
         $this->repository = $ticketRepository;
         $this->userService = $userService;

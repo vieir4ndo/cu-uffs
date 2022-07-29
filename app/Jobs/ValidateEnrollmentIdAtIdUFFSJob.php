@@ -2,19 +2,16 @@
 
 namespace App\Jobs;
 
-use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
 use App\Helpers\OperationHelper;
-use App\Services\IdUffsService;
-use App\Services\UserPayloadService;
-use App\Services\UserService;
+use App\Interfaces\Services\IIdUffsService;
+use App\Interfaces\Services\IUserPayloadService;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use phpDocumentor\Reflection\Types\This;
 
 class ValidateEnrollmentIdAtIdUFFSJob implements ShouldQueue
 {
@@ -39,7 +36,7 @@ class ValidateEnrollmentIdAtIdUFFSJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(UserPayloadService $userPayloadService, IdUffsService $idUffsService)
+    public function handle(IUserPayloadService $userPayloadService, IIdUffsService $idUffsService)
     {
         try {
             Log::info("Starting job {$this->className}");

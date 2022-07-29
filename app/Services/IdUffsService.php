@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\UserType;
 use App\Helpers\StringHelper;
+use App\Interfaces\Services\ICaptchaMonsterService;
 use App\Interfaces\Services\IIdUffsService;
 use CCUFFS\Auth\AuthIdUFFS;
 use Exception;
@@ -14,11 +15,11 @@ class IdUffsService implements IIdUffsService
     private $client;
     private $activeUserApi = "https://sci.uffs.edu.br/validar_vinculo.jsf";
     private $googleKey = "6Lfx__cSAAAAAMxp5uRHBvfjcjHBdtvizuoGpDpg";
-    private $captchaMonsterService;
+    private ICaptchaMonsterService $captchaMonsterService;
 
-    public function __construct()
+    public function __construct(ICaptchaMonsterService $captchaMonsterService)
     {
-        $this->captchaMonsterService = new CaptchaMonsterService();
+        $this->captchaMonsterService = $captchaMonsterService;
         $this->client = new HttpClient();
     }
 
