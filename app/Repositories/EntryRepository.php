@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\Repositories\IEntryRepository;
 use App\Models\Entry;
 
-class EntryRepository
+class EntryRepository implements IEntryRepository
 {
     public function insert($data){
         return Entry::create($data);

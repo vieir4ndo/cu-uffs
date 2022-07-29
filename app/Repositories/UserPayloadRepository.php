@@ -2,10 +2,10 @@
 
 namespace App\Repositories;
 
-use App\Enums\UserOperationStatus;
+use App\Interfaces\Repositories\IUserPayloadRepository;
 use App\Models\UserPayload;
 
-class UserPayloadRepository
+class UserPayloadRepository implements IUserPayloadRepository
 {
     public function create($data)
     {

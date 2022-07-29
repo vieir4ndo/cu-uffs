@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use App\Interfaces\Services\IEntryService;
 use App\Repositories\EntryRepository;
 
-class EntryService
+class EntryService implements IEntryService
 {
     private EntryRepository $repository;
     private UserService $userService;

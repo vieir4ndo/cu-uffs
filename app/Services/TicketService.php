@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-
+use App\Interfaces\Services\ITicketService;
 use App\Repositories\TicketRepository;
 
-class TicketService
+class TicketService implements ITicketService
 {
     private TicketRepository $repository;
     private UserService $userService;

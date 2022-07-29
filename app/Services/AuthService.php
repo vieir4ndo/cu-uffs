@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use App\Enums\UserType;
 use App\Interfaces\Services\IAuthService;
 use App\Models\User;
-use CCUFFS\Auth\AuthIdUFFS;
 use Illuminate\Support\Facades\Hash;
 use Exception;
 

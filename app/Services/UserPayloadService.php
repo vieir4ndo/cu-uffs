@@ -5,9 +5,10 @@ namespace App\Services;
 use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
 use App\Helpers\StorageHelper;
+use App\Interfaces\Services\IUserPayloadService;
 use App\Repositories\UserPayloadRepository;
 
-class UserPayloadService
+class UserPayloadService implements IUserPayloadService
 {
     private UserPayloadRepository $userPayloadRepository;
     private UserService $userService;

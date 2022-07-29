@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Interfaces\Services\IHttpClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -9,7 +10,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\TransferStats;
 
-class HttpClient
+class HttpClient implements IHttpClient
 {
     private $client;
 

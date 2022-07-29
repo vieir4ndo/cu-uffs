@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\Repositories\ITicketRepository;
 use App\Models\Ticket;
 
-class TicketRepository
+class TicketRepository implements ITicketRepository
 {
     public function insert($data){
         return Ticket::create($data);

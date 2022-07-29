@@ -6,7 +6,6 @@ use App\Repositories\UserRepository;
 use App\Interfaces\Services\IUserService;
 use App\Models\User;
 use Carbon\Carbon;
-use CCUFFS\Auth\AuthIdUFFS;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use App\Helpers\StorageHelper;
@@ -40,7 +39,7 @@ class UserService implements IUserService
      * @return User
      * @throws Exception
      */
-    public function createUserBase($user): User
+    private function createUserBase($user): User
     {
         $user["profile_photo"] = $this->aiPassportPhotoService->validatePhoto($user["profile_photo"]);
         $user["profile_photo"] = StorageHelper::saveProfilePhoto($user["uid"], $user["profile_photo"]);

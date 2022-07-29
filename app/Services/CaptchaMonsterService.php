@@ -80,5 +80,4 @@ class CaptchaMonsterService implements ICaptchaMonsterService
         return $jsonResponse->solution;
     }
 
-
 }
