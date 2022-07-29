@@ -5,8 +5,8 @@ namespace App\Jobs;
 use App\Enums\UserOperationStatus;
 use App\Helpers\OperationHelper;
 use App\Helpers\StorageHelper;
-use App\Interfaces\Services\IBarcodeService;
-use App\Interfaces\Services\IUserPayloadService;
+use App\Services\BarcodeService;
+use App\Services\UserPayloadService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -36,7 +36,7 @@ class GenerateAndSaveBarCodeJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(IUserPayloadService $userPayloadService, IBarcodeService $barcodeService)
+    public function handle(UserPayloadService $userPayloadService, BarcodeService $barcodeService)
     {
         try {
             Log::info("Starting job {$this->className}");

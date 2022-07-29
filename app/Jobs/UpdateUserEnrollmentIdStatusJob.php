@@ -2,8 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Interfaces\Services\IIdUffsService;
-use App\Interfaces\Services\IUserService;
 use App\Services\IdUffsService;
 use App\Services\UserService;
 use Illuminate\Bus\Queueable;
@@ -34,9 +32,12 @@ class UpdateUserEnrollmentIdStatusJob implements ShouldQueue
     /**
      * Execute the job.
      *
+     * @param UserService $userService
+     * @param IdUffsService $idUffsService
      * @return void
+     * @throws \Exception
      */
-    public function handle(IUserService $userService, IIdUffsService $idUffsService)
+    public function handle(UserService $userService, IdUffsService $idUffsService)
     {
         Log::info("Starting job {$this->className}");
 

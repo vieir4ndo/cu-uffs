@@ -20,6 +20,14 @@ class TicketService implements ITicketService
     public function insertTicket($enrollment_id, $data){
         $user = $this->userService->getUserByEnrollmentId($enrollment_id, false);
 
+        if ($user->active == false){
+            throw new \Exception("User is not active.");
+        }
+
+        if ($user->status_enrollment_id == false){
+            throw new \Exception("User's enrollment id is not active.");
+        }
+
         $data["user_id"] = $user->id;
 
         $this->userService->updateTicketAmount($user->uid, $data["amount"]);

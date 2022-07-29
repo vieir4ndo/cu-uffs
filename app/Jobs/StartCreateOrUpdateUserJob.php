@@ -4,8 +4,8 @@ namespace App\Jobs;
 
 use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
-use App\Interfaces\Services\IUserPayloadService;
-use App\Interfaces\Services\IUserService;
+use App\Services\UserPayloadService;
+use App\Services\UserService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -35,7 +35,7 @@ class StartCreateOrUpdateUserJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(IUserPayloadService $userPayloadService, IUserService $userService)
+    public function handle(UserPayloadService $userPayloadService, UserService $userService)
     {
         try {
             Log::info("Starting job {$this->className}");

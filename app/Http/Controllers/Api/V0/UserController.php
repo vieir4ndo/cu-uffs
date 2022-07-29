@@ -266,7 +266,7 @@ class UserController
     {
         return [
             'profile_photo' => ['string'],
-            'enrollment_id' => [Rule::unique('users')->ignore($enrollment_id, 'enrollment_id'), Rule::in(array_keys(config('course.chapeco'))), 'string', 'max:10', 'min:10'],
+            'enrollment_id' => [Rule::unique('users')->ignore($enrollment_id, 'enrollment_id'), function($enrollment_id) { return array_keys(config('course.chapeco'), substr($enrollment_id, 3, 4)); }, 'string', 'max:10', 'min:10'],
             'birth_date' => ['date']
         ];
     }
@@ -287,7 +287,7 @@ class UserController
             "uid" => ['required', 'string', 'unique:users'],
             'password' => ['required', 'string'],
             'profile_photo' => ['required', 'string'],
-            'enrollment_id' => ['required', 'string', 'max:10', 'min:10', 'unique:users', Rule::in(array_keys(config('course.chapeco')))],
+            'enrollment_id' => ['required', 'string', 'max:10', 'min:10', 'unique:users', function($enrollment_id) { return array_keys(config('course.chapeco'), substr($enrollment_id, 3, 4)); }],
             'birth_date' => ['required', 'date']
         ];
     }

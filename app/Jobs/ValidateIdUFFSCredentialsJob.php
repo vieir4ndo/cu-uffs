@@ -3,8 +3,8 @@
 namespace App\Jobs;
 
 use App\Enums\UserOperationStatus;
-use App\Interfaces\Services\IIdUffsService;
-use App\Interfaces\Services\IUserPayloadService;
+use App\Services\IdUffsService;
+use App\Services\UserPayloadService;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,7 +35,7 @@ class ValidateIdUFFSCredentialsJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(IUserPayloadService $userPayloadService, IIdUffsService $idUffsService)
+    public function handle(UserPayloadService $userPayloadService, IdUffsService $idUffsService)
     {
         try {
             Log::info("Starting job {$this->className}");
