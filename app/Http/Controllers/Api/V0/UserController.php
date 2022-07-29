@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V0;
 
 use App\Enums\Operation;
 use App\Jobs\StartCreateOrUpdateUserJob;
@@ -266,7 +266,7 @@ class UserController
     {
         return [
             'profile_photo' => ['string'],
-            'enrollment_id' => [Rule::unique('users')->ignore($enrollment_id, 'enrollment_id'), 'string', 'max:10', 'min:10'],
+            'enrollment_id' => [Rule::unique('users')->ignore($enrollment_id, 'enrollment_id'), Rule::in(array_keys(config('course.chapeco'))), 'string', 'max:10', 'min:10'],
             'birth_date' => ['date']
         ];
     }

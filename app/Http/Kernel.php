@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\ApiKeyMiddleware;
+use App\Http\Middleware\APIVersion;
 use App\Http\Middleware\ThirdPartyCashierEmployeeMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -55,7 +56,7 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected $routeMiddleware = [
+    protected $routeMiddleware = array(
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
@@ -67,5 +68,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         "key" => ApiKeyMiddleware::class,
         "third.party.cashier.employee" => ThirdPartyCashierEmployeeMiddleware::class,
-    ];
+        'api_version' => APIversion::class,
+    );
 }

@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\EntryController;
-use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\TicketController;
+use App\Http\Controllers\Api\V0\AuthController;
+use App\Http\Controllers\Api\V0\EntryController;
+use App\Http\Controllers\Api\V0\UserController;
+use App\Http\Controllers\Api\V0\TicketController;
 use Illuminate\Support\Facades\Route;
 
 /*

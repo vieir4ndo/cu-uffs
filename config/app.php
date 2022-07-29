@@ -237,4 +237,6 @@ return [
 
     'api_key' => env('API_KEY'),
 
+    'api_latest'  => '0',
+
 ];
