@@ -43,7 +43,7 @@ class UserController
 
             $created = $this->service->getUserByUsernameFirstOrDefault($user['uid']);
 
-            if ($created){
+            if ($created) {
                 return ApiResponse::conflict("User already has an account.");
             }
 
@@ -61,7 +61,7 @@ class UserController
     public function createUserWithoutIdUFFS(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            if (!$request->user()->isRUEmployee()){
+            if (!$request->user()->isRUEmployee()) {
                 return ApiResponse::forbidden('User is not allowed to do this operation.');
             }
 
@@ -83,7 +83,7 @@ class UserController
 
             $created = $this->service->getUserByUsernameFirstOrDefault($user['uid']);
 
-            if ($created){
+            if ($created) {
                 return ApiResponse::conflict("User already has an account.");
             }
 
@@ -102,11 +102,11 @@ class UserController
         try {
             $operation = $this->userPayloadService->getStatusAndMessageByUid($uid);
 
-            if (empty($operation)){
+            if (empty($operation)) {
 
                 $created = $this->service->getUserByUsernameFirstOrDefault($uid);
 
-                if ($created){
+                if ($created) {
                     return ApiResponse::ok("User has no operation in progress.");
                 }
 
@@ -158,7 +158,7 @@ class UserController
                 "enrollment_id" => $request->enrollment_id,
                 "profile_photo" => $request->profile_photo,
                 "birth_date" => $request->birth_date,
-                "uid"=> $uid
+                "uid" => $uid
             ];
 
             $user = array_filter($user);
@@ -171,7 +171,7 @@ class UserController
 
             $created = $this->service->getUserByUsernameFirstOrDefault($uid);
 
-            if (!$created){
+            if (!$created) {
                 return ApiResponse::conflict("User does not have an account.");
             }
 
@@ -193,7 +193,7 @@ class UserController
                 "name" => $request->name,
                 "profile_photo" => $request->profile_photo,
                 "birth_date" => $request->birth_date,
-                "uid"=> $uid
+                "uid" => $uid
             ];
 
             $user = array_filter($user);
@@ -206,7 +206,7 @@ class UserController
 
             $created = $this->service->getUserByUsernameFirstOrDefault($uid);
 
-            if (!$created){
+            if (!$created) {
                 return ApiResponse::conflict("User does not have an account.");
             }
 
@@ -220,9 +220,10 @@ class UserController
         }
     }
 
-    public function changeUserType(Request $request){
+    public function changeUserType(Request $request)
+    {
         try {
-            if (!$request->user()->isRUEmployee()){
+            if (!$request->user()->isRUEmployee()) {
                 return ApiResponse::forbidden('User is not allowed to do this operation.');
             }
 
@@ -286,7 +287,7 @@ class UserController
             "uid" => ['required', 'string', 'unique:users'],
             'password' => ['required', 'string'],
             'profile_photo' => ['required', 'string'],
-            'enrollment_id' => ['required', 'string', 'max:10', 'min:10', 'unique:users'],
+            'enrollment_id' => ['required', 'string', 'max:10', 'min:10', 'unique:users', Rule::in(array_keys(config('course.chapeco')))],
             'birth_date' => ['required', 'date']
         ];
     }
@@ -302,7 +303,4 @@ class UserController
             'birth_date' => ['required', 'date']
         ];
     }
-
-
-
 }
