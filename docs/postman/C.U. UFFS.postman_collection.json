@@ -1,0 +1,622 @@
+{
+	"info": {
+		"_postman_id": "24d7eb8b-cba9-40d1-b2a3-45fd24347be0",
+		"name": "C.U. UFFS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21511192"
+	},
+	"item": [
+		{
+			"name": "v0",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var token = pm.response.json().data.token;\r",
+											"\r",
+											"pm.environment.set(\"user.token\", token);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"uid\":\"{{user.uid}}\",\r\n    \"password\":\"{{user.password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Forgot Password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/v0/forgot-password/{{user.uid}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"forgot-password",
+										"{{user.uid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "29|tBtEEe3ATFQzslfsknAPSj9kdNtQBD8YIruDWtum",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"new_password\":\"{{user.password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/reset-password/{{user.uid}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"reset-password",
+										"{{user.uid}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Entries",
+					"item": [
+						{
+							"name": "Register Entry",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								}
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"api_key\":\"{{api_key}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/entry/{{user.enrollment_id}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"entry",
+										"{{user.enrollment_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Entries",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/api/v0/entry/{{user.uid}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"entry",
+										"{{user.uid}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Menus",
+					"item": []
+				},
+				{
+					"name": "Tickets",
+					"item": [
+						{
+							"name": "Insert tickets",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\":10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/ticket/{{user.enrollment_id}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"ticket",
+										"{{user.enrollment_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register visitor ticket",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/v0/ticket/visitor",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"ticket",
+										"visitor"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Tickets",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/api/v0/ticket/{{user.uid}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"ticket",
+										"{{user.uid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Ticket Amount",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/v0/ticket/balance/{{user.uid}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"ticket",
+										"balance",
+										"{{user.uid}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Request Creation for Users With IdUFFS",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"uid\":\"{{user.uid}}\",\r\n    \"password\":\"{{user.password}}\",\r\n    \"profile_photo\": \"{{user.profile_photo}}\",\r\n    \"enrollment_id\":\"{{user.enrollment_id}}\",\r\n    \"birth_date\": \"{{user.birth_date}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/user/iduffs",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user",
+										"iduffs"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Request Creation for Users Without IdUFFS",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"uid\":\"{{user.uid}}\",\r\n    \"email\":\"{{user.email}}\",\r\n    \"name\":\"{{user.name}}\",\r\n    \"password\":\"{{user.password}}\",\r\n    \"type\": {{user.type}},\r\n    \"profile_photo\": \"{{user.profile_photo}}\",\r\n    \"birth_date\": \"{{user.birth_date}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/user",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Consult User Creation or Update Status",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/v0/user/operation/{{user.uid}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user",
+										"operation",
+										"{{user.uid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Request Update for Users With IdUFFS",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								}
+							},
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"enrollment_id\":\"{{user.enrollment_id}}\",\r\n    \"profile_photo\": \"{{user.profile_photo}}\",\r\n    \"birth_date\": \"{{user.birth_date}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/user/iduffs/{{user.uid}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user",
+										"iduffs",
+										"{{user.uid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Request Update for Users Without IdUFFS",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								}
+							},
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\":\"{{user.email}}\",\r\n    \"name\":\"{{user.name}}\",\r\n    \"profile_photo\": \"{{user.profile_photo}}\",\r\n    \"birth_date\": \"{{user.birth_date}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/user/{{user.uid}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user",
+										"{{user.uid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/api/v0/user/{{user.uid}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user",
+										"{{user.uid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Change User Activity",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								}
+							},
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"active\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/user/{{user.uid}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user",
+										"{{user.uid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Change User Type",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								}
+							},
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"uid\": \"{{user.uid}}\",\r\n    \"type\": {{user.type}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/user",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{user.token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
