@@ -5,10 +5,10 @@ services:
     image: postgres:13
     restart: always
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     environment:
-      POSTGRES_PASSWORD: Senha@2022
-      POSTGRES_DB: cuuffs
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
 
   redis:
     image: redis:5.0.8
@@ -16,8 +16,8 @@ services:
     volumes:
       - "/var/lib/docker/volumes/redis/data:/data:z"
     ports:
-      - "6379:6379"
-    entrypoint: docker-entrypoint.sh --requirepass Senha@2022
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    entrypoint: docker-entrypoint.sh --requirepass ${REDIS_PASSWORD}
 
   app:
     build:
