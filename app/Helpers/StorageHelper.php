@@ -14,16 +14,12 @@ class StorageHelper
      */
     public static function saveUserPayload(string $fileName, string $data): string
     {
-        //Crypt::setCipher(env("CIPHER_KEY"));
-
         $path = "/user_payloads/{$fileName}.txt";
 
         return StorageHelper::saveFile($path, Crypt::encrypt($data));
     }
 
     public static function getUserPayload($path) : string {
-        //Crypt::setCipher(env("CIPHER_KEY"));
-
         $file = Storage::disk('local')->get($path);
 
         return Crypt::decrypt($file);
