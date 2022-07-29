@@ -2,20 +2,33 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use SebastianBergmann\Diff\Exception;
 
 class StorageHelper
 {
+
     /**
      * @throws \Exception
      */
     public static function saveUserPayload(string $fileName, string $data): string
     {
+        Crypt::setCipher(env("CIPHER_KEY"));
+
         $path = "/user_payloads/{$fileName}.txt";
 
-        return StorageHelper::saveFile($path, $data);
+        return StorageHelper::saveFile($path, Crypt::encrypt($data));
     }
+
+    public static function getUserPayload($path) : string {
+        Crypt::setCipher(env("CIPHER_KEY"));
+
+        $file = Storage::disk('local')->get($path);
+
+        return Crypt::decrypt($file);
+    }
+
     /**
      * @throws \Exception
      */
@@ -44,7 +57,6 @@ class StorageHelper
 
         return StorageHelper::saveFile($path, $base64);
     }
-
 
     /**
      * @throws \Exception
@@ -101,4 +113,5 @@ class StorageHelper
     {
         return Storage::disk('local')->get($path);
     }
+
 }

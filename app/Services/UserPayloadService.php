@@ -24,7 +24,7 @@ class UserPayloadService implements IUserPayloadService
     {
         $data = $this->userPayloadRepository->getByUid($uid);
 
-        $payload = StorageHelper::getFile($data->payload);
+        $payload = StorageHelper::getUserPayload($data->payload);
         $data->payload = json_decode($payload, $shouldReturnPayloadAsArray);
 
         return $data;
