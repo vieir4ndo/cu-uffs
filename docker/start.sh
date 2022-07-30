@@ -4,11 +4,11 @@ role=${CONTAINER_ROLE:-app}
 env=${APP_ENV:-production}
 if [ "$env" != "local" ]; then
     echo "Caching configuration..."
-    (cd /var/www/html && php artisan config:cache && php artisan route:cache && php artisan view:cache)
+    (cd /var/www/html && composer dump-autoload && php artisan config:cache && php artisan route:cache && php artisan view:cache)
 fi
 if [ "$role" = "app" ]; then
     echo "Running the project..."
-    php /var/www/html/artisan serve --host=0.0.0.0
+    (php artisan migrate && php /var/www/html/artisan serve --host=0.0.0.0)
 elif [ "$role" = "horizon" ]; then
     echo "Running the queue..."
     php /var/www/html/artisan horizon
