@@ -4,7 +4,7 @@
 
 # C.U. UFFS
 
-O Cadastro Único da UFFS é um sistema cujo princiapl objetivo é a centralização dos serviços prestados para a comunidade acadêmica da [Universidade Federal da Fronteira Sul (UFFS)](https://www.uffs.edu.br). Entre as principais funcionalidades estão a geração da carteirinha de estudante, o controle das entradas do Restaurante Universitário e agendamento de salas.
+O Cadastro Único da UFFS é um sistema cujo principal objetivo é a centralização dos serviços prestados para a comunidade acadêmica da [Universidade Federal da Fronteira Sul (UFFS)](https://www.uffs.edu.br). Entre as principais funcionalidades estão a geração da carteirinha de estudante, o controle das entradas do Restaurante Universitário e agendamento de salas.
 
 > **IMPORTANTE:** o serviço está em desenvolvimento.
 
@@ -90,11 +90,13 @@ DB_USERNAME=postgres
 DB_PASSWORD=
 ```
 
-Informe as credenciais do SMTP MailJet
+Informe as chaves necessárias para a aplicação
 ```
 MAILJET_SECRETKEY=
 MAILJET_PUBLICKEY=
-MAILJET_SENDEREMAIL="cu.cc.uffs@gmail.com"
+MAILJET_SENDEREMAIL=
+CAPTCHA_MONSTER_KEY=
+API_KEY=
 ```
 
 Criação as tabelas do banco de dados com as migrações esquemas:
@@ -135,10 +137,25 @@ php artisan serve
 
 Após isso a aplicação estará rodando na porta `8000` e poderá ser acessada em [localhost:8000](http://localhost:8000).
 
+### 4. Build
+
+Para buildar a aplicação com o Docker siga os passos abaixo:
+
+#### 4.1 Configure os arquivos .env a partir dos exemplos em .env.example nos diretórios raíz e /docker
+
+#### 4.2 Rode o comando abaixo na raíz do projeto para subir os containers:
+
+```
+docker-compose -f docker/docker-compose.yml up -d --build
+```
+
+Após isso você encontrá quatro containers rodando em sua máquina: duas instâncias de banco de dados (postgres e redis) e três instâncias da aplicação (app, horizon e scheduler). 
+
+#### E simples assim tudo está configurado! A aplicação estará disponível na porta `8000` e poderá ser acessada em [mydomain:8000](http://mydomain:8000).
+
 ## 🤝 Contribua
 
 Sua ajuda é muito bem-vinda, independente da forma! [Sugira uma nova funcionalidade](https://github.com/vieir4ndo/cu-uffs/issues/new?assignees=&labels=&template=feature_request.md&title=), [reporte um problema/bug](https://github.com/vieir4ndo/cu-uffs/issues/new?assignees=&labels=bug&template=bug_report.md&title=), [envie um pull request](https://github.com/ccuffs/hacktoberfest/blob/master/docs/tutorial-pull-request.md), ou simplemente utilize o projeto e comente sua experiência.
-
 
 ## 🎫 Licença
 
