@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api\V0;
 
 use App\Enums\Operation;
+use App\Interfaces\Services\IUserPayloadService;
+use App\Interfaces\Services\IUserService;
 use App\Jobs\StartCreateOrUpdateUserJob;
 use App\Models\Api\ApiResponse;
-use App\Services\UserPayloadService;
-use App\Services\UserService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -14,11 +14,12 @@ use Illuminate\Validation\Rule;
 
 class UserController
 {
-    private UserService $service;
-    private UserPayloadService $userPayloadService;
+    private IUserService $service;
+
+    private IUserPayloadService $userPayloadService;
 
 
-    public function __construct(UserService $userService, UserPayloadService $userPayloadService)
+    public function __construct(IUserService $userService, IUserPayloadService $userPayloadService)
     {
         $this->service = $userService;
         $this->userPayloadService = $userPayloadService;

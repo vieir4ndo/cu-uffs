@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Api\V0;
 
 use App\Http\Controllers\Controller;
+use App\Interfaces\Services\ITicketService;
 use App\Models\Api\ApiResponse;
-use App\Services\TicketService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class TicketController extends Controller
 {
-    private TicketService $service;
+    private ITicketService $service;
 
-    public function __construct(TicketService $service)
+    public function __construct(ITicketService $service)
     {
         $this->service = $service;
     }

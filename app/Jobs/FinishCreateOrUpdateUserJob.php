@@ -4,8 +4,8 @@ namespace App\Jobs;
 
 use App\Enums\Operation;
 use App\Enums\UserOperationStatus;
-use App\Services\UserPayloadService;
-use App\Services\UserService;
+use App\Interfaces\Services\IUserPayloadService;
+use App\Interfaces\Services\IUserService;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -38,7 +38,7 @@ class FinishCreateOrUpdateUserJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(UserPayloadService $userPayloadService, UserService $userService)
+    public function handle(IUserPayloadService $userPayloadService, IUserService $userService)
     {
         try {
             Log::info("Starting job {$this->className}");
@@ -77,7 +77,7 @@ class FinishCreateOrUpdateUserJob implements ShouldQueue
             $userPayloadService->deleteByUid($this->uid);
 
             Log::info("Finished job {$this->className}");
-        } catch (\Exception | Throwable $e) {
+        } catch (¾ $e) {
             Log::error("Error on job {$this->className}");
 
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Failed, "Failed at {$this->className} with message: {$e->getMessage()}");

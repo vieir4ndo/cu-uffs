@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V0\AuthController;
 use App\Http\Controllers\Api\V0\EntryController;
+use App\Http\Controllers\Api\V0\MenuController;
 use App\Http\Controllers\Api\V0\UserController;
 use App\Http\Controllers\Api\V0\TicketController;
 use App\Http\Middleware\ApiKeyMiddleware;
@@ -39,6 +40,9 @@ Route::middleware('auth:sanctum')->namespace('\App\Http\Controllers\Api')->group
         Route::post('/user', [UserController::class, 'createUserWithoutIdUFFS'])->name('api.user.createWithoutIdUFFS');
         Route::patch('/user', [UserController::class, 'updateUserWithoutIdUFFS'])->name('api.user.updateUserWithoutIdUFFS');
         Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('api.auth.forgotPassword');
+        Route::post('/menu', [MenuController::class, 'createMenu'])->name('api.menu.createMenu');
+        Route::patch('/menu/{date}', [MenuController::class, 'updateMenu'])->name('api.menu.updateMenu');
+        Route::delete('/menu/{date}', [MenuController::class, 'deleteMenu'])->name('api.menu.deleteMenu');
     });
 });
 
@@ -49,3 +53,4 @@ Route::middleware(ApiKeyMiddleware::class)->namespace('\App\Http\Controllers\Api
 Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
 Route::post('/user/iduffs', [UserController::class, 'createUserWithIdUFFS'])->name('api.user.createWithIdUFFS');
 Route::get('/user/operation/{uid}', [UserController::class, 'getUserOperationStatus'])->name('api.user.getUserOperationStatus');
+Route::get('/menu', [MenuController::class, 'getMenu'])->name('api.menu.getMenu');

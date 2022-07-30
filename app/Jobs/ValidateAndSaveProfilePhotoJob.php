@@ -5,8 +5,8 @@ namespace App\Jobs;
 use App\Enums\UserOperationStatus;
 use App\Helpers\OperationHelper;
 use App\Helpers\StorageHelper;
-use App\Services\AiPassportPhotoService;
-use App\Services\UserPayloadService;
+use App\Interfaces\Services\IAiPassportPhotoService;
+use App\Interfaces\Services\IUserPayloadService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -37,7 +37,7 @@ class ValidateAndSaveProfilePhotoJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(UserPayloadService $userPayloadService, AiPassportPhotoService $aiPassportPhotoService)
+    public function handle(IUserPayloadService $userPayloadService, IAiPassportPhotoService $aiPassportPhotoService)
     {
         try {
             Log::info("Starting job {$this->className}");

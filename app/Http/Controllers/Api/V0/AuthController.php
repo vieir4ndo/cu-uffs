@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V0;
 
-use App\Services\AuthService;
+use App\Interfaces\Services\IAuthService;
 use App\Models\Api\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController
 {
-    private AuthService $service;
+    private IAuthService $service;
 
-    public function __construct(AuthService $service)
+    public function __construct(IAuthService $service)
     {
         $this->service = $service;
     }

@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers\Api\V0;
 
+use App\Interfaces\Services\IEntryService;
 use App\Models\Api\ApiResponse;
-use App\Services\EntryService;
 use Exception;
 use Illuminate\Http\Request;
 
 class EntryController
 {
-    private EntryService $service;
 
-    public function __construct(EntryService $service)
+    public function __construct(private IEntryService $service)
     {
-        $this->service = $service;
     }
 
     public function insertEntry($enrollment_id){
