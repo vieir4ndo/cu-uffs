@@ -18,7 +18,7 @@ class TicketController extends Controller
         $this->service = $service;
     }
 
-    public function insertTickets(Request $request, $enrollment_id){
+    public function insertTickets(Request $request){
         try {
             $data = [
                 'third_party_cashier_employee_id' => $request->user()->id,
@@ -32,7 +32,7 @@ class TicketController extends Controller
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $this->service->insertTicket($enrollment_id, $data);
+            $this->service->insertTicket($request->enrollment_id, $data);
 
             return ApiResponse::ok(null);
         } catch (Exception $e) {
@@ -56,9 +56,9 @@ class TicketController extends Controller
         }
     }
 
-    public function getTickets($uid){
+    public function getTickets(Request $request){
         try {
-            $entries = $this->service->getTicketsByUsername($uid);
+            $entries = $this->service->getTicketsByUsername($request->user()->uid);
 
             return ApiResponse::ok($entries);
         } catch (Exception $e) {
@@ -66,9 +66,9 @@ class TicketController extends Controller
         }
     }
 
-    public function getTicketBalance($uid){
+    public function getTicketBalance(Request $request){
         try {
-            $entries = $this->service->getTicketBalance($uid);
+            $entries = $this->service->getTicketBalance($request->user()->uid);
 
             return ApiResponse::ok($entries);
         } catch (Exception $e) {

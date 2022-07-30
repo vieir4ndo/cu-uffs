@@ -119,10 +119,10 @@ class UserController
         }
     }
 
-    public function getUser($uid)
+    public function getUser(Request $request)
     {
         try {
-            $user = $this->service->getUserByUsername($uid);
+            $user = $this->service->getUserByUsername($request->user()->uid);
 
             return ApiResponse::ok($user);
         } catch (Exception $e) {
@@ -130,7 +130,7 @@ class UserController
         }
     }
 
-    public function changeUserActivity(Request $request, string $uid)
+    public function changeUserActivity(Request $request)
     {
         try {
             $user = [
@@ -143,7 +143,7 @@ class UserController
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $savedUser = $this->service->deactivateUser($uid, $user);
+            $savedUser = $this->service->deactivateUser($request->user()->uid, $user);
 
             return ApiResponse::ok($savedUser);
         } catch (Exception $e) {
@@ -151,14 +151,14 @@ class UserController
         }
     }
 
-    public function updateUserWithIdUFFS(Request $request, string $uid)
+    public function updateUserWithIdUFFS(Request $request)
     {
         try {
             $user = [
                 "enrollment_id" => $request->enrollment_id,
                 "profile_photo" => $request->profile_photo,
                 "birth_date" => $request->birth_date,
-                "uid" => $uid
+                "uid" => $request->user()->uid
             ];
 
             $user = array_filter($user);
@@ -169,7 +169,7 @@ class UserController
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $created = $this->service->getUserByUsernameFirstOrDefault($uid);
+            $created = $this->service->getUserByUsernameFirstOrDefault($request->user()->uid);
 
             if (!$created) {
                 return ApiResponse::conflict("User does not have an account.");
@@ -177,7 +177,7 @@ class UserController
 
             $this->userPayloadService->create($user, Operation::UserUpdateWithIdUFFS);
 
-            StartCreateOrUpdateUserJob::dispatch($uid);
+            StartCreateOrUpdateUserJob::dispatch($request->user()->uid);
 
             return ApiResponse::accepted();
         } catch (Exception $e) {
@@ -185,7 +185,7 @@ class UserController
         }
     }
 
-    public function updateUserWithoutIdUFFS(Request $request, string $uid)
+    public function updateUserWithoutIdUFFS(Request $request)
     {
         try {
             $user = [
@@ -193,7 +193,7 @@ class UserController
                 "name" => $request->name,
                 "profile_photo" => $request->profile_photo,
                 "birth_date" => $request->birth_date,
-                "uid" => $uid
+                "uid" => $request->user()->uid
             ];
 
             $user = array_filter($user);
@@ -204,7 +204,7 @@ class UserController
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $created = $this->service->getUserByUsernameFirstOrDefault($uid);
+            $created = $this->service->getUserByUsernameFirstOrDefault($request->user()->uid);
 
             if (!$created) {
                 return ApiResponse::conflict("User does not have an account.");
@@ -212,7 +212,7 @@ class UserController
 
             $this->userPayloadService->create($user, Operation::UserUpdateWithoutIdUFFS);
 
-            StartCreateOrUpdateUserJob::dispatch($uid);
+            StartCreateOrUpdateUserJob::dispatch($request->user()->uid);
 
             return ApiResponse::accepted();
         } catch (Exception $e) {
@@ -266,7 +266,7 @@ class UserController
     {
         return [
             'profile_photo' => ['string'],
-            'enrollment_id' => [Rule::unique('users')->ignore($enrollment_id, 'enrollment_id'), function($enrollment_id) { return array_keys(config('course.chapeco'), substr($enrollment_id, 3, 4)); }, 'string', 'max:10', 'min:10'],
+            'enrollment_id' => [Rule::unique('users')->ignore($enrollment_id, 'enrollment_id'), 'string', 'max:10', 'min:10'],
             'birth_date' => ['date']
         ];
     }
@@ -287,7 +287,7 @@ class UserController
             "uid" => ['required', 'string', 'unique:users'],
             'password' => ['required', 'string'],
             'profile_photo' => ['required', 'string'],
-            'enrollment_id' => ['required', 'string', 'max:10', 'min:10', 'unique:users', function($enrollment_id) { return array_keys(config('course.chapeco'), substr($enrollment_id, 3, 4)); }],
+            'enrollment_id' => ['required', 'string', 'max:10', 'min:10', 'unique:users'],
             'birth_date' => ['required', 'date']
         ];
     }

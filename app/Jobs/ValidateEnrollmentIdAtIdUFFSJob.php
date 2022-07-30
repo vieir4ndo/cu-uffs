@@ -54,7 +54,7 @@ class ValidateEnrollmentIdAtIdUFFSJob implements ShouldQueue
                 $user_data_from_enrollment = $idUffsService->isActive($user["enrollment_id"], $user["name"]);
 
                 if (empty($user_data_from_enrollment)) {
-                    throw new Exception("Enrollment_id is not active or does not belong to the IdUFFS informed.");
+                    throw new Exception("Enrollment_id is either not active, does not belong to the IdUFFS informed or is not from campus Chapecó.");
                 }
 
                 $user["type"] = array_key_exists('type', $user) ? $user["type"] : $user_data_from_enrollment["type"];

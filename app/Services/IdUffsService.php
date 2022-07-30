@@ -64,6 +64,11 @@ class IdUffsService implements IIdUffsService
         }
 
         if (StringHelper::checkIfContains($response->getBody(), '<p class="descricaoVinculo">Estudante</p>')) {
+
+            if (array_keys(config('course.chapeco'), substr($enrollment_id, 3, 4))){
+                return null;
+            }
+
             return [
                 "status_enrollment_id" => true,
                 "type" => UserType::Student->value,

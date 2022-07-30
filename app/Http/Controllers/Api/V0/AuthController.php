@@ -28,14 +28,20 @@ class AuthController
         }
     }
 
-    public function forgotPassword(Request $request, string $uid)
+    public function forgotPassword(Request $request)
     {
         try {
             if (!$request->user()->isRUEmployee()){
                 return ApiResponse::forbidden('User is not allowed to do this operation.');
             }
 
-            $this->service->forgotPassword($uid);
+            $validation = Validator::make(["uid" => $request->uid], $this->forgotPasswordRules());
+
+            if ($validation->fails()) {
+                return ApiResponse::badRequest($validation->errors()->all());
+            }
+
+            $this->service->forgotPassword($request->uid);
 
             return ApiResponse::ok(null);
         } catch (Exception $e) {
@@ -43,7 +49,7 @@ class AuthController
         }
     }
 
-    public function resetPassword(Request $request, string $uid)
+    public function resetPassword(Request $request)
     {
         try {
             $validation = Validator::make(["new_password" => $request->new_password], $this->resetPasswordRules());
@@ -52,7 +58,7 @@ class AuthController
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $this->service->resetPassword($uid, $request->new_password);
+            $this->service->resetPassword($request->user()->uid, $request->new_password);
 
             return ApiResponse::ok(null);
         } catch (Exception $e) {
@@ -64,6 +70,16 @@ class AuthController
     {
         return [
             'new_password' => [
+                'required',
+                'string',
+            ]
+        ];
+    }
+
+    private function forgotPasswordRules()
+    {
+        return [
+            'uid' => [
                 'required',
                 'string',
             ]

@@ -4,6 +4,9 @@ use App\Http\Controllers\Api\V0\AuthController;
 use App\Http\Controllers\Api\V0\EntryController;
 use App\Http\Controllers\Api\V0\UserController;
 use App\Http\Controllers\Api\V0\TicketController;
+use App\Http\Middleware\ApiKeyMiddleware;
+use App\Http\Middleware\RUEmployeeMiddleware;
+use App\Http\Middleware\ThirdPartyCashierEmployeeMiddleware;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,25 +21,28 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->namespace('\App\Http\Controllers\Api')->group(function () {
-    Route::get('/user/{uid}', [UserController::class, 'getUser'])->name('api.user.getUser');
-    Route::patch('/user/{uid}', [UserController::class, 'updateUserWithoutIdUFFS'])->name('api.user.updateUserWithoutIdUFFS');
-    Route::patch('/user/iduffs/{uid}', [UserController::class, 'updateUserWithIdUFFS'])->name('api.user.updateUserWithIdUFFS');
-    Route::put('/user/{uid}', [UserController::class, 'changeUserActivity'])->name('api.user.changeUserActivity');
-    Route::put('/user', [UserController::class, 'changeUserType'])->name('api.user.changeUserType');
-    Route::post('/user', [UserController::class, 'createUserWithoutIdUFFS'])->name('api.user.createWithoutIdUFFS');
-    Route::post('/forgot-password/{uid}', [AuthController::class, 'forgotPassword'])->name('api.auth.forgotPassword');
-    Route::post('/reset-password/{uid}', [AuthController::class, 'resetPassword'])->name('api.auth.resetPassword');
-    Route::get('/entry/{uid}', [EntryController::class, 'getEntries'])->name('api.entry.getEntries');
-    Route::get('/ticket/{uid}', [TicketController::class, 'getTickets'])->name('api.ticket.getTickets');
-    Route::get('/ticket/balance/{uid}', [TicketController::class, 'getTicketBalance'])->name('api.ticket.getTicketBalance');
+    Route::get('/user', [UserController::class, 'getUser'])->name('api.user.getUser');
+    Route::patch('/user/iduffs', [UserController::class, 'updateUserWithIdUFFS'])->name('api.user.updateUserWithIdUFFS');
+    Route::put('/user', [UserController::class, 'changeUserActivity'])->name('api.user.changeUserActivity');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('api.auth.resetPassword');
+    Route::get('/entry', [EntryController::class, 'getEntries'])->name('api.entry.getEntries');
+    Route::get('/ticket', [TicketController::class, 'getTickets'])->name('api.ticket.getTickets');
+    Route::get('/ticket/balance', [TicketController::class, 'getTicketBalance'])->name('api.ticket.getTicketBalance');
 
-    Route::middleware(\App\Http\Middleware\ThirdPartyCashierEmployeeMiddleware::class)->namespace('\App\Http\Controllers\Api')->group(function () {
+    Route::middleware(ThirdPartyCashierEmployeeMiddleware::class)->namespace('\App\Http\Controllers\Api')->group(function () {
         Route::post('/ticket/visitor', [TicketController::class, 'insertTicketsForVisitors'])->name('api.ticket.insertTicketsForVisitors');
-        Route::post('/ticket/{enrollment_id}', [TicketController::class, 'insertTickets'])->name('api.ticket.insertTickets');
+        Route::post('/ticket', [TicketController::class, 'insertTickets'])->name('api.ticket.insertTickets');
+    });
+
+    Route::middleware(RUEmployeeMiddleware::class)->namespace('\App\Http\Controllers\Api')->group(function () {
+        Route::put('/user/type', [UserController::class, 'changeUserType'])->name('api.user.changeUserType');
+        Route::post('/user', [UserController::class, 'createUserWithoutIdUFFS'])->name('api.user.createWithoutIdUFFS');
+        Route::patch('/user', [UserController::class, 'updateUserWithoutIdUFFS'])->name('api.user.updateUserWithoutIdUFFS');
+        Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('api.auth.forgotPassword');
     });
 });
 
-Route::middleware(\App\Http\Middleware\ApiKeyMiddleware::class)->namespace('\App\Http\Controllers\Api')->group(function () {
+Route::middleware(ApiKeyMiddleware::class)->namespace('\App\Http\Controllers\Api')->group(function () {
     Route::post('/entry/{enrollment_id}', [EntryController::class, 'insertEntry'])->name('api.entry.insertEntry');
 });
 

@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "24d7eb8b-cba9-40d1-b2a3-45fd24347be0",
+		"_postman_id": "4d8c85e1-d71d-4dab-980f-2cb61df5d6d7",
 		"name": "C.U. UFFS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "21511192"
+		"_exporter_id": "15701954"
 	},
 	"item": [
 		{
@@ -61,16 +61,24 @@
 							"request": {
 								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"uid\": \"{{user.uid}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
 								"url": {
-									"raw": "{{url}}/api/v0/forgot-password/{{user.uid}}",
+									"raw": "{{url}}/api/v0/forgot-password",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"api",
 										"v0",
-										"forgot-password",
-										"{{user.uid}}"
+										"forgot-password"
 									]
 								}
 							},
@@ -101,15 +109,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/api/v0/reset-password/{{user.uid}}",
+									"raw": "{{url}}/api/v0/reset-password",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"api",
 										"v0",
-										"reset-password",
-										"{{user.uid}}"
+										"reset-password"
 									]
 								}
 							},
@@ -180,15 +187,14 @@
 									}
 								],
 								"url": {
-									"raw": "{{url}}/api/v0/entry/{{user.uid}}",
+									"raw": "{{url}}/api/v0/entry",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"api",
 										"v0",
-										"entry",
-										"{{user.uid}}"
+										"entry"
 									]
 								}
 							},
@@ -210,7 +216,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"amount\":10\n}",
+									"raw": "{\n    \"enrollment_id\":\"{{user.enrollment_id}}\",\n    \"amount\":10\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -218,15 +224,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/api/v0/ticket/{{user.enrollment_id}}",
+									"raw": "{{url}}/api/v0/ticket",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"api",
 										"v0",
-										"ticket",
-										"{{user.enrollment_id}}"
+										"ticket"
 									]
 								}
 							},
@@ -269,15 +274,14 @@
 									}
 								],
 								"url": {
-									"raw": "{{url}}/api/v0/ticket/{{user.uid}}",
+									"raw": "{{url}}/api/v0/ticket",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"api",
 										"v0",
-										"ticket",
-										"{{user.uid}}"
+										"ticket"
 									]
 								}
 							},
@@ -289,7 +293,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{url}}/api/v0/ticket/balance/{{user.uid}}",
+									"raw": "{{url}}/api/v0/ticket/balance",
 									"host": [
 										"{{url}}"
 									],
@@ -297,8 +301,7 @@
 										"api",
 										"v0",
 										"ticket",
-										"balance",
-										"{{user.uid}}"
+										"balance"
 									]
 								}
 							},
@@ -419,7 +422,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/api/v0/user/iduffs/{{user.uid}}",
+									"raw": "{{url}}/api/v0/user/iduffs",
 									"host": [
 										"{{url}}"
 									],
@@ -427,8 +430,7 @@
 										"api",
 										"v0",
 										"user",
-										"iduffs",
-										"{{user.uid}}"
+										"iduffs"
 									]
 								}
 							},
@@ -460,15 +462,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/api/v0/user/{{user.uid}}",
+									"raw": "{{url}}/api/v0/user",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"api",
 										"v0",
-										"user",
-										"{{user.uid}}"
+										"user"
 									]
 								}
 							},
@@ -491,15 +492,14 @@
 									}
 								],
 								"url": {
-									"raw": "{{url}}/api/v0/user/{{user.uid}}",
+									"raw": "{{url}}/api/v0/user",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"api",
 										"v0",
-										"user",
-										"{{user.uid}}"
+										"user"
 									]
 								}
 							},
@@ -523,7 +523,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"active\": false\r\n}",
+									"raw": "{\r\n    \"active\": true\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -531,15 +531,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/api/v0/user/{{user.uid}}",
+									"raw": "{{url}}/api/v0/user",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"api",
 										"v0",
-										"user",
-										"{{user.uid}}"
+										"user"
 									]
 								}
 							},
@@ -571,14 +570,15 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/api/v0/user",
+									"raw": "{{url}}/api/v0/user/type",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"api",
 										"v0",
-										"user"
+										"user",
+										"type"
 									]
 								}
 							},

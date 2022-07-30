@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V0;
 use App\Models\Api\ApiResponse;
 use App\Services\EntryService;
 use Exception;
+use Illuminate\Http\Request;
 
 class EntryController
 {
@@ -29,9 +30,9 @@ class EntryController
         }
     }
 
-    public function getEntries($uid){
+    public function getEntries(Request $request){
         try {
-            $entries = $this->service->getEntriesByUsername($uid);
+            $entries = $this->service->getEntriesByUsername($request->user()->uid);
 
             return ApiResponse::ok($entries);
         } catch (Exception $e) {
