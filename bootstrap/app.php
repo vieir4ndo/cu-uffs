@@ -41,6 +41,8 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+$app->register(\UKFast\HealthCheck\HealthCheckServiceProvider::class);
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application

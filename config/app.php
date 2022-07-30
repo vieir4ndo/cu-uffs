@@ -169,6 +169,7 @@ return [
         /*
          * Package Service Providers...
          */
+        UKFast\HealthCheck\HealthCheckServiceProvider::class,
 
         /*
          * Application Service Providers...
