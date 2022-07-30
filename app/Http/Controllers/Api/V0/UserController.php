@@ -122,7 +122,7 @@ class UserController
     public function getUser(Request $request)
     {
         try {
-            $user = $this->service->getUserByUsername($request->user()->uid);
+            $user = $this->service->getStudentCard($request->user()->uid);
 
             return ApiResponse::ok($user);
         } catch (Exception $e) {

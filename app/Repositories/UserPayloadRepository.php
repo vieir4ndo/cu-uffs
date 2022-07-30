@@ -32,7 +32,11 @@ class UserPayloadRepository implements IUserPayloadRepository
 
     public function getStatusByUid(string $uid)
     {
-        return UserPayload::where("uid", $uid)->select('uid', 'status', 'message', 'operation', 'updated_at')->first();
+        return UserPayload::where("uid", $uid)
+            ->join('operations', 'user_payloads.operation', '=', 'operations.id')
+            ->join('user_operation_statuses', 'user_payloads.status', '=', 'user_operation_statuses.id')
+            ->select('user_payloads.uid', 'user_operation_statuses.description as status', 'user_payloads.message', 'operations.description as operation', 'user_payloads.updated_at')
+            ->first();
     }
 
     public function update($uid, $data)

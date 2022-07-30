@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\Repositories\IUserRepository;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UserRepository implements IUserRepository
 {
@@ -40,4 +41,9 @@ class UserRepository implements IUserRepository
     public function getAllUsersWithIdUFFS(){
         return User::select('uid')->where('type', [config('user.users_auth_iduffs')])->get();
     }
+
+    public function getStudentCard(string $uid){
+        return DB::select("select u.name, u.enrollment_id, u.profile_photo, u.bar_code, t.description as type, u.active, u.course, u.status_enrollment_id, u.birth_date from users u inner join user_types t on u.type=t.id where u.uid='{$uid}'")[0];
+    }
+
 }

@@ -17,7 +17,7 @@ class CreateUserPayloadsTable extends Migration
             $table->id();
             $table->text("uid");
             $table->foreignId('operation')->constrained('operations');
-            $table->integer("status");
+            $table->foreignId("status")->constrained('user_operation_statuses');
             $table->text("message")->nullable();
             $table->text("payload")->nullable();
             $table->timestamps();

@@ -12,4 +12,5 @@ interface IUserRepository
     function deleteUserByUsername(string $uid): bool;
     function updateUserByUsername(string $uid, $data): User;
     function getAllUsersWithIdUFFS();
+    function getStudentCard(string $uid);
 }

@@ -78,6 +78,19 @@ class UserService implements IUserService
         return $user;
     }
 
+    public function getStudentCard(string $uid){
+        $user = (object)$this->repository->getStudentCard($uid);
+
+        if (empty($user))
+            throw new Exception("User not found.");
+
+        $user->profile_photo = StorageHelper::getFile($user->profile_photo);
+        $user->bar_code = StorageHelper::getFile($user->bar_code);
+
+        return $user;
+    }
+
+
     public function getUserByUsernameFirstOrDefault(string $uid, $withFiles = true): ?\App\Models\User
     {
         $user = $this->repository->getUserByUsername($uid);

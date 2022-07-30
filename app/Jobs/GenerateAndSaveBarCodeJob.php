@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class GenerateAndSaveBarCodeJob implements ShouldQueue
 {
@@ -60,7 +61,7 @@ class GenerateAndSaveBarCodeJob implements ShouldQueue
             FinishCreateOrUpdateUserJob::dispatch($this->uid);
 
             Log::info("Finished job {$this->className}");
-        } catch (\Exception $e) {
+        } catch (\Exception | Throwable $e) {
             Log::error("Error on job {$this->className}");
 
             $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Failed, "Failed at {$this->className} with message: {$e->getMessage()}");

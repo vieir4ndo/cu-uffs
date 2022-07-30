@@ -2,13 +2,16 @@
 
 namespace App\Jobs;
 
+use App\Enums\UserOperationStatus;
 use App\Services\IdUffsService;
+use App\Services\UserPayloadService;
 use App\Services\UserService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class UpdateUserEnrollmentIdStatusJob implements ShouldQueue
 {
@@ -37,21 +40,27 @@ class UpdateUserEnrollmentIdStatusJob implements ShouldQueue
      * @return void
      * @throws \Exception
      */
-    public function handle(UserService $userService, IdUffsService $idUffsService)
+    public function handle(UserService $userService, IdUffsService $idUffsService, UserPayloadService $userPayloadService)
     {
-        Log::info("Starting job {$this->className}");
+        try {
+            Log::info("Starting job {$this->className}");
 
-        $user = $userService->getUserByUsername($this->uid, false);
+            $user = $userService->getUserByUsername($this->uid, false);
 
-        $user_data_from_enrollment = $idUffsService->isActive($user->enrollment_id, $user->name);
+            $user_data_from_enrollment = $idUffsService->isActive($user->enrollment_id, $user->name);
 
-        $data = [
-            "status_enrollment_id" => !empty($user_data_from_enrollment)
-        ];
+            $data = [
+                "status_enrollment_id" => !empty($user_data_from_enrollment)
+            ];
 
-        $userService->updateUser($user, $data);
+            $userService->updateUser($user, $data);
 
-        Log::info("Finished job {$this->className}");
+            Log::info("Finished job {$this->className}");
+        }catch (\Exception | Throwable $e) {
+            Log::error("Error on job {$this->className}");
+            $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Failed, "Failed at {$this->className} with message: {$e->getMessage()}");
+        }
+
     }
 }
 
