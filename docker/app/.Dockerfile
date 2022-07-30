@@ -37,6 +37,7 @@ RUN apt install --yes nodejs npm
 
 WORKDIR /var/www/html
 COPY . .
+COPY ../.env .env
 
 RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-interaction
 
