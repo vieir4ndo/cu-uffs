@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e3f8832821260620a3ef7fd7c66f61e0",
+    "content-hash": "a28387d84023b61c231064832428b369",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -6538,6 +6538,93 @@
                 "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/2.2.4"
             },
             "time": "2021-12-08T09:12:39+00:00"
+        },
+        {
+            "name": "ukfast/laravel-health-check",
+            "version": "v1.13.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ans-group/laravel-health-check.git",
+                "reference": "c6f79fdd928bd61d8b91d7dd89c2860dcd585be5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ans-group/laravel-health-check/zipball/c6f79fdd928bd61d8b91d7dd89c2860dcd585be5",
+                "reference": "c6f79fdd928bd61d8b91d7dd89c2860dcd585be5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "illuminate/console": "^5.4|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/http": "^5.4|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/support": "^5.4|^6.0|^7.0|^8.0|^9.0",
+                "nesbot/carbon": "^1.26.3|^2.0",
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": ">=5.6.3",
+                "illuminate/database": "^5.4|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/log": "^5.4|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/redis": "^5.4|^6.0|^7.0|^8.0|^9.0",
+                "mockery/mockery": "^1.0",
+                "orchestra/testbench": "^3.0|^4.0|^5.0|^6.0",
+                "phpunit/phpunit": ">=5.0"
+            },
+            "suggest": {
+                "guzzlehttp/guzzle": "Allows the http health check to function.",
+                "illuminate/database": "Allows the database health check to function.",
+                "illuminate/log": "Allows the log health check to function.",
+                "illuminate/redis": "Allows the redis health check to function.",
+                "league/flysystem": "Allows the ftp health check to function.",
+                "sensiolabs/security-checker": "Allows the package security health check to function."
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "UKFast\\HealthCheck\\HealthCheckServiceProvider"
+                    ],
+                    "aliases": {
+                        "HealthCheck": "UKFast\\HealthCheck\\Facade\\HealthCheck"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "UKFast\\HealthCheck\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "George Kelly",
+                    "email": "george.kelly@ukfast.co.uk",
+                    "role": "Author & Maintainer"
+                },
+                {
+                    "name": "Tyler Woonton",
+                    "email": "tyler.woonton@ukfast.co.uk",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "A package for checking the health of your Laravel/Lumen applications.",
+            "keywords": [
+                "laravel",
+                "laravel-health-check",
+                "lumen",
+                "lumen-health-check",
+                "ukfast",
+                "ukfast-health-check"
+            ],
+            "support": {
+                "issues": "https://github.com/ukfast/laravel-health-check/issues",
+                "source": "https://github.com/ukfast/laravel-health-check/tree/master"
+            },
+            "abandoned": "ans-group/laravel-health-check",
+            "time": "2022-07-11T16:07:39+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

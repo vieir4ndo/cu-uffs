@@ -23,7 +23,6 @@ return [
         UKFast\HealthCheck\Checks\CrossServiceHealthCheck::class,
         UKFast\HealthCheck\Checks\DatabaseHealthCheck::class,
         UKFast\HealthCheck\Checks\EnvHealthCheck::class,
-        UKFast\HealthCheck\Checks\FtpHealthCheck::class,
         UKFast\HealthCheck\Checks\HttpHealthCheck::class,
         UKFast\HealthCheck\Checks\LogHealthCheck::class,
         UKFast\HealthCheck\Checks\MigrationUpToDateHealthCheck::class,
