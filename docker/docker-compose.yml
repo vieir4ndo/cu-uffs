@@ -37,11 +37,7 @@ services:
       - ../resources:/var/www/html/resources
       - ../artisan:/var/www/html/artisan
       - ../.env:/var/www/html/.env
-      - ../composer.json:/var/www/html/composer.json
-      - ../composer.lock:/var/www/html/composer.lock
-      - ../package.json:/var/www/html/package.json
-      - ../package-lock.json:/var/www/html/package-lock.json
-      - ../node_modules:/var/www/html/node_modules
+      - ../node_modules:/var/www/html/node_modules 
     depends_on:
       - postgres
       - redis
@@ -64,11 +60,7 @@ services:
       - ../resources:/var/www/html/resources
       - ../artisan:/var/www/html/artisan
       - ../.env:/var/www/html/.env
-      - ../composer.json:/var/www/html/composer.json
-      - ../composer.lock:/var/www/html/composer.lock
-      - ../package.json:/var/www/html/package.json
-      - ../package-lock.json:/var/www/html/package-lock.json
-      - ../node_modules:/var/www/html/node_modules
+      - ../node_modules:/var/www/html/node_modules 
     depends_on:
       - app
 networks:
