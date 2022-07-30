@@ -21,7 +21,7 @@ class UpdateUserEnrollmentIdStatusCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Update User Enrollment Id UserOperationStatus';
+    protected $description = 'Update User Enrollment Id Status';
 
     private string $className;
     /**

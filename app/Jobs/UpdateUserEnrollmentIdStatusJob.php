@@ -40,7 +40,7 @@ class UpdateUserEnrollmentIdStatusJob implements ShouldQueue
      * @return void
      * @throws \Exception
      */
-    public function handle(UserService $userService, IdUffsService $idUffsService, UserPayloadService $userPayloadService)
+    public function handle(UserService $userService, IdUffsService $idUffsService)
     {
         try {
             Log::info("Starting job {$this->className}");
@@ -58,7 +58,6 @@ class UpdateUserEnrollmentIdStatusJob implements ShouldQueue
             Log::info("Finished job {$this->className}");
         }catch (\Exception | Throwable $e) {
             Log::error("Error on job {$this->className}");
-            $userPayloadService->updateStatusAndMessageByUid($this->uid, UserOperationStatus::Failed, "Failed at {$this->className} with message: {$e->getMessage()}");
         }
 
     }
