@@ -12,6 +12,6 @@ class EntryRepository implements IEntryRepository
     }
 
     public function getEntriesById(string $id){
-        return Entry::select('date_time')->where("user_id", $id)->get();
+        return Entry::select('date_time')->where("user_id", $id)->simplePaginate(15);
     }
 }

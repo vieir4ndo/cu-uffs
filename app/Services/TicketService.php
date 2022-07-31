@@ -44,7 +44,7 @@ class TicketService implements ITicketService
 
         $result = $this->repository->getTicketsById($user->id);
 
-        return ["tickets" => $result];
+        return $result;
     }
 
     public function getTicketBalance($uid){

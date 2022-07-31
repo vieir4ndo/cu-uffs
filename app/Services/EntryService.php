@@ -50,7 +50,7 @@ class EntryService implements IEntryService
 
         $result = $this->repository->getEntriesById($user->id);
 
-        return ["entries" => $result];
+        return  $result;
     }
 
 }

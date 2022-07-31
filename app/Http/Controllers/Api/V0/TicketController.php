@@ -58,9 +58,9 @@ class TicketController extends Controller
 
     public function getTickets(Request $request){
         try {
-            $entries = $this->service->getTicketsByUsername($request->user()->uid);
+            $tickets = $this->service->getTicketsByUsername($request->user()->uid);
 
-            return ApiResponse::ok($entries);
+            return ApiResponse::ok($tickets);
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
@@ -68,9 +68,9 @@ class TicketController extends Controller
 
     public function getTicketBalance(Request $request){
         try {
-            $entries = $this->service->getTicketBalance($request->user()->uid);
+            $tickets = $this->service->getTicketBalance($request->user()->uid);
 
-            return ApiResponse::ok($entries);
+            return ApiResponse::ok($tickets);
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }

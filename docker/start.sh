@@ -4,7 +4,7 @@ role=${CONTAINER_ROLE:-app}
 env=${APP_ENV:-production}
 if [ "$role" = "app" ]; then
     echo "Running the project..."
-    (php artisan migrate --seed && php /var/www/html/artisan serve --host=0.0.0.0)
+    (php artisan migrate && php /var/www/html/artisan serve --host=0.0.0.0)
 elif [ "$role" = "horizon" ]; then
     echo "Running the queue..."
     php /var/www/html/artisan horizon

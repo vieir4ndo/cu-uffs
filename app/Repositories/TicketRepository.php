@@ -12,6 +12,6 @@ class TicketRepository implements ITicketRepository
     }
 
     public function getTicketsById($id){
-        return Ticket::select('date_time', "amount", )->where("user_id", $id)->get();
+        return Ticket::select('date_time', "amount", )->where("user_id", $id)->simplePaginate(15);
     }
 }
