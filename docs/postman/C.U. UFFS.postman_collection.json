@@ -204,7 +204,152 @@
 				},
 				{
 					"name": "Menus",
-					"item": []
+					"item": [
+						{
+							"name": "Create Menu",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"salad_1\": \"salad_1\",\n    \"salad_2\": \"salad_2\",\n    \"salad_3\": \"salad_3\",\n    \"grains_1\": \"grains_1\",\n    \"grains_2\": \"grains_2\",\n    \"grains_3\": \"grains_3\",\n    \"side_dish\": \"side_dish\",\n    \"mixture\": \"mixture\",\n    \"vegan_mixture\": \"vegan_mixture\",\n    \"dessert\": \"dessert\",\n    \"date\": \"13-07-0287\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/menu",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"menu"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Menu",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								}
+							},
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"salad_1\": \"teste\",\n    \"salad_2\": \"teste\",\n    \"salad_3\": \"teste\",\n    \"grains_1\": \"teste\",\n    \"grains_2\": \"teste\",\n    \"grains_3\": \"teste\",\n    \"side_dish\": \"teste\",\n    \"mixture\": \"teste\",\n    \"vegan_mixture\": \"teste\",\n    \"dessert\": \"teste\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/menu/20-06-2001",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"menu",
+										"20-06-2001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Menu",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								}
+							},
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/api/v0/menu/20-06-2000",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"menu",
+										"20-06-2000"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Consult Menu",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								}
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/api/v0/menu?page=2",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"menu"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				},
 				{
 					"name": "Tickets",
