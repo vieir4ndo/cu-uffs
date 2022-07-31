@@ -9,9 +9,11 @@ use Illuminate\Http\Request;
 
 class EntryController
 {
+    private IEntryService $service;
 
-    public function __construct(private IEntryService $service)
+    public function __construct(IEntryService $service)
     {
+        $this->service = $service;
     }
 
     public function insertEntry($enrollment_id){
