@@ -51,6 +51,11 @@ class IdUffsService implements IIdUffsService
      */
     public function isActive(string $enrollment_id, string $name)
     {
+        return (env('SHOULD_VALIDATE_ENROLLMENT_ID')) ? $this->scrapForEnrollmentIdValidation($enrollment_id, $name) : $this->validateEnrollmentIdLocally($enrollment_id);
+    }
+
+    private function scrapForEnrollmentIdValidation($enrollment_id, $name)
+    {
         $response = $this->client->get($this->activeUserApi);
 
         $viewState = StringHelper::getText('/id\="javax.faces.ViewState" value\="(.*?)"/i', $response->getBody());
@@ -59,13 +64,13 @@ class IdUffsService implements IIdUffsService
 
         $response = $this->client->post("{$this->activeUserApi}", $this->getIsActivePayload($enrollment_id, $viewState, $captcha));
 
-        if (!StringHelper::checkIfContains($response->getBody(), "Vínculo ativo") || !StringHelper::checkIfContains($response->getBody(),  $name)) {
+        if (!StringHelper::checkIfContains($response->getBody(), "Vínculo ativo") || !StringHelper::checkIfContains($response->getBody(), $name)) {
             return null;
         }
 
         if (StringHelper::checkIfContains($response->getBody(), '<p class="descricaoVinculo">Estudante</p>')) {
 
-            if (array_keys(config('course.chapeco'), substr($enrollment_id, 3, 4))){
+            if (array_keys(config('course.chapeco'), substr($enrollment_id, 3, 4))) {
                 return null;
             }
 
@@ -81,6 +86,41 @@ class IdUffsService implements IIdUffsService
                 "course" => null
             ];
         }
+    }
+
+    private function validateEnrollmentIdLocally($enrollment_id)
+    {
+        $courses_chapeco = config('course.chapeco');
+
+        if (array_keys($courses_chapeco, substr($enrollment_id, 3, 4))) {
+            return [
+                "status_enrollment_id" => true,
+                "type" => UserType::Student->value,
+                "course" => $courses_chapeco[array_keys($courses_chapeco, substr($enrollment_id, 3, 4))]
+            ];
+        }
+        else {
+            if (!$this->isEnrollmentIdStudentType($enrollment_id)){
+                return [
+                    "status_enrollment_id" => true,
+                    "type" => UserType::Employee->value,
+                    "course" => null
+                ];
+            }
+            return null;
+        }
+    }
+
+    private function isEnrollmentIdStudentType($enrollment_id)
+    {
+        $allCourses =[];
+        array_push($allCourses, config('course.laranjeiras'));
+        array_push($allCourses, config('course.realeza'));
+        array_push($allCourses, config('course.cerro_lago'));
+        array_push($allCourses, config('course.erechim'));
+        array_push($allCourses, config('course.passo_fundo'));
+
+        return array_keys($allCourses, substr($enrollment_id, 3, 4));
     }
 
     private function getIsActivePayload(string $enrollment_id, string $viewState, string $recaptcha)

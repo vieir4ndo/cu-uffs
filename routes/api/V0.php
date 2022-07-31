@@ -21,36 +21,36 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->namespace('\App\Http\Controllers\Api')->group(function () {
-    Route::get('/user', [UserController::class, 'getUser'])->name('api.user.getUser');
-    Route::patch('/user/iduffs', [UserController::class, 'updateUserWithIdUFFS'])->name('api.user.updateUserWithIdUFFS');
-    Route::put('/user', [UserController::class, 'changeUserActivity'])->name('api.user.changeUserActivity');
-    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('api.auth.resetPassword');
-    Route::get('/entry', [EntryController::class, 'getEntries'])->name('api.entry.getEntries');
-    Route::get('/ticket', [TicketController::class, 'getTickets'])->name('api.ticket.getTickets');
-    Route::get('/ticket/balance', [TicketController::class, 'getTicketBalance'])->name('api.ticket.getTicketBalance');
+Route::middleware('auth:sanctum')->namespace('\App\Http\Controllers\Api\V0')->group(function () {
+    Route::get('/user', [UserController::class, 'getUser'])->name('api.v0.user.getUser');
+    Route::patch('/user/iduffs', [UserController::class, 'updateUserWithIdUFFS'])->name('api.v0.user.updateUserWithIdUFFS');
+    Route::put('/user', [UserController::class, 'changeUserActivity'])->name('api.v0.user.changeUserActivity');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('api.v0.auth.resetPassword');
+    Route::get('/entry', [EntryController::class, 'getEntries'])->name('api.v0.entry.getEntries');
+    Route::get('/ticket', [TicketController::class, 'getTickets'])->name('api.v0.ticket.getTickets');
+    Route::get('/ticket/balance', [TicketController::class, 'getTicketBalance'])->name('api.v0.ticket.getTicketBalance');
 
-    Route::middleware(ThirdPartyCashierEmployeeMiddleware::class)->namespace('\App\Http\Controllers\Api')->group(function () {
-        Route::post('/ticket/visitor', [TicketController::class, 'insertTicketsForVisitors'])->name('api.ticket.insertTicketsForVisitors');
-        Route::post('/ticket', [TicketController::class, 'insertTickets'])->name('api.ticket.insertTickets');
+    Route::middleware(ThirdPartyCashierEmployeeMiddleware::class)->namespace('\App\Http\Controllers\Api\V0')->group(function () {
+        Route::post('/ticket/visitor', [TicketController::class, 'insertTicketsForVisitors'])->name('api.v0.ticket.insertTicketsForVisitors');
+        Route::post('/ticket', [TicketController::class, 'insertTickets'])->name('api.v0.ticket.insertTickets');
     });
 
-    Route::middleware(RUEmployeeMiddleware::class)->namespace('\App\Http\Controllers\Api')->group(function () {
-        Route::put('/user/type', [UserController::class, 'changeUserType'])->name('api.user.changeUserType');
-        Route::post('/user', [UserController::class, 'createUserWithoutIdUFFS'])->name('api.user.createWithoutIdUFFS');
-        Route::patch('/user', [UserController::class, 'updateUserWithoutIdUFFS'])->name('api.user.updateUserWithoutIdUFFS');
-        Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('api.auth.forgotPassword');
-        Route::post('/menu', [MenuController::class, 'createMenu'])->name('api.menu.createMenu');
-        Route::patch('/menu/{date}', [MenuController::class, 'updateMenu'])->name('api.menu.updateMenu');
-        Route::delete('/menu/{date}', [MenuController::class, 'deleteMenu'])->name('api.menu.deleteMenu');
+    Route::middleware(RUEmployeeMiddleware::class)->namespace('\App\Http\Controllers\Api\V0')->group(function () {
+        Route::put('/user/type', [UserController::class, 'changeUserType'])->name('api.v0.user.changeUserType');
+        Route::post('/user', [UserController::class, 'createUserWithoutIdUFFS'])->name('api.v0.user.createWithoutIdUFFS');
+        Route::patch('/user', [UserController::class, 'updateUserWithoutIdUFFS'])->name('api.v0.user.updateUserWithoutIdUFFS');
+        Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('api.v0.auth.forgotPassword');
+        Route::post('/menu', [MenuController::class, 'createMenu'])->name('api.v0.menu.createMenu');
+        Route::patch('/menu/{date}', [MenuController::class, 'updateMenu'])->name('api.v0.menu.updateMenu');
+        Route::delete('/menu/{date}', [MenuController::class, 'deleteMenu'])->name('api.v0.menu.deleteMenu');
     });
 });
 
-Route::middleware(ApiKeyMiddleware::class)->namespace('\App\Http\Controllers\Api')->group(function () {
-    Route::post('/entry/{enrollment_id}', [EntryController::class, 'insertEntry'])->name('api.entry.insertEntry');
+Route::middleware(ApiKeyMiddleware::class)->namespace('\App\Http\Controllers\Api\V0')->group(function () {
+    Route::post('/entry/{enrollment_id}', [EntryController::class, 'insertEntry'])->name('api.v0.entry.insertEntry');
 });
 
-Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
-Route::post('/user/iduffs', [UserController::class, 'createUserWithIdUFFS'])->name('api.user.createWithIdUFFS');
-Route::get('/user/operation/{uid}', [UserController::class, 'getUserOperationStatus'])->name('api.user.getUserOperationStatus');
-Route::get('/menu', [MenuController::class, 'getMenu'])->name('api.menu.getMenu');
+Route::post('/login', [AuthController::class, 'login'])->name('api.v0.auth.login');
+Route::post('/user/iduffs', [UserController::class, 'createUserWithIdUFFS'])->name('api.v0.user.createWithIdUFFS');
+Route::get('/user/operation/{uid}', [UserController::class, 'getUserOperationStatus'])->name('api.v0.user.getUserOperationStatus');
+Route::get('/menu', [MenuController::class, 'getMenu'])->name('api.v0.menu.getMenu');

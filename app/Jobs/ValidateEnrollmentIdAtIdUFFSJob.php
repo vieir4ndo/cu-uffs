@@ -51,7 +51,6 @@ class ValidateEnrollmentIdAtIdUFFSJob implements ShouldQueue
             if (OperationHelper::IsUpdateUserOperation($userDb->operation) && !array_key_exists("enrollment_id", $user)) {
                 Log::info("Update does not require enrollment id validation");
             } else {
-
                 $user_data_from_enrollment = $idUffsService->isActive($user["enrollment_id"], $user["name"]);
 
                 if (empty($user_data_from_enrollment)) {

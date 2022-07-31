@@ -62,10 +62,6 @@ class UserController
     public function createUserWithoutIdUFFS(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            if (!$request->user()->isRUEmployee()) {
-                return ApiResponse::forbidden('User is not allowed to do this operation.');
-            }
-
             $user = [
                 "uid" => $request->uid,
                 "email" => $request->email,
