@@ -3,12 +3,14 @@
 namespace App\Services;
 
 use App\Enums\UserType;
+use App\Helpers\StorageHelper;
 use App\Helpers\StringHelper;
 use App\Interfaces\Services\ICaptchaMonsterService;
 use App\Interfaces\Services\IIdUffsService;
 use CCUFFS\Auth\AuthIdUFFS;
 use Exception;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class IdUffsService implements IIdUffsService
 {
@@ -90,37 +92,37 @@ class IdUffsService implements IIdUffsService
 
     private function validateEnrollmentIdLocally($enrollment_id)
     {
-        $courses_chapeco = config('course.chapeco');
+        $courses_chapeco = array_keys(config('course.chapeco'));
 
-        if (array_keys($courses_chapeco, substr($enrollment_id, 3, 4))) {
-            return [
-                "status_enrollment_id" => true,
-                "type" => UserType::Student->value,
-                "course" => $courses_chapeco[array_keys($courses_chapeco, substr($enrollment_id, 3, 4))]
-            ];
-        }
-        else {
-            if (!$this->isEnrollmentIdStudentType($enrollment_id)){
+        if (!in_array(substr($enrollment_id, 3, 4), $courses_chapeco)) {
+            if (!$this->isEnrollmentIdStudentType($enrollment_id)) {
                 return [
-                    "status_enrollment_id" => true,
+                    "status_enrollment_id" => false,
                     "type" => UserType::Employee->value,
                     "course" => null
                 ];
             }
             return null;
         }
+        else {
+            return [
+                "status_enrollment_id" => false,
+                "type" => UserType::Student->value,
+                "course" => config('course.chapeco')[substr($enrollment_id, 3, 4)]
+            ];
+        }
     }
 
     private function isEnrollmentIdStudentType($enrollment_id)
     {
         $allCourses =[];
-        array_push($allCourses, config('course.laranjeiras'));
-        array_push($allCourses, config('course.realeza'));
-        array_push($allCourses, config('course.cerro_lago'));
-        array_push($allCourses, config('course.erechim'));
-        array_push($allCourses, config('course.passo_fundo'));
+        array_push($allCourses, array_keys(config('course.laranjeiras')));
+        array_push($allCourses, array_keys(config('course.realeza')));
+        array_push($allCourses, array_keys(config('course.cerro_lago')));
+        array_push($allCourses, array_keys(config('course.erechim')));
+        array_push($allCourses, array_keys(config('course.passo_fundo')));
 
-        return array_keys($allCourses, substr($enrollment_id, 3, 4));
+        return in_array(substr($enrollment_id, 3, 4), $allCourses);
     }
 
     private function getIsActivePayload(string $enrollment_id, string $viewState, string $recaptcha)
