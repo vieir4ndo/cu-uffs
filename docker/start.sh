@@ -9,7 +9,7 @@ if [ "$env" != "local" ]; then
 fi
 if [ "$role" = "app" ]; then
     echo "Running the project..."
-    (php artisan migrate && php artisan db:seed php /var/www/html/artisan serve --host=0.0.0.0)
+    (php artisan migrate && php artisan db:seed && php /var/www/html/artisan serve --host=0.0.0.0)
 elif [ "$role" = "horizon" ]; then
     echo "Running the queue..."
     php /var/www/html/artisan horizon
