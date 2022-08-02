@@ -7,10 +7,9 @@ if [ "$env" != "local" ]; then
     echo "Caching configuration..."
     (cd /var/www/html && composer dump-autoload && php artisan config:cache && php artisan route:cache && php artisan view:cache)
 fi
-
 if [ "$role" = "app" ]; then
     echo "Running the project..."
-    (php artisan migrate && php /var/www/html/artisan serve --host=0.0.0.0)
+    (php artisan migrate && php artisan db:seed php /var/www/html/artisan serve --host=0.0.0.0)
 elif [ "$role" = "horizon" ]; then
     echo "Running the queue..."
     php /var/www/html/artisan horizon
