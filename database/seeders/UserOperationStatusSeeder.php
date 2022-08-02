@@ -16,7 +16,8 @@ class UserOperationStatusSeeder extends Seeder
     {
         UserOperationStatus::truncate();
 
-        UserOperationStatus::insert([[
+        UserOperationStatus::insert(
+            [[
                 'id' => 1,
                 'description' => 'Solicitado',
             ], [
@@ -30,14 +31,14 @@ class UserOperationStatusSeeder extends Seeder
                 'description' => 'Validação da Matrícula/SIAPE',
             ], [
                 'id' => 5,
-                'description' => 'Validação da Matrícula/SIAPE',
-            ], [
-                'id' => 6,
                 'description' => 'Validação da Foto de Perfil',
             ], [
-                'id' => 7,
+                'id' => 6,
                 'description' => 'Geração do Código de Barras',
-            ],[
+            ], [
+                'id' => 7,
+                'description' => 'Sucesso',
+            ], [
                 'id' => 8,
                 'description' => 'Falha',
             ]]
