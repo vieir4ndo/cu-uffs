@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Controllers\UserSitesController;
-use App\Http\Controllers\AuraController;
+use App\Http\Controllers\MenuController;
+
+use App\Http\Middleware\RUEmployeeMiddleware;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
@@ -33,6 +35,12 @@ Route::get('/', function () {
     }
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
+
+    Route::middleware(RUEmployeeMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
+        Route::get('/menu',        [MenuController::class, 'index']) ->name('web.menu.index' );
+        Route::get('/menu/create', [MenuController::class, 'create'])->name('web.menu.create');
+    });
+
+});
