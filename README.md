@@ -149,7 +149,13 @@ Para buildar a aplicação com o Docker siga os passos abaixo:
 docker-compose -f docker/docker-compose.yml up -d --build
 ```
 
-Após isso você encontrá quatro containers rodando em sua máquina: duas instâncias de banco de dados (postgres e redis) e três instâncias da aplicação (app, horizon e scheduler). 
+Após isso você encontrá quatro containers rodando em sua máquina: duas instâncias de banco de dados (postgres e redis) e três instâncias da aplicação (app, horizon e scheduler).
+
+#### 4.3 Entre no container app e rode os seeders do projeto com o comando abaixo:
+
+```
+php artisan db:seed
+```
 
 #### E simples assim tudo está configurado! A aplicação estará disponível na porta `8000` e poderá ser acessada em [mydomain:8000](http://mydomain:8000).
 
