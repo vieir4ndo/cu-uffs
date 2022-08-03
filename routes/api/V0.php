@@ -54,9 +54,3 @@ Route::post('/login', [AuthController::class, 'login'])->name('api.v0.auth.login
 Route::post('/user/iduffs', [UserController::class, 'createUserWithIdUFFS'])->name('api.v0.user.createWithIdUFFS');
 Route::get('/user/operation/{uid}', [UserController::class, 'getUserOperationStatus'])->name('api.v0.user.getUserOperationStatus');
 Route::get('/menu', [MenuController::class, 'getMenu'])->name('api.v0.menu.getMenu');
-
-Route::get('/artisan/storage', function () {
-    $command = 'storage:link';
-    $result = Artisan::call($command);
-    return Artisan::output();
-});
