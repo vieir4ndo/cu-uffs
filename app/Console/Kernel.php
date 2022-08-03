@@ -26,7 +26,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('sanctum:prune-expired --hours=24')->daily();
         $schedule->command('update-user-enrollment-id-status')->daily();
         $schedule->command(CacheSchedulerRunning::class)->everyMinute();
-        $schedule->command('storage:link')->everyMinute();
     }
 
     /**
