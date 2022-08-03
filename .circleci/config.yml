@@ -27,11 +27,8 @@ jobs:
           paths:
             - ./node_modules
       - run:
-          name: "Install packages for ImageMagick"
-          command: apt-get install --yes --force-yes libmagickwand-dev libmagickcore-dev
-      - run:
-          name: "Install ImageMagick"
-          command: yes '' | pecl install -f imagick
+          name: "Running containers"
+          command: docker-compose -f docker/docker-compose.yml up -d --build
   deploy_app:
     executor: heroku/default
     steps:
