@@ -28,7 +28,7 @@ jobs:
             - ./node_modules
       - run:
           name: "Install ImageMagick"
-          command: yes '' | pecl install -f imagick
+          command: pecl install imagick
   deploy_app:
     executor: heroku/default
     steps:
