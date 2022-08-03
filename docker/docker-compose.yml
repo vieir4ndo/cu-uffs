@@ -1,26 +1,6 @@
 version: '3.1'
 
 services:
-  postgres:
-    image: postgres:13
-    container_name: postgres
-    restart: always
-    ports:
-      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
-    environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${DATABASE_NAME}
-
-  redis:
-    image: redis:5.0.8
-    restart: always
-    container_name: redis
-    volumes:
-      - "/var/lib/docker/volumes/redis/data:/data:z"
-    ports:
-      - "${REDIS_PORT}:${REDIS_PORT}"
-    entrypoint: docker-entrypoint.sh --requirepass ${REDIS_PASSWORD}
-
   app:
     image: cu-uffs
     container_name: app
