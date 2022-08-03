@@ -42,6 +42,9 @@ jobs:
       - run:
           command: |
             heroku run --app=${HEROKU_APP_NAME} php artisan db:seed
+      - run:
+          command: |
+            heroku run --app=${HEROKU_APP_NAME} php artisan storage:link
 workflows:
   deploy:
     jobs:
