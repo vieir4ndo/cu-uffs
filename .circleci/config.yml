@@ -4,7 +4,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/php:8.1
+      - image: cimg/php:8.1-browsers
 
     steps:
       - checkout
@@ -13,13 +13,19 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "composer.json" }}
       - run:
-          name: "Install Dependencies"
+          name: "Install Composer"
           command: composer install -n --prefer-dist
-
       - save_cache:
           key: v1-dependencies-{{ checksum "composer.json" }}
           paths:
             - ./vendor
+      - run:
+          name: "Install Npm"
+          command: npm install -n --prefer-dist
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
   deploy_app:
     executor: heroku/default
     steps:
@@ -29,7 +35,13 @@ jobs:
           force: true
       - run:
           command: |
-            heroku run --app=${HEROKU_APP_NAME} php artisan migrate --force && php artisan db:seed
+            php artisan migrate
+      - run:
+          command: |
+            php artisan db:seed
+      - run:
+          command: |
+            heroku run --app=${HEROKU_APP_NAME}
 workflows:
   deploy:
     jobs:
