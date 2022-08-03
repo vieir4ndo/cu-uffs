@@ -7,35 +7,11 @@
     <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
 
       <div class="flex items-end flex-wrap -mx-3 mb-6">
-        <div id="select-month" class="mx-3">
-          <label class="block tracking-wide text-gray-100 text-sm font-medium mb-2" for="grid-last-name">
-            Mês
-          </label>
-          <div class="inline-block relative w-64">
-            <select class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
-              @foreach (range(1, 12) as $month)
-                <option>{{ strftime('%B', mktime(0, 0, 0, $month)) }}</option>
-              @endforeach
-            </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-            </div>
+        <div class="relative">
+          <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
           </div>
-        </div>
-        <div id="select-year" class="mx-3">
-          <label class="block tracking-wide text-gray-100 text-sm font-medium mb-2" for="grid-last-name">
-            Ano
-          </label>
-          <div class="inline-block relative w-64">
-            <select class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
-              @foreach (range(2022, 2020) as $year)
-                <option>{{ $year }}</option>
-              @endforeach
-            </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-            </div>
-          </div>
+          <input datepicker id="datepickerId" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
         </div>
         <div id="filter-submit" class="mx-3">
           <button class="shadow bg-ccuffs-primary focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">

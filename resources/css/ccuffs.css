@@ -47,7 +47,7 @@
 }
 
 .text-ccuffs-secondary {
-    color: var(--ccuffs-secondary);    
+    color: var(--ccuffs-secondary);
 }
 
 .text-ccuffs-tertiary {
@@ -61,7 +61,7 @@
 }
 
 .border-ccuffs-secondary {
-    border-color: var(--ccuffs-secondary);    
+    border-color: var(--ccuffs-secondary);
 }
 
 .border-ccuffs-tertiary {

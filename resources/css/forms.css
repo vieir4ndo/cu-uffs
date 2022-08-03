@@ -1,0 +1,39 @@
+.default-form label{
+  @apply text-gray-100;
+  @apply text-sm;
+  @apply font-medium;
+  @apply mb-2;
+}
+
+.default-form input {
+  @apply w-full;
+  @apply bg-gray-200;
+  @apply text-gray-700;
+  @apply border;
+  @apply border-gray-200;
+  @apply rounded;
+  @apply py-3;
+  @apply px-4;
+  @apply leading-tight;
+}
+
+.default-form input:focus {
+  @apply outline-none;
+  @apply bg-white;
+  @apply border-gray-500;
+}
+
+.default-form button {
+  @apply shadow;
+  @apply text-white;
+  @apply font-bold;
+  @apply py-2;
+  @apply px-4;
+  @apply rounded;
+  @apply bg-ccuffs-primary;
+}
+
+.default-form button:focus {
+  @apply shadow-outline;
+  @apply outline-none;
+}
