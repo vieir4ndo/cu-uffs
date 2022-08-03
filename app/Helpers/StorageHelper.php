@@ -14,7 +14,7 @@ class StorageHelper
      */
     public static function saveUserPayload(string $fileName, string $data): string
     {
-        $path = "public/user_payloads/{$fileName}.txt";
+        $path = "/user_payloads/{$fileName}.txt";
 
         return StorageHelper::saveFile($path, Crypt::encrypt($data));
     }
@@ -31,7 +31,7 @@ class StorageHelper
      */
     public static function deleteUserPayload(string $fileName): void
     {
-        $path = "public/user_payloads/{$fileName}.txt";
+        $path = "/user_payloads/{$fileName}.txt";
 
         StorageHelper::deleteFile($path);
     }
@@ -40,7 +40,7 @@ class StorageHelper
      */
     public static function saveProfilePhoto(string $fileName, string $base64): string
     {
-        $path = "public/profile_photos/{$fileName}.txt";
+        $path = "/profile_photos/{$fileName}.txt";
 
         return StorageHelper::saveFile($path, $base64);
     }
@@ -50,7 +50,7 @@ class StorageHelper
      */
     public static function saveTestFile(string $fileName, string $base64): string
     {
-        $path = "public/test/{$fileName}";
+        $path = "/test/{$fileName}";
 
         return StorageHelper::saveFile($path, $base64);
     }
@@ -60,7 +60,7 @@ class StorageHelper
      */
     public static function deleteProfilePhoto(string $fileName): void
     {
-        $path = "public/profile_photos/{$fileName}.txt";
+        $path = "/profile_photos/{$fileName}.txt";
 
         StorageHelper::deleteFile($path);
     }
@@ -70,7 +70,7 @@ class StorageHelper
      */
     public static function saveBarCode(string $fileName, string $base64): string
     {
-        $path = "public/bar_codes/{$fileName}.txt";
+        $path = "/bar_codes/{$fileName}.txt";
 
         return StorageHelper::saveFile($path, $base64);
     }
@@ -80,7 +80,7 @@ class StorageHelper
      */
     public static function deleteBarCode(string $fileName): void
     {
-        $path = "public/bar_codes/{$fileName}.txt";
+        $path = "/bar_codes/{$fileName}.txt";
 
         StorageHelper::deleteFile($path);
     }
@@ -88,7 +88,7 @@ class StorageHelper
     private static function saveFile(string $path, $content): string
     {
         try {
-            Storage::disk('local')->put($path, $content);
+            Storage::disk('public')->put($path, $content);
 
             return $path;
         } catch (Exception $e) {
@@ -99,7 +99,7 @@ class StorageHelper
     private static function deleteFile(string $path): void
     {
         try {
-            Storage::disk('local')->delete($path);
+            Storage::disk('public')->delete($path);
         } catch (Exception $e) {
             throw new \Exception("Storage error: {$e->getMessage()}");
         }
