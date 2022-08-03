@@ -19,8 +19,7 @@ class StorageHelper
         return StorageHelper::saveFile($path, Crypt::encrypt($data));
     }
 
-    public static function getUserPayload($path): string
-    {
+    public static function getUserPayload($path) : string {
         $file = Storage::disk('local')->get($path);
 
         return Crypt::decrypt($file);
@@ -88,7 +87,7 @@ class StorageHelper
     private static function saveFile(string $path, $content): string
     {
         try {
-            Storage::disk('public')->put($path, $content);
+            Storage::disk('local')->put($path, $content);
 
             return $path;
         } catch (Exception $e) {
@@ -99,14 +98,16 @@ class StorageHelper
     private static function deleteFile(string $path): void
     {
         try {
-            Storage::disk('public')->delete($path);
+            Storage::disk('local')->delete($path);
+
         } catch (Exception $e) {
             throw new \Exception("Storage error: {$e->getMessage()}");
         }
     }
 
-    public static function getFile(string $path): string
+    public static function getFile(string $path) : string
     {
         return Storage::disk('local')->get($path);
     }
+
 }
