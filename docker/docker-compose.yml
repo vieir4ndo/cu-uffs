@@ -67,6 +67,18 @@ services:
       CONTAINER_ROLE: scheduler
     entrypoint: ./docker/start.sh
 
+  webpacker:
+    image: cu-uffs
+    container_name: webpacker
+    restart: always
+    command: 'npm run watch'
+    ports:
+      - '8003:8003'
+    volumes:
+      - ..:/var/www/html
+    depends_on:
+      - app
+
 networks:
   snr:
     ipam:
