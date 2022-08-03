@@ -26,9 +26,6 @@ jobs:
           key: v1-dependencies-{{ checksum "package-lock.json" }}
           paths:
             - ./node_modules
-      - run:
-          name: "Running containers"
-          command: docker-compose -f docker/docker-compose.yml up -d --build
   deploy_app:
     executor: heroku/default
     steps:
