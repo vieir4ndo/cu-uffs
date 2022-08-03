@@ -27,6 +27,9 @@ jobs:
           paths:
             - ./node_modules
       - run:
+          name: "Copy containers .env"
+          command: cp docker/.env.example .env
+      - run:
           name: "Running containers"
           command: docker-compose -f docker/docker-compose.yml up -d --build
   deploy_app:
