@@ -28,7 +28,8 @@
         "milon/barcode": "^9.0",
         "owenvoke/blade-fontawesome": "^1.6",
         "predis/predis": "^2.0",
-        "ukfast/laravel-health-check": "^1.13"
+        "ukfast/laravel-health-check": "^1.13",
+        "ext-imagick": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
