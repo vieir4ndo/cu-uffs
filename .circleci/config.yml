@@ -38,13 +38,13 @@ jobs:
             heroku run --app=${HEROKU_APP_NAME} npm run dev
       - run:
           command: |
-            heroku run --app=${HEROKU_APP_NAME} php artisan migrate
-      - run:
-          command: |
             heroku run --app=${HEROKU_APP_NAME} php artisan db:seed
       - run:
           command: |
             heroku run --app=${HEROKU_APP_NAME} php artisan storage:link
+      - run:
+          command: |
+            heroku run --app=${HEROKU_APP_NAME} php artisan migrate
 workflows:
   deploy:
     jobs:
