@@ -39,8 +39,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
 
     Route::middleware(RUEmployeeMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
-        Route::get('/menu',        [MenuController::class, 'index']) ->name('web.menu.index' );
-        Route::get('/menu/create', [MenuController::class, 'create'])->name('web.menu.create');
+        Route::get('/menu',           [MenuController::class, 'index'])  ->name('web.menu.index' );
+        Route::get('/menu/create',    [MenuController::class, 'create']) ->name('web.menu.create');
+        Route::get('/menu/edit/{id}', [MenuController::class, 'edit'])   ->name('web.menu.edit');
+
     });
 
 });
