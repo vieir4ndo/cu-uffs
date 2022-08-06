@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\UserSitesController;
-use App\Http\Controllers\AuraController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
@@ -36,3 +35,5 @@ Route::get('/', function () {
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+
+Route::get('/reset-password', [AuthController::class, 'redirectToResetPassword'])->name('auth.reset-password');
