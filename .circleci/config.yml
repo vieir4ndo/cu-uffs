@@ -35,7 +35,7 @@ jobs:
           force: true
       - run:
           command: |
-            heroku run --app=${HEROKU_APP_NAME} php artisan migrate --seed
+            heroku run --app=${HEROKU_APP_NAME} php artisan migrate
 workflows:
   deploy:
     jobs:

@@ -2,13 +2,9 @@
 
 namespace App\Providers;
 
-use App\Services\AiPassportPhotoService;
-use App\Services\AuthService;
-use App\Services\BarcodeService;
-use App\Services\IdUffsService;
-use App\Services\MailjetService;
+use App\Interfaces\Services\IIdUffsService;
+use App\Interfaces\Services\IUserService;
 use App\Services\UserService;
-use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Fortify;
@@ -36,7 +32,7 @@ class JetstreamServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(UserService $userService, IdUffsService $idUffsService)
+    public function boot(IUserService $userService, IIdUffsService $idUffsService)
     {
         $this->userService = $userService;
         $this->idUffsService = $idUffsService;

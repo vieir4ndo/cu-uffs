@@ -9,6 +9,8 @@ use App\Interfaces\Services\IUserService;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Exception;
+use Illuminate\Contracts\Cache\Store;
+use Illuminate\Support\Facades\Storage;
 
 class AuthService implements IAuthService
 {
@@ -55,12 +57,14 @@ class AuthService implements IAuthService
         }
 
         $this->user->tokens()->delete();
+
         $token = $this->user->createToken($uid)->plainTextToken;
 
-        $redirectTo = env("APP_URL") . "/reset-password?uid={$uid}&token={$token}";
+        $redirectTo = env("APP_URL") . "/reset-password/{$uid}/{$token}";
 
-        $message = "Token: {$token} </br>Uid: {$uid}</br>Mandem esses caras e a nova senha pra api /reset-password/{uid} e se quiserem um layout bonitinho aqui, favo encaminhar, aguardo url do front pra concatenar e direicionar o pessoal pra lá.";
-        $subject = "Recuperação de senha " . env("APP_NAME");
+        $subject = "Recuperação de Senha " . env("APP_NAME");
+
+        $message = strval(view('email.reset-password', ['name' => $this->user->name, 'route' => $redirectTo, 'subject' => $subject]));
 
         $this->mailjetService->send($this->user->email, $this->user->name, $subject, $message);
     }
