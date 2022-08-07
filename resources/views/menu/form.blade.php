@@ -8,7 +8,18 @@
       <div class="bg-ccuffs overflow-hidden sm:rounded-lg p-3 sm:p-10">
         <form class="default-form">
           <div class="flex flex-wrap -mx-3 mb-3">
+            <div class="w-full md:w-1/4 px-3 mb-6 md:mb-5">
+              <label for="date">Data</label>
+              <div class="default-datepicker-field relative">
+                <div class="icon">
+                  <x-fas-calendar-day />
+                </div>
+                <input datepicker id="date" type="text" required="true" value="{{ $menu->date ?? '' }}" >
+              </div>
+            </div>
+          </div>
 
+          <div class="flex flex-wrap -mx-3 mb-3">
             <div class="w-full md:w-1/3 px-3 mb-6 md:mb-5">
               <label for="salad-1">Salada 1</label>
               <input id="salad-1" type="text" required="true" value="{{ $menu->salad_1 ?? '' }}">
@@ -62,9 +73,9 @@
           </div>
 
           <div class="flex justify-end -mx-3 p-3">
-            <button type="button">
+            <button class="default-button bg-ccuffs-primary" type="button">
               <div class="flex items-center">
-                <x-fab-telegram-plane class="w-5 h-5 mr-3"/>
+                <x-fab-telegram-plane />
                 Enviar
               </div>
             </button>

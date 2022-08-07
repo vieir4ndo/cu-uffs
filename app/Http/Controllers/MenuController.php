@@ -25,11 +25,12 @@ class MenuController extends Controller
 
     public function edit($id) {
         $title = 'Editar Cardápio';
-        $menu = DB::select("select * from menus where id=" . $id);
+        $menu = DB::select("select * from menus where id=" . $id)[0];
+        $menu->date = date('d/m/Y', strtotime($menu->date));
 
         return view('menu.form', [
             'title' => $title,
-            'menu' => $menu[0]
+            'menu' => $menu
         ]);
     }
 }

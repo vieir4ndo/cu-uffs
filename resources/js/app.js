@@ -2,10 +2,15 @@ require('./bootstrap');
 
 require('alpinejs');
 
+import 'flowbite';
+
+///////////////////////
+// DATEPICKER SCRIPT //
+///////////////////////
+
 import Datepicker from '@themesberg/tailwind-datepicker/js/Datepicker.js';
 
-const datepickerEl = document.getElementById('datepickerId');
-debugger
+const datepickerEl = document.getElementById('date');
 new Datepicker(datepickerEl, {
-    // options
+    format: 'dd/mm/yyyy',
 });
