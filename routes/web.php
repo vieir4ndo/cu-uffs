@@ -36,4 +36,4 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
-Route::get('/reset-password', [AuthController::class, 'redirectToResetPassword'])->name('auth.reset-password');
+Route::get('/reset-password/{uid}/{token}', [AuthController::class, 'redirectToResetPassword'])->name('auth.reset-password');
