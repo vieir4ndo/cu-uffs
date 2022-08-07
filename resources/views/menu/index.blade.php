@@ -31,7 +31,7 @@
 
       <div class="bg-ccuffs overflow-hidden sm:rounded-lg">
         <div class="p-3 sm:p-10">
-          @if (count($data) == 0)
+          @if ($data == null)
             <p class="my-4 text-gray-400">Não há nenhum cardápio cadastrado.</p>
           @else
             @foreach ($data as $menu)
