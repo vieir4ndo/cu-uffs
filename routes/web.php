@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 
+use App\Http\Controllers\UserController;
+use App\Http\Middleware\RUEmployeeMiddleware;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,12 +27,16 @@ Route::group(['middleware' => ['web']], function () {
     });
 });
 
-Route::get('/', function () {
-    if (Auth::check()) {
-        return redirect(config('fortify.home'));
-    } else {
-        return view('auth.login');
-    }
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/dashboard', function () { return view('dashboard'); }) -> name('dashboard');
+
+    Route::middleware(RUEmployeeMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
+        Route::get   ('/user',                         [UserController::class, 'index'         ]) ->name('web.user.index'         );
+        Route::get   ('/user/create',                  [UserController::class, 'create'        ]) ->name('web.user.create'        );
+        Route::post  ('/user/form',                    [UserController::class, 'form'          ]) ->name('web.user.form'          );
+        Route::post  ('/user/reset-password/${uid}',   [UserController::class, 'resetPassword' ]) ->name('web.user.reset-password');
+        // Route::delete('/user/{id}',                 [UserController::class, 'delete'        ]) ->name('web.user.delete'        );
+    });
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {

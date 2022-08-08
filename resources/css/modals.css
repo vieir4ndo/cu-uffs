@@ -1,0 +1,67 @@
+.default-modal {
+  @apply overflow-y-auto;
+  @apply overflow-x-hidden;
+  @apply fixed;
+  @apply top-0;
+  @apply right-0;
+  @apply left-0;
+  @apply z-50;
+}
+
+.default-modal .modal {
+  @apply relative;
+  @apply p-4;
+  @apply w-full;
+  @apply max-w-md;
+  @apply h-full;
+}
+
+.default-modal .modal .modal-body {
+  @apply relative;
+  @apply bg-white;
+  @apply rounded-lg;
+  @apply shadow;
+}
+
+
+.default-modal .modal .modal-body .modal-content {
+  @apply p-6;
+  @apply text-center;
+}
+
+/* * * * * * * * * * */
+/*  BOTÃO DE FECHAR  */
+/* * * * * * * * * * */
+.default-modal .modal .close-modal-btn {
+  @apply absolute;
+  @apply top-3;
+  @apply right-2.5;
+  @apply text-gray-400;
+  @apply rounded-lg;
+  @apply text-sm;
+  @apply p-1.5;
+  @apply ml-auto;
+  @apply inline-flex;
+  @apply items-center;
+}
+
+.default-modal .modal .close-modal-btn svg {
+  @apply w-5;
+  @apply h-5;
+}
+
+.default-modal .modal .close-modal-btn:hover {
+  @apply bg-gray-200;
+  @apply text-gray-900;
+}
+
+@media (min-width: 768px) {
+  .default-modal {
+    @apply inset-0;
+    @apply h-full;
+  }
+
+  .default-modal .modal {
+    @apply h-auto;
+  }
+}

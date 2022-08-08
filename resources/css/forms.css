@@ -1,0 +1,80 @@
+.default-form label{
+  @apply text-gray-100;
+  @apply text-sm;
+  @apply font-medium;
+  @apply mb-2;
+}
+
+.default-form input {
+  @apply w-full;
+  @apply bg-gray-200;
+  @apply text-gray-700;
+  @apply border;
+  @apply border-gray-200;
+  @apply rounded;
+  @apply py-3;
+  @apply px-4;
+  @apply leading-tight;
+}
+
+.default-form input:focus {
+  @apply outline-none;
+  @apply bg-white;
+  @apply border-gray-500;
+}
+
+/* * * * * * * * * * */
+/* DATEPICKER STYLES */
+/* * * * * * * * * * */
+.default-datepicker-field .icon {
+  @apply flex;
+  @apply items-center;
+  @apply absolute;
+  @apply left-0;
+  @apply pl-3;
+  @apply inset-y-0;
+  @apply pointer-events-none;
+}
+
+.default-datepicker-field .icon svg {
+  @apply w-4;
+  @apply h-4;
+  @apply text-gray-500;
+}
+
+.default-datepicker-field input {
+  @apply border;
+  @apply border-gray-300;
+  @apply text-sm;
+  @apply block;
+  @apply w-full;
+  @apply p-3;
+  @apply pl-10;
+}
+
+.default-datepicker-field input:focus {
+  @apply border-blue-500;
+}
+
+/* * * * * * * * * */
+/* BUTTONS STYLES  */
+/* * * * * * * * * */
+.default-button {
+  @apply shadow;
+  @apply text-white;
+  @apply font-bold;
+  @apply py-2;
+  @apply px-4;
+  @apply rounded;
+}
+
+.default-button svg {
+  @apply w-5;
+  @apply h-5;
+  @apply mr-3;
+}
+
+.default-button:focus {
+  @apply shadow-outline;
+  @apply outline-none;
+}
