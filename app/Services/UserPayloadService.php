@@ -8,6 +8,7 @@ use App\Helpers\StorageHelper;
 use App\Interfaces\Repositories\IUserPayloadRepository;
 use App\Interfaces\Services\IUserPayloadService;
 use App\Interfaces\Services\IUserService;
+use Illuminate\Support\Facades\Crypt;
 
 class UserPayloadService implements IUserPayloadService
 {
@@ -24,7 +25,7 @@ class UserPayloadService implements IUserPayloadService
     {
         $data = $this->userPayloadRepository->getByUid($uid);
 
-        $payload = StorageHelper::getUserPayload($data->payload);
+        $payload = Crypt::decrypt($data->payload);
         $data->payload = json_decode($payload, $shouldReturnPayloadAsArray);
 
         return $data;
@@ -55,13 +56,11 @@ class UserPayloadService implements IUserPayloadService
             return false;
         }
 
-        $payload = StorageHelper::saveUserPayload($user["uid"], json_encode($user));
-
         $this->userPayloadRepository->updateOrCreate([
             "uid" => $user["uid"],
             "status" => UserOperationStatus::Solicitaded,
             "message" => null,
-            "payload" => $payload,
+            "payload" => Crypt::encrypt(json_encode($user)),
             "operation" => $operation
         ]);
 
@@ -70,17 +69,8 @@ class UserPayloadService implements IUserPayloadService
 
     public function updatePayloadByUid(string $uid, $user)
     {
-        StorageHelper::deleteUserPayload($uid);
-
-        StorageHelper::saveUserPayload($uid, json_encode($user));
-    }
-
-    public function deletePayloadByUid(string $uid)
-    {
-        StorageHelper::deleteUserPayload($uid);
-
         $this->userPayloadRepository->update($uid, [
-            "payload" => null
+            "payload" => Crypt::encrypt(json_encode($user))
         ]);
     }
 
@@ -95,8 +85,6 @@ class UserPayloadService implements IUserPayloadService
     }
 
     public function deleteByUid(string $uid){
-        $this->deletePayloadByUid($uid);
-
         $this->userPayloadRepository->delete($uid);
     }
 }
