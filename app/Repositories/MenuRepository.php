@@ -7,13 +7,11 @@ use App\Models\Menu;
 
 class MenuRepository implements IMenuRepository
 {
-    public function createMenu($data)
+    public function createOrUpdate($data)
     {
-        return Menu::create($data);
-    }
+        $date = $data["date"];
+        unset($data["date"]);
 
-    public function updateMenu($data, $date)
-    {
         return Menu::updateOrCreate(
             ["date" => $date],
             $data
@@ -28,5 +26,13 @@ class MenuRepository implements IMenuRepository
     public function getMenu()
     {
         return Menu::simplePaginate(15);
+    }
+
+    public function getMenuById($id){
+        return Menu::where('id', $id)->first();
+    }
+
+    public function getMenuByDate($date){
+        return Menu::where('date', $date)->first();
     }
 }
