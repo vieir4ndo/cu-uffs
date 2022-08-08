@@ -26,9 +26,6 @@ jobs:
           key: v1-dependencies-{{ checksum "package-lock.json" }}
           paths:
             - ./node_modules
-      - run:
-          name: "Storage smt"
-          command: chmod -R 777 storage && chmod -R 777 public
   deploy_app:
     executor: heroku/default
     steps:
@@ -36,6 +33,9 @@ jobs:
       - heroku/install
       - heroku/deploy-via-git:
           force: true
+      - run:
+          command: |
+            heroku run --app=${HEROKU_APP_NAME} php artisan migrate
 workflows:
   deploy:
     jobs:
