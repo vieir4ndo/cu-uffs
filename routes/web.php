@@ -41,10 +41,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::middleware(RUEmployeeMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
-        Route::get('/menu',           [MenuController::class, 'index'])->name('web.menu.index');
-        Route::get('/menu/create',    [MenuController::class, 'create'])->name('web.menu.create');
-        Route::post('/menu',    [MenuController::class, 'createOrUpdate'])->name('web.menu.createOrUpdate');
-        Route::get('/menu/edit/{id}', [MenuController::class, 'edit'])->name('web.menu.edit');
+        Route::get   ('/menu',             [MenuController::class, 'index'         ]) ->name('web.menu.index'         );
+        Route::post  ('/menu',             [MenuController::class, 'filter'        ]) ->name('web.menu.filter'        );
+        Route::get   ('/menu/create',      [MenuController::class, 'create'        ]) ->name('web.menu.create'        );
+        Route::get   ('/menu/edit/{id}',   [MenuController::class, 'edit'          ]) ->name('web.menu.edit'          );
+        Route::post  ('/menu/form',        [MenuController::class, 'createOrUpdate']) ->name('web.menu.createOrUpdate');
+        Route::delete('/menu/{date}',      [MenuController::class, 'delete'        ]) ->name('web.menu.delete'        );
     });
 });
 

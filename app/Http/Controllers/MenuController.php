@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Validators\MenuValidator;
 
 class MenuController extends Controller
 {
@@ -20,11 +21,15 @@ class MenuController extends Controller
         $this->service = $service;
     }
 
-    public function index() {
-        $data = $this->service->getLatestMenu();
+    public function index($date = null) {
+        date_default_timezone_set('America/Sao_Paulo');
+
+        $date ??= now();
+        $menu = $this->service->getMenuByDate($date);
 
         return view('menu.index', [
-            'data' => $data
+            'menu' => $menu,
+            'date' => date('d/m/Y', strtotime($date))
         ]);
     }
 
@@ -38,7 +43,7 @@ class MenuController extends Controller
 
     public function edit($id) {
         $title = 'Editar Cardápio';
-        $menu = DB::select("select * from menus where id=" . $id)[0];
+        $menu = $this->service->getMenuById($id);
         $menu->date = date('d/m/Y', strtotime($menu->date));
 
         return view('menu.form', [
@@ -47,35 +52,56 @@ class MenuController extends Controller
         ]);
     }
 
+    public function filter(Request $request) {
+        // Converter data para dd-mm-yyyy
+        $date = str_replace('/', '-', $request->date);
+        // e depois formatar para yyyy-mm-dd
+        $formatted_date = date('Y-m-d', strtotime($date));
+
+        return $this->index($date);
+    }
+
     public function createOrUpdate(Request $request){
         try {
+            // Converter data para dd-mm-yyyy
+            $date = str_replace('/', '-', $request->date);
+            // e depois formatar para yyyy-mm-dd
+            $formatted_date = date('Y-m-d', strtotime($date));
+
             $menu = [
-                "salad_1" => $request->salad_1,
-                "salad_2" => $request->salad_2,
-                "salad_3" => $request->salad_3,
-                "grains_1" => $request->grains_1,
-                "grains_2" => $request->grains_2,
-                "grains_3" => $request->grains_3,
-                "side_dish" => $request->side_dish,
-                "mixture" => $request->mixture,
-                "vegan_mixture" => $request->vegan_mixture,
-                "dessert" => $request->dessert,
-                "date" => Carbon::parse($request->date),
+                "salad_1"        => $request->salad_1,
+                "salad_2"        => $request->salad_2,
+                "salad_3"        => $request->salad_3,
+                "grains_1"       => $request->grains_1,
+                "grains_2"       => $request->grains_2,
+                "grains_3"       => $request->grains_3,
+                "side_dish"      => $request->side_dish,
+                "mixture"        => $request->mixture,
+                "vegan_mixture"  => $request->vegan_mixture,
+                "dessert"        => $request->dessert,
+                "date"           => $formatted_date,
                 "ru_employee_id" => $request->user()->id
             ];
 
-            $validation = Validator::make($menu, \MenuValidator::createMenuRules());
+            $validation = Validator::make($menu, MenuValidator::createMenuRules());
 
-            if ($validation->fails()) {
+            // if ($validation->fails()) {
                 //$errors = $validation->errors()->all(); with errors
-            }
+            // }
 
             $this->service->createMenu($menu);
 
-            return $this->index();
+            return redirect()->route('web.menu.index');
         }
         catch (Exception $e){
             //return $this->index(); with errors $e->getMessage();
         }
     }
+
+    public function delete($date){
+        $menu = $this->service->deleteMenu($date);
+
+        return redirect()->route('web.menu.index');
+    }
+
 }

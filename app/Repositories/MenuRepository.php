@@ -28,6 +28,10 @@ class MenuRepository implements IMenuRepository
         return Menu::simplePaginate(15);
     }
 
+    public function getMenuById($id){
+        return Menu::where('id', $id)->first();
+    }
+
     public function getMenuByDate($date){
         return Menu::where('date', $date)->first();
     }

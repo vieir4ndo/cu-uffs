@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V0;
 
 use App\Http\Controllers\Controller;
 use App\Interfaces\Services\IMenuService;
+use App\Http\Validators\MenuValidator;
 use App\Models\Api\ApiResponse;
 use Carbon\Carbon;
 use Exception;
@@ -36,7 +37,7 @@ class MenuController extends Controller
                 "ru_employee_id" => $request->user()->id
             ];
 
-            $validation = Validator::make($menu, \MenuValidator::createMenuRules());
+            $validation = Validator::make($menu, MenuValidator::createMenuRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -67,7 +68,7 @@ class MenuController extends Controller
 
             $menu = array_filter($menu);
 
-            $validation = Validator::make($menu, \MenuValidator::updateMenuRules());
+            $validation = Validator::make($menu, MenuValidator::updateMenuRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());

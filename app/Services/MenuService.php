@@ -43,7 +43,11 @@ class MenuService implements IMenuService
         return $this->repository->getMenu();
     }
 
+    public function getMenuById($id){
+        return $this->repository->getMenuById($id);
+    }
+
     public function getMenuByDate($date){
-        return $this->repository->getMenuByDate($date);
+        return $this->repository->getMenuByDate(Carbon::parse($date)->format('Y-m-d'));
     }
 }

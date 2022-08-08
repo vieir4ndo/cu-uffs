@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Http\Validators;
+
 class MenuValidator
 {
     public static function updateMenuRules()
