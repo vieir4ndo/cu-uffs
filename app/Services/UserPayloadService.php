@@ -95,7 +95,7 @@ class UserPayloadService implements IUserPayloadService
     }
 
     public function deleteByUid(string $uid){
-        $this->deletePayloadByUid($uid);
+        //$this->deletePayloadByUid($uid);
 
         $this->userPayloadRepository->delete($uid);
     }
