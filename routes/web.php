@@ -1,11 +1,15 @@
 <?php
 
-use App\Http\Controllers\MenuController;
-use App\Http\Middleware\RUEmployeeMiddleware;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
+
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\EntryController;
+
+use App\Http\Middleware\RUEmployeeMiddleware;
+use App\Http\Middleware\RUOrThirdPartyCashierEmployeeMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +51,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get   ('/menu/edit/{id}',   [MenuController::class, 'edit'          ]) ->name('web.menu.edit'          );
         Route::post  ('/menu/form',        [MenuController::class, 'createOrUpdate']) ->name('web.menu.createOrUpdate');
         Route::delete('/menu/{date}',      [MenuController::class, 'delete'        ]) ->name('web.menu.delete'        );
+    });
+
+    Route::middleware(RUOrThirdPartyCashierEmployeeMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
+        Route::get('/entry', [EntryController::class, 'index']) ->name('web.entry.index');
     });
 });
 

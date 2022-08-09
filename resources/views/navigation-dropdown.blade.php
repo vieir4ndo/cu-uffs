@@ -24,6 +24,14 @@
                         </x-jet-nav-link>
                     </div>
                 @endif
+
+                @if (Auth::user()->type == 3 || Auth::user()->type == 5)
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-jet-nav-link href="{{ route('web.entry.index') }}" :active="request()->routeIs('web.entry.index')">
+                            {{ __('Entradas') }}
+                        </x-jet-nav-link>
+                    </div>
+                @endif
             </div>
 
             <!-- Settings Dropdown -->
@@ -134,6 +142,14 @@
             <div class="pt-2 pb-3 space-y-1">
                 <x-jet-responsive-nav-link href="{{ route('web.menu.index') }}" :active="request()->routeIs('web.menu.index')">
                 {{ __('Cardápios') }}
+                </x-jet-responsive-nav-link>
+            </div>
+        @endif
+
+        @if (Auth::user()->type == 3 || Auth::user()->type == 5)
+            <div class="pt-2 pb-3 space-y-1">
+                <x-jet-responsive-nav-link href="{{ route('web.entry.index') }}" :active="request()->routeIs('web.entry.index')">
+                {{ __('Entradas') }}
                 </x-jet-responsive-nav-link>
             </div>
         @endif
