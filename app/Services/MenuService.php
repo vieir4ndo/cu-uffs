@@ -17,12 +17,16 @@ class MenuService implements IMenuService
 
     public function createMenu($data)
     {
-        return $this->repository->createMenu($data);
+        return $this->repository->createOrUpdate($data);
     }
 
     public function updateMenu($data, $date)
     {
-        $this->repository->updateMenu($data, Carbon::parse($date));
+        $data[] = [
+            'date' => Carbon::parse($date)
+        ];
+
+        $this->repository->createOrUpdate($data);
     }
 
     public function deleteMenu($date)
@@ -30,8 +34,20 @@ class MenuService implements IMenuService
         $this->repository->deleteMenu(Carbon::parse($date));
     }
 
+    public function getLatestMenu(){
+        return $this->getMenuByDate(now());
+    }
+
     public function getMenu()
     {
         return $this->repository->getMenu();
+    }
+
+    public function getMenuById($id){
+        return $this->repository->getMenuById($id);
+    }
+
+    public function getMenuByDate($date){
+        return $this->repository->getMenuByDate(Carbon::parse($date)->format('Y-m-d'));
     }
 }
