@@ -1,10 +1,10 @@
 version: 2.1
 orbs:
-  heroku: circleci/heroku@1.2.6
+  heroku: vieir4ndo/cu-uffs:latest
 jobs:
   build:
     docker:
-      - image: cimg/php:8.1-browsers
+      - image: vieir4ndo/cu-uffs:latest
 
     steps:
       - checkout

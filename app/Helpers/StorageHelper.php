@@ -2,55 +2,23 @@
 
 namespace App\Helpers;
 
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use SebastianBergmann\Diff\Exception;
 
 class StorageHelper
 {
 
-    /**
-     * @throws \Exception
-     */
-    public static function saveUserPayload(string $fileName, string $data): string
-    {
-        $path = "public/user_payloads/{$fileName}.txt";
-
-        return StorageHelper::saveFile($path, Crypt::encrypt($data));
-    }
-
     public static function getUserPayload($path): string
     {
-        $file = Storage::disk('local')->get($path);
-
-        return Crypt::decrypt($file);
+        return base64_decode($path);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public static function deleteUserPayload(string $fileName): void
-    {
-        $path = "public/user_payloads/{$fileName}.txt";
-
-        StorageHelper::deleteFile($path);
-    }
     /**
      * @throws \Exception
      */
     public static function saveProfilePhoto(string $fileName, string $base64): string
     {
-        $path = "public/profile_photos/{$fileName}.txt";
-
-        return StorageHelper::saveFile($path, $base64);
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public static function saveTestFile(string $fileName, string $base64): string
-    {
-        $path = "public/test/{$fileName}";
+        $path = "/profile_photos/{$fileName}.txt";
 
         return StorageHelper::saveFile($path, $base64);
     }
@@ -60,7 +28,7 @@ class StorageHelper
      */
     public static function deleteProfilePhoto(string $fileName): void
     {
-        $path = "public/profile_photos/{$fileName}.txt";
+        $path = "/profile_photos/{$fileName}.txt";
 
         StorageHelper::deleteFile($path);
     }
@@ -70,7 +38,7 @@ class StorageHelper
      */
     public static function saveBarCode(string $fileName, string $base64): string
     {
-        $path = "public/bar_codes/{$fileName}.txt";
+        $path = "/bar_codes/{$fileName}.txt";
 
         return StorageHelper::saveFile($path, $base64);
     }
@@ -80,7 +48,7 @@ class StorageHelper
      */
     public static function deleteBarCode(string $fileName): void
     {
-        $path = "public/bar_codes/{$fileName}.txt";
+        $path = "/bar_codes/{$fileName}.txt";
 
         StorageHelper::deleteFile($path);
     }
