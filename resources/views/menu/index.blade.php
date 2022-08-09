@@ -84,7 +84,7 @@
 
 @if ($menu != null)
   <div id="delete-menu-modal" tabindex="-1" class="default-modal hidden overflow-y-auto h-modal">
-    <div class="modal">
+    <div class="modal max-w-md">
       <div class="modal-body">
         <button type="button" class="close-modal-btn" data-modal-toggle="delete-menu-modal">
           <x-fas-times />

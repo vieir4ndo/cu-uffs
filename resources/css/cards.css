@@ -1,0 +1,35 @@
+.default-card {
+  @apply rounded-lg;
+  @apply shadow-md;
+}
+
+.default-card .card-content {
+  @apply flex;
+  @apply flex-wrap;
+  @apply items-center;
+  @apply justify-end;
+  @apply p-6;
+}
+
+.default-card .card-content .card-title {
+  @apply w-full;
+  @apply text-2xl;
+  @apply font-semibold;
+  @apply tracking-tight;
+  @apply text-gray-900;
+}
+
+.default-card .card-content > svg {
+  @apply w-8;
+  @apply h-8;
+  @apply text-gray-900;
+}
+
+@media (min-width: 768px) {
+  .default-card .card-content {
+    @apply justify-around;
+  }
+  .default-card .card-content .card-title {
+    @apply w-auto;
+  }
+}

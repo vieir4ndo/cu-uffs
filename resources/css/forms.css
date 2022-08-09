@@ -23,6 +23,16 @@
   @apply border-gray-500;
 }
 
+.default-form.white label{
+  @apply text-gray-900;
+}
+
+.default-form.white input:focus {
+  @apply outline-none;
+  @apply bg-gray-200;
+  @apply border-gray-200;
+}
+
 /* * * * * * * * * * */
 /* DATEPICKER STYLES */
 /* * * * * * * * * * */

@@ -6,7 +6,7 @@
 
     <div class="py-10 sm:px-6 lg:px-8">
       <div class="bg-ccuffs overflow-hidden sm:rounded-lg p-3 sm:p-10">
-        <form name="add-blog-post-form" id="add-blog-post-form" class="default-form" method="POST" action="{{ route('web.menu.createOrUpdate') }}">
+        <form name="create-update-menu-form" id="create-update-menu-form" class="default-form" method="post" action="{{ route('web.menu.createOrUpdate') }}">
           @csrf
           <div class="flex flex-wrap -mx-3 mb-3">
             <div class="w-full md:w-1/4 px-3 mb-6 md:mb-5">
