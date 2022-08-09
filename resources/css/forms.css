@@ -5,7 +5,7 @@
   @apply mb-2;
 }
 
-.default-form input {
+.default-form input, .default-form select {
   @apply w-full;
   @apply bg-gray-200;
   @apply text-gray-700;
@@ -17,7 +17,7 @@
   @apply leading-tight;
 }
 
-.default-form input:focus {
+.default-form input:focus, .default-form select:focus {
   @apply outline-none;
   @apply bg-white;
   @apply border-gray-500;

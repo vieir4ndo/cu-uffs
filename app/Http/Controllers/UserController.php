@@ -50,8 +50,8 @@ class UserController extends Controller
                 "email" => $request->email,
                 "name" => $request->name,
                 "password" => $request->password,
-                "type" => 5,
-                // "profile_photo" => $request->profile_photo,
+                "type" => $request->type,
+                "profile_photo" => $request->profile_photo,
                 "birth_date" => $request->birth_date
             ];
 
