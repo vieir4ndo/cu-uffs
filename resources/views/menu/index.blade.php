@@ -40,7 +40,7 @@
             <p class="my-4 text-center text-gray-400">Não há nenhum cardápio cadastrado para esse dia.</p>
           @else
             <div class="flex flex-wrap justify-center">
-              <table class="table-fixed mx-3">
+              <table class="table-fixed w-auto mx-3">
                 <thead>
                   <tr>
                     <th class="border border-ccuffs-ui bg-ccuffs-primary px-4 py-2">{{ date('d/m - l', strtotime($menu->date)) }}</th>

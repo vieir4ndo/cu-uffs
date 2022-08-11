@@ -19,6 +19,14 @@
 
                 @if (Auth::user()->type == 3)
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-jet-nav-link href="{{ route('web.user.index') }}" :active="request()->routeIs('web.user.index')">
+                            {{ __('Usuários') }}
+                        </x-jet-nav-link>
+                    </div>
+                @endif
+
+                @if (Auth::user()->type == 3)
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                         <x-jet-nav-link href="{{ route('web.menu.index') }}" :active="request()->routeIs('web.menu.index')">
                             {{ __('Cardápios') }}
                         </x-jet-nav-link>
@@ -140,8 +148,16 @@
 
         @if (Auth::user()->type == 3)
             <div class="pt-2 pb-3 space-y-1">
+                <x-jet-responsive-nav-link href="{{ route('web.user.index') }}" :active="request()->routeIs('web.user.index')">
+                    {{ __('Usuários') }}
+                </x-jet-responsive-nav-link>
+            </div>
+        @endif
+
+        @if (Auth::user()->type == 3)
+            <div class="pt-2 pb-3 space-y-1">
                 <x-jet-responsive-nav-link href="{{ route('web.menu.index') }}" :active="request()->routeIs('web.menu.index')">
-                {{ __('Cardápios') }}
+                    {{ __('Cardápios') }}
                 </x-jet-responsive-nav-link>
             </div>
         @endif
