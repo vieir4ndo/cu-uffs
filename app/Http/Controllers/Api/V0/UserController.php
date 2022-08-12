@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V0;
 use App\Enums\Operation;
 use App\Interfaces\Services\IUserPayloadService;
 use App\Interfaces\Services\IUserService;
-use App\Http\Validators\UserValidator;
 use App\Jobs\StartCreateOrUpdateUserJob;
 use App\Models\Api\ApiResponse;
 use Exception;
@@ -37,7 +36,7 @@ class UserController
                 "birth_date" => $request->birth_date
             ];
 
-            $validation = Validator::make($user, UserValidator::createUserWithIdUFFSRules());
+            $validation = Validator::make($user, $this->createUserWithIdUFFSRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -73,7 +72,7 @@ class UserController
                 "birth_date" => $request->birth_date
             ];
 
-            $validation = Validator::make($user, UserValidator::createUserWitoutIdUFFSRules());
+            $validation = Validator::make($user, $this->createUserWitoutIdUFFSRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -135,7 +134,7 @@ class UserController
                 "active" => $request->active,
             ];
 
-            $validation = Validator::make($user, UserValidator::changeUserActivityUserRules());
+            $validation = Validator::make($user, $this->changeUserActivityUserRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -161,7 +160,7 @@ class UserController
 
             $user = array_filter($user);
 
-            $validation = Validator::make($user, UserValidator::updateUserWithIdUFFSRules($request->enrollment_id));
+            $validation = Validator::make($user, $this->updateUserWithIdUFFSRules($request->enrollment_id));
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -196,7 +195,7 @@ class UserController
 
             $user = array_filter($user);
 
-            $validation = Validator::make($user, UserValidator::updateUserWithoutIdUFFSRules($request->email));
+            $validation = Validator::make($user, $this->updateUserWithoutIdUFFSRules($request->email));
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -230,7 +229,7 @@ class UserController
                 "type" => $request->type,
             ];
 
-            $validation = Validator::make($data, UserValidator::changeUserTypeRules());
+            $validation = Validator::make($data, $this->changeUserTypeRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -243,5 +242,62 @@ class UserController
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
+    }
+
+    private static function changeUserActivityUserRules()
+    {
+        return [
+            'active' => ['required', 'bool'],
+        ];
+    }
+
+    private static function changeUserTypeRules()
+    {
+        return [
+            'uid' => ['required', 'string'],
+            'type' => ['required', 'int'],
+        ];
+    }
+
+    private static function updateUserWithIdUFFSRules($enrollment_id): array
+    {
+        return [
+            'profile_photo' => ['string'],
+            'enrollment_id' => [Rule::unique('users')->ignore($enrollment_id, 'enrollment_id'), 'string', 'max:10', 'min:10'],
+            'birth_date' => ['date']
+        ];
+    }
+
+    private static function updateUserWithoutIdUFFSRules($email): array
+    {
+        return [
+            'email' => [Rule::unique('users')->ignore($email, 'email'), 'email'],
+            'name' => ['string', 'max:255'],
+            'profile_photo' => ['string'],
+            'birth_date' => ['date']
+        ];
+    }
+
+    private static function createUserWithIdUFFSRules()
+    {
+        return [
+            "uid" => ['required', 'string', 'unique:users'],
+            'password' => ['required', 'string'],
+            'profile_photo' => ['required', 'string'],
+            'enrollment_id' => ['required', 'string', 'max:10', 'min:10', 'unique:users'],
+            'birth_date' => ['required', 'date']
+        ];
+    }
+
+    private static function createUserWitoutIdUFFSRules()
+    {
+        return [
+            "uid" => ['required', 'string', 'unique:users'],
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'string'],
+            'name' => ['required', 'string', 'max:255'],
+            'profile_photo' => ['required', 'string'],
+            'birth_date' => ['required', 'date']
+        ];
     }
 }

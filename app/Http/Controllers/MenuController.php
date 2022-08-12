@@ -3,14 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Interfaces\Services\IMenuService;
-use App\Models\Api\ApiResponse;
-use App\Models\Menu;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Validators\MenuValidator;
 
 class MenuController extends Controller
 {
@@ -21,7 +16,8 @@ class MenuController extends Controller
         $this->service = $service;
     }
 
-    public function index($date = null) {
+    public function index($date = null)
+    {
         date_default_timezone_set('America/Sao_Paulo');
 
         $date ??= now();
@@ -33,7 +29,8 @@ class MenuController extends Controller
         ]);
     }
 
-    public function create() {
+    public function create()
+    {
         $title = 'Novo Cardápio';
 
         return view('menu.form', [
@@ -41,7 +38,8 @@ class MenuController extends Controller
         ]);
     }
 
-    public function edit($id) {
+    public function edit($id)
+    {
         $title = 'Editar Cardápio';
         $menu = $this->service->getMenuById($id);
         $menu->date = date('d/m/Y', strtotime($menu->date));
@@ -52,7 +50,8 @@ class MenuController extends Controller
         ]);
     }
 
-    public function filter(Request $request) {
+    public function filter(Request $request)
+    {
         // Converter data para dd-mm-yyyy
         $date = str_replace('/', '-', $request->date);
         // e depois formatar para yyyy-mm-dd
@@ -61,7 +60,8 @@ class MenuController extends Controller
         return $this->index($date);
     }
 
-    public function createOrUpdate(Request $request){
+    public function createOrUpdate(Request $request)
+    {
         try {
             // Converter data para dd-mm-yyyy
             $date = str_replace('/', '-', $request->date);
@@ -83,25 +83,41 @@ class MenuController extends Controller
                 "ru_employee_id" => $request->user()->id
             ];
 
-            $validation = Validator::make($menu, MenuValidator::createMenuRules());
+            $validation = Validator::make($menu, $this->createMenuRules());
 
             // if ($validation->fails()) {
-                //$errors = $validation->errors()->all(); with errors
+            //$errors = $validation->errors()->all(); with errors
             // }
 
             $this->service->createMenu($menu);
 
             return redirect()->route('web.menu.index');
-        }
-        catch (Exception $e){
+        } catch (Exception $e) {
             //return $this->index(); with errors $e->getMessage();
         }
     }
 
-    public function delete($date){
+    public function delete($date)
+    {
         $menu = $this->service->deleteMenu($date);
 
         return redirect()->route('web.menu.index');
     }
 
+    private static function createMenuRules()
+    {
+        return [
+            "salad_1" => ['required', 'string'],
+            "salad_2" => ['required', 'string'],
+            "salad_3" => ['required', 'string'],
+            "grains_1" => ['required', 'string'],
+            "grains_2" => ['required', 'string'],
+            "grains_3" => ['required', 'string'],
+            "side_dish" => ['required', 'string'],
+            "mixture" => ['required', 'string'],
+            "vegan_mixture" => ['required', 'string'],
+            "dessert" => ['required', 'string'],
+            "date" => ['required', 'date', 'unique:menus']
+        ];
+    }
 }

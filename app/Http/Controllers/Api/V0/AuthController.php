@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V0;
 
-use App\Http\Validators\AuthValidator;
 use App\Interfaces\Services\IAuthService;
 use App\Models\Api\ApiResponse;
 use Exception;
@@ -32,7 +31,7 @@ class AuthController
     public function forgotPassword(Request $request)
     {
         try {
-            $validation = Validator::make(["uid" => $request->uid], AuthValidator::forgotPasswordRules());
+            $validation = Validator::make(["uid" => $request->uid], $this->forgotPasswordRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -49,7 +48,7 @@ class AuthController
     public function resetPassword(Request $request)
     {
         try {
-            $validation = Validator::make(["new_password" => $request->new_password], AuthValidator::resetPasswordRules());
+            $validation = Validator::make(["new_password" => $request->new_password], $this->resetPasswordRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -63,4 +62,23 @@ class AuthController
         }
     }
 
+    private static function resetPasswordRules()
+    {
+        return [
+            'new_password' => [
+                'required',
+                'string',
+            ]
+        ];
+    }
+
+    private static function forgotPasswordRules()
+    {
+        return [
+            'uid' => [
+                'required',
+                'string',
+            ]
+        ];
+    }
 }

@@ -5,17 +5,11 @@ namespace App\Http\Controllers;
 use App\Interfaces\Services\IUserService;
 use App\Interfaces\Services\IUserPayloadService;
 use App\Interfaces\Services\IAuthService;
-
 use App\Models\Api\ApiResponse;
-use App\Models\User;
-use Carbon\Carbon;
 use App\Enums\Operation;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Validators\UserValidator;
-use App\Http\Validators\AuthValidator;
 use App\Jobs\StartCreateOrUpdateUserJob;
 
 class UserController extends Controller
@@ -31,11 +25,13 @@ class UserController extends Controller
         $this->authService = $authService;
     }
 
-    public function index() {
+    public function index()
+    {
         return view('user.index');
     }
 
-    public function create() {
+    public function create()
+    {
         $title = 'Novo Usuário';
 
         return view('user.form', [
@@ -43,7 +39,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function form(Request $request){
+    public function form(Request $request)
+    {
         try {
             $user = [
                 "uid" => $request->uid,
@@ -55,7 +52,7 @@ class UserController extends Controller
                 "birth_date" => $request->birth_date
             ];
 
-            $validation = Validator::make($user, UserValidator::createUserWitoutIdUFFSRules());
+            $validation = Validator::make($user, $this->createUserWitoutIdUFFSRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -73,14 +70,15 @@ class UserController extends Controller
 
             return redirect()->route('web.user.index');
         } catch (Exception $e) {
-            echo($e->getMessage());
+            echo ($e->getMessage());
             // return ApiResponse::badRequest($e->getMessage());
         }
     }
 
-    public function resetPassword($uid) {
+    public function resetPassword($uid)
+    {
         try {
-            $validation = Validator::make(["uid" => $uid], AuthValidator::forgotPasswordRules());
+            $validation = Validator::make(["uid" => $uid], $this->forgotPasswordRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -92,5 +90,27 @@ class UserController extends Controller
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
+    }
+
+    private static function createUserWitoutIdUFFSRules()
+    {
+        return [
+            "uid" => ['required', 'string', 'unique:users'],
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'string'],
+            'name' => ['required', 'string', 'max:255'],
+            'profile_photo' => ['required', 'string'],
+            'birth_date' => ['required', 'date']
+        ];
+    }
+
+    private static function forgotPasswordRules()
+    {
+        return [
+            'uid' => [
+                'required',
+                'string',
+            ]
+        ];
     }
 }
