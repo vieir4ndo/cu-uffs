@@ -3,14 +3,12 @@
 namespace App\Services;
 
 use App\Enums\UserType;
-use App\Helpers\StorageHelper;
 use App\Helpers\StringHelper;
 use App\Interfaces\Services\ICaptchaMonsterService;
 use App\Interfaces\Services\IIdUffsService;
 use CCUFFS\Auth\AuthIdUFFS;
 use Exception;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 class IdUffsService implements IIdUffsService
 {
@@ -103,8 +101,7 @@ class IdUffsService implements IIdUffsService
                 ];
             }
             return null;
-        }
-        else {
+        } else {
             return [
                 "status_enrollment_id" => false,
                 "type" => UserType::Student->value,
@@ -115,7 +112,7 @@ class IdUffsService implements IIdUffsService
 
     private function isEnrollmentIdStudentType($enrollment_id)
     {
-        $allCourses =[];
+        $allCourses = [];
         array_push($allCourses, array_keys(config('course.laranjeiras')));
         array_push($allCourses, array_keys(config('course.realeza')));
         array_push($allCourses, array_keys(config('course.cerro_lago')));
@@ -135,5 +132,4 @@ class IdUffsService implements IIdUffsService
             'javax.faces.ViewState' => $viewState
         ];
     }
-
 }

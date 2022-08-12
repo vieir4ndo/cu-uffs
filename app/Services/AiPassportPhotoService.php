@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Interfaces\Services\IAiPassportPhotoService;
-use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 
 class AiPassportPhotoService implements IAiPassportPhotoService
@@ -13,7 +12,7 @@ class AiPassportPhotoService implements IAiPassportPhotoService
 
     public function __construct()
     {
-        $this->client = new Client();
+        $this->client = new HttpClient();
     }
 
     public function validatePhoto($base64Photo): string
@@ -27,13 +26,12 @@ class AiPassportPhotoService implements IAiPassportPhotoService
 
             $signedUrl = json_decode($res->getBody())->signedUrl;
 
-            $res = $this->client->post($signedUrl,
-                [
-                    RequestOptions::JSON => [
-                        "imageBase64" => "{$base64Photo}",
-                        "specCode" => "brazil-idphoto"
-                    ]
-                ]
+            $res = $this->client->post(
+                $signedUrl,
+                json_encode([
+                    "imageBase64" => "{$base64Photo}",
+                    "specCode" => "brazil-idphoto"
+                ])
             );
 
             $jsonResponse = json_decode($res->getBody());
@@ -45,10 +43,8 @@ class AiPassportPhotoService implements IAiPassportPhotoService
             $res = $this->client->request('GET', $jsonResponse->photoUrl);
 
             return "data:image/png;base64," . base64_encode($res->getBody());
-        }
-        else {
+        } else {
             return $base64Photo;
         }
     }
-
 }
