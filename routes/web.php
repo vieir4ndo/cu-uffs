@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\MenuController;
@@ -51,9 +52,17 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::middleware(RUOrThirdPartyCashierEmployeeMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
         Route::get('/entry', [EntryController::class, 'index'])->name('web.entry.index');
+        Route::get('/ticket', [TicketController::class, 'index'])->name('web.ticket.index');
+        Route::get('/report', [ReportController::class, 'index'])->name('web.report.index');
     });
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+
+Route::get('/reset-password/{uid}/{token}', [AuthController::class, 'index'])->name('web.auth.index');
+//remover esse abaixo
+Route::get('/reset-password', function () {
+    return view('auth.reset-password', ['uid' => null, 'token' => null, 'errors' => null]);
+})->name("web.auth.resetPassword");

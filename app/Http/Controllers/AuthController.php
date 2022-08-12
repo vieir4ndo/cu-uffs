@@ -17,7 +17,7 @@ class AuthController extends Controller
         $this->service = $service;
     }
 
-    public function redirectToResetPassword($uid, $token, $errors = null)
+    public function index($uid, $token, $errors = null)
     {
         return view('auth.reset-password', ['uid' => $uid, 'token' => $token, 'errors' => $errors]);
     }

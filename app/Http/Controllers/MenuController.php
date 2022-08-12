@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Validators\MenuValidator;
 use App\Interfaces\Services\IMenuService;
 use Exception;
 use Illuminate\Http\Request;

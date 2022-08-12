@@ -40,6 +40,22 @@
                         </x-jet-nav-link>
                     </div>
                 @endif
+
+                @if (Auth::user()->type == 5)
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-jet-nav-link href="{{ route('web.ticket.index') }}" :active="request()->routeIs('web.ticket.index')">
+                            {{ __('Fichas de Refeição') }}
+                        </x-jet-nav-link>
+                    </div>
+                @endif
+
+                @if (Auth::user()->type == 3 || Auth::user()->type == 5)
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-jet-nav-link href="{{ route('web.report.index') }}" :active="request()->routeIs('web.report.index')">
+                            {{ __('Relatórios') }}
+                        </x-jet-nav-link>
+                    </div>
+                @endif
             </div>
 
             <!-- Settings Dropdown -->

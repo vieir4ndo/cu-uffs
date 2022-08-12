@@ -3,7 +3,7 @@
     <h2 class="font-semibold text-xl text-gray-200 leading-tight">
       {{ $title }}
     </h2>
-
+  </x-slot>
     <div class="py-10 sm:px-6 lg:px-8">
       <div class="bg-ccuffs overflow-hidden sm:rounded-lg p-3 sm:p-10">
         <form name="create-user" id="create-user" class="default-form" method="post" action="{{ route('web.user.form') }}">
@@ -71,5 +71,4 @@
         </form>
       </div>
     </div>
-  </x-slot>
 </x-app-layout>

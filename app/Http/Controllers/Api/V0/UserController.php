@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V0;
 
 use App\Enums\Operation;
+use App\Http\Validators\UserValidator;
 use App\Interfaces\Services\IUserPayloadService;
 use App\Interfaces\Services\IUserService;
 use App\Jobs\StartCreateOrUpdateUserJob;
@@ -10,7 +11,6 @@ use App\Models\Api\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class UserController
 {
@@ -220,9 +220,6 @@ class UserController
     public function changeUserType(Request $request)
     {
         try {
-            if (!$request->user()->isRUEmployee()) {
-                return ApiResponse::forbidden('User is not allowed to do this operation.');
-            }
 
             $data = [
                 'uid' => $request->uid,
