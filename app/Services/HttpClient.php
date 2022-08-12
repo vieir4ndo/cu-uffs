@@ -42,7 +42,7 @@ class HttpClient implements IHttpClient
 
         try {
             $response = $this->client->request($method, $uri, $this->getOptions($data, $uri));
-        } catch (ClientException|RequestException $e) {
+        } catch (ClientException | RequestException $e) {
             $response = $e->getResponse();
 
             if (!$response || !in_array($response->getStatusCode(), $this->doNotThrowExceptionStatusCodes)) {
@@ -53,6 +53,13 @@ class HttpClient implements IHttpClient
         }
 
         return $response;
+    }
+
+    public function withHeaders($headers)
+    {
+        $this->headers = $headers;
+
+        return $this;
     }
 
     public function withReferer($referer)
@@ -117,5 +124,4 @@ class HttpClient implements IHttpClient
     {
         return $this->request('POST', $uri, $data, $referer);
     }
-
 }
