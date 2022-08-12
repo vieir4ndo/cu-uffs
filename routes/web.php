@@ -55,6 +55,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/entry', [EntryController::class, 'index'])->name('web.entry.index');
         Route::get('/ticket', [TicketController::class, 'index'])->name('web.ticket.index');
         Route::get('/report', [ReportController::class, 'index'])->name('web.report.index');
+        Route::get('/sell', [\App\Http\Controllers\SellController::class, 'index'])->name('web.sell.index');
     });
 });
 

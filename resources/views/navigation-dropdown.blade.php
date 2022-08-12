@@ -17,23 +17,17 @@
                     </x-jet-nav-link>
                 </div>
 
-                @if (Auth::user()->type == 3)
+                @if (Auth::user()->type == \App\Enums\UserType::RUEmployee->value)
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                         <x-jet-nav-link href="{{ route('web.user.index') }}" :active="request()->routeIs('web.user.index')">
                             {{ __('Usuários') }}
                         </x-jet-nav-link>
                     </div>
-                @endif
-
-                @if (Auth::user()->type == 3)
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                         <x-jet-nav-link href="{{ route('web.menu.index') }}" :active="request()->routeIs('web.menu.index')">
                             {{ __('Cardápios') }}
                         </x-jet-nav-link>
                     </div>
-                @endif
-
-                @if (Auth::user()->type == 3 || Auth::user()->type == 5)
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                         <x-jet-nav-link href="{{ route('web.entry.index') }}" :active="request()->routeIs('web.entry.index')">
                             {{ __('Entradas') }}
@@ -41,7 +35,7 @@
                     </div>
                 @endif
 
-                @if (Auth::user()->type == 5)
+                @if (Auth::user()->type == \App\Enums\UserType::ThirdPartyCashierEmployee->value)
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                         <x-jet-nav-link href="{{ route('web.ticket.index') }}" :active="request()->routeIs('web.ticket.index')">
                             {{ __('Fichas de Refeição') }}
@@ -49,7 +43,12 @@
                     </div>
                 @endif
 
-                @if (Auth::user()->type == 3 || Auth::user()->type == 5)
+                @if (Auth::user()->type == \App\Enums\UserType::RUEmployee->value || Auth::user()->type == \App\Enums\UserType::ThirdPartyCashierEmployee->value)
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-jet-nav-link href="{{ route('web.sell.index') }}" :active="request()->routeIs('web.sell.index')">
+                            {{ __('Vendas de Fichas de Refeição') }}
+                        </x-jet-nav-link>
+                    </div>
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                         <x-jet-nav-link href="{{ route('web.report.index') }}" :active="request()->routeIs('web.report.index')">
                             {{ __('Relatórios') }}

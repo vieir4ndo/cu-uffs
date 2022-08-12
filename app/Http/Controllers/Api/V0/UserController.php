@@ -260,7 +260,7 @@ class UserController
     {
         return [
             'profile_photo' => ['string'],
-            'enrollment_id' => [Rule::unique('users')->ignore($enrollment_id, 'enrollment_id'), 'string', 'max:10', 'min:10'],
+            'enrollment_id' => [Rule::unique('users')->ignore($enrollment_id, 'enrollment_id'), 'string'],
             'birth_date' => ['date']
         ];
     }
@@ -281,7 +281,7 @@ class UserController
             "uid" => ['required', 'string', 'unique:users'],
             'password' => ['required', 'string'],
             'profile_photo' => ['required', 'string'],
-            'enrollment_id' => ['required', 'string', 'max:10', 'min:10', 'unique:users'],
+            'enrollment_id' => ['required', 'string', 'unique:users'],
             'birth_date' => ['required', 'date']
         ];
     }
