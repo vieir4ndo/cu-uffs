@@ -69,7 +69,7 @@ Route::get('/reset-password', function () {
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return view('dashboard');
+        return redirect(config('fortify.home'));
     } else {
         return view('auth.login');
     }
