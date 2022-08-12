@@ -15,7 +15,7 @@
                             <div class="card-content">
                                 <h3 class="card-title mb-3 md:mr-5">
                                     Registrar venda para </br> Estudante/Servidor
-                                    </h5>
+                                    </h3>
                                     <x-fas-chevron-right />
                             </div>
                         </a>
@@ -28,7 +28,7 @@
                             <div class="card-content">
                                 <h3 class="card-title mb-3 md:mr-5">
                                     Registrar venda para </br> Visitantes
-                                    </h5>
+                                    </h3>
                                     <x-fas-chevron-right />
                             </div>
                         </a>
