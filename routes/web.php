@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TicketController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\MenuController;
@@ -66,3 +67,11 @@ Route::get('/reset-password/{uid}/{token}', [AuthController::class, 'index'])->n
 Route::get('/reset-password', function () {
     return view('auth.reset-password', ['uid' => null, 'token' => null, 'errors' => null]);
 })->name("web.auth.resetPassword");
+
+Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect(config('fortify.home'));
+    } else {
+        return view('auth.login');
+    }
+});
