@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if (Auth::user()->type == 5 or Auth::user()->type == \App\Enums\UserType::RUEmployee->value)
+            @if (Auth::user()->type == 5 or Auth::user()->type == 3)
             <div class="flex flex-wrap mb-3">
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-5">
                     <div class="default-card bg-ccuffs-primary md:mx-15">
