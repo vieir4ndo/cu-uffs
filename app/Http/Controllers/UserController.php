@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Validators\UserValidator;
 use App\Interfaces\Services\IUserService;
 use App\Interfaces\Services\IUserPayloadService;
 use App\Interfaces\Services\IAuthService;
-
 use App\Models\Api\ApiResponse;
-use App\Models\User;
-use Carbon\Carbon;
 use App\Enums\Operation;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Validators\UserValidator;
 use App\Http\Validators\AuthValidator;
 use App\Jobs\StartCreateOrUpdateUserJob;
 

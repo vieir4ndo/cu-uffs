@@ -4,6 +4,7 @@ namespace App\Http\Validators;
 
 use Illuminate\Validation\Rule;
 
+
 class UserValidator
 {
     public static function changeUserActivityUserRules()
