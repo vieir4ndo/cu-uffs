@@ -51,9 +51,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::middleware(RUOrThirdPartyCashierEmployeeMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
         Route::get('/entry', [EntryController::class, 'index'])->name('web.entry.index');
+        Route::get('/ticket', [\App\Http\Controllers\TicketController::class, 'index'])->name('web.ticket.index');
     });
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+
+Route::get('/reset-password/{uid}/{token}', [AuthController::class, 'index'])->name('web.auth.index');
+Route::get('/reset-password', function () {
+    return view('auth.reset-password', ['uid' => null, 'token' => null, 'errors' => null]);
+})->name("web.auth.resetPassword");

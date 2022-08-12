@@ -3,7 +3,7 @@
     <h2 class="font-semibold text-xl text-gray-200 leading-tight">
       {{ $title }}
     </h2>
-
+  </x-slot>
     <div class="py-10 sm:px-6 lg:px-8">
       <div class="bg-ccuffs overflow-hidden sm:rounded-lg p-3 sm:p-10">
         <form name="create-update-menu-form" id="create-update-menu-form" class="default-form" method="post" action="{{ route('web.menu.createOrUpdate') }}">
@@ -19,7 +19,6 @@
               </div>
             </div>
           </div>
-
           <div class="flex flex-wrap -mx-3 mb-3">
             <div class="w-full md:w-1/3 px-3 mb-6 md:mb-5">
               <label for="salad-1">Salada 1</label>
@@ -34,7 +33,6 @@
               <input id="salad-3" name="salad_3" type="text" required="true" value="{{ $menu->salad_3 ?? '' }}">
             </div>
           </div>
-
           <div class="flex flex-wrap -mx-3 mb-3">
             <div class="w-full md:w-1/3 px-3 mb-6 md:mb-5">
               <label for="grain-1">Grão 1</label>
@@ -49,7 +47,6 @@
               <input id="grain-3" name="grains_3" type="text" required="true" value="{{ $menu->grains_3 ?? '' }}">
             </div>
           </div>
-
           <div class="flex flex-wrap -mx-3 mb-3">
             <div class="w-full md:w-1/2 px-3 mb-6 md:mb-5">
               <label for="side-dish">Guarnição</label>
@@ -60,8 +57,6 @@
               <input id="mixture" name="mixture" type="text" required="true" value="{{ $menu->mixture ?? '' }}">
             </div>
           </div>
-
-
           <div class="flex flex-wrap -mx-3 mb-3">
             <div class="w-full md:w-1/2 px-3 mb-6 md:mb-5">
               <label for="vegan_mixture">Opção Vegetariana</label>
@@ -84,5 +79,4 @@
         </form>
       </div>
     </div>
-  </x-slot>
 </x-app-layout>
