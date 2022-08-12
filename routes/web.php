@@ -66,3 +66,7 @@ Route::get('/reset-password/{uid}/{token}', [AuthController::class, 'index'])->n
 Route::get('/reset-password', function () {
     return view('auth.reset-password', ['uid' => null, 'token' => null, 'errors' => null]);
 })->name("web.auth.resetPassword");
+
+Route::get('/', function () {
+    return view('auth.login');
+});
