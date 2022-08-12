@@ -68,9 +68,5 @@ Route::get('/reset-password', function () {
 })->name("web.auth.resetPassword");
 
 Route::get('/', function () {
-    if (Auth::check()) {
-        return view('dashboard');
-    } else {
-        return view('auth.login');
-    }
+    return view('auth.login');
 });
