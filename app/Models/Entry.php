@@ -8,7 +8,8 @@ class Entry extends Model
 {
     protected $fillable = [
         'date_time',
-        'user_id'
+        'user_id',
+        'type'
     ];
 
     public $timestamps = false;

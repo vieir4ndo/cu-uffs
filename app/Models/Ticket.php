@@ -10,7 +10,8 @@ class Ticket extends Model
         'date_time',
         'user_id',
         'amount',
-        'third_party_cashier_employee_id'
+        'third_party_cashier_employee_id',
+        'type'
     ];
 
     public $timestamps = false;

@@ -13,7 +13,6 @@ return [
     ],
 
     'users_without_iduffs' => [
-        \App\Enums\UserType::ThirdPartyEmployee->value,
         \App\Enums\UserType::ThirdPartyCashierEmployee->value
     ]
 ];

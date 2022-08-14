@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V0;
 
+use App\Enums\TicketOrEntryType;
 use App\Http\Controllers\Controller;
 use App\Interfaces\Services\ITicketService;
 use App\Models\Api\ApiResponse;
@@ -45,7 +46,25 @@ class TicketController extends Controller
             $data = [
                 'third_party_cashier_employee_id' => $request->user()->id,
                 "date_time" => now(),
-                "amount" => 1
+                "amount" => 1,
+                "type" => TicketOrEntryType::Visitor->value
+            ];
+
+            $this->service->insertTicketForVisitors($data);
+
+            return ApiResponse::ok(null);
+        } catch (Exception $e) {
+            return ApiResponse::badRequest($e->getMessage());
+        }
+    }
+
+    public function insertTicketsForThirdPartyEmployee(Request $request){
+        try {
+            $data = [
+                'third_party_cashier_employee_id' => $request->user()->id,
+                "date_time" => now(),
+                "amount" => 1,
+                "type" => TicketOrEntryType::ThirdPartyEmployee->value
             ];
 
             $this->service->insertTicketForVisitors($data);

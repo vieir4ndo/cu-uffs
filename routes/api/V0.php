@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->namespace('\App\Http\Controllers\Api\V0')->gr
 
     Route::middleware(ThirdPartyCashierEmployeeMiddleware::class)->namespace('\App\Http\Controllers\Api\V0')->group(function () {
         Route::post('/ticket/visitor', [TicketController::class, 'insertTicketsForVisitors'])->name('api.v0.ticket.insertTicketsForVisitors');
+        Route::post('/ticket/thrid-party-employee', [TicketController::class, 'insertTicketsForThirdPartyEmployee'])->name('api.v0.ticket.insertTicketsForThirdPartyEmployee');
         Route::post('/ticket', [TicketController::class, 'insertTickets'])->name('api.v0.ticket.insertTickets');
     });
 

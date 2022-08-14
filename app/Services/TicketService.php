@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\TicketOrEntryType;
+use App\Enums\UserType;
 use App\Interfaces\Repositories\ITicketRepository;
 use App\Interfaces\Services\ITicketService;
 use App\Interfaces\Services\IUserService;
@@ -29,6 +31,7 @@ class TicketService implements ITicketService
         }
 
         $data["user_id"] = $user->id;
+        $data["type"] = ($user->type == UserType::Employee->value) ? TicketOrEntryType::Employee->value : TicketOrEntryType::Student->value;
 
         $this->userService->updateTicketAmount($user->uid, $data["amount"]);
 
