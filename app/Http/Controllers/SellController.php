@@ -8,6 +8,6 @@ class SellController extends Controller
 {
     public function index()
     {
-        return view('sell.index');
+        return view('restaurant.sell.index');
     }
 }

@@ -8,6 +8,6 @@ class EntryController extends Controller
 {
     public function index()
     {
-        return view('entry.index');
+        return view('restaurant.entry.index');
     }
 }

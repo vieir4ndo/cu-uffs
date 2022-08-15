@@ -35,15 +35,15 @@
           </div>
           <div class="flex flex-wrap -mx-3 mb-3">
             <div class="w-full md:w-1/3 px-3 mb-6 md:mb-5">
-              <label for="grain-1">Grão 1</label>
-              <input id="grain-1" name="grains_1" type="text" required="true" value="{{ $menu->grains_1 ?? '' }}">
+              <label for="grain-1">Arroz 1</label>
+              <input id="grain-1" name="grains_1" type="text" required="true" value="{{ $menu->grains_1 ?? 'Arroz branco' }}">
             </div>
             <div class="w-full md:w-1/3 px-3 mb-6 md:mb-5">
-              <label for="grain-2">Grão 2</label>
-              <input id="grain-2" name="grains_2" type="text" required="true" value="{{ $menu->grains_2 ?? '' }}">
+              <label for="grain-2">Arroz 2</label>
+              <input id="grain-2" name="grains_2" type="text" required="true" value="{{ $menu->grains_2 ?? 'Arroz integral' }}">
             </div>
             <div class="w-full md:w-1/3 px-3 mb-6 md:mb-5">
-              <label for="grain-3">Grão 3</label>
+              <label for="grain-3">Leguminosas</label>
               <input id="grain-3" name="grains_3" type="text" required="true" value="{{ $menu->grains_3 ?? '' }}">
             </div>
           </div>

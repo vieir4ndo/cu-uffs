@@ -24,7 +24,7 @@ class MenuController extends Controller
         $date ??= now();
         $menu = $this->service->getMenuByDate($date);
 
-        return view('menu.index', [
+        return view('restaurant.menu.index', [
             'menu' => $menu,
             'date' => date('d/m/Y', strtotime($date))
         ]);
@@ -34,7 +34,7 @@ class MenuController extends Controller
     {
         $title = 'Novo Cardápio';
 
-        return view('menu.form', [
+        return view('restaurant.menu.form', [
             'title' => $title
         ]);
     }
@@ -45,7 +45,7 @@ class MenuController extends Controller
         $menu = $this->service->getMenuById($id);
         $menu->date = date('d/m/Y', strtotime($menu->date));
 
-        return view('menu.form', [
+        return view('restaurant.menu.form', [
             'title' => $title,
             'menu' => $menu
         ]);
