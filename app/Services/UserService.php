@@ -10,7 +10,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Hash;
-use App\Helpers\StorageHelper;
 
 class UserService implements IUserService
 {
