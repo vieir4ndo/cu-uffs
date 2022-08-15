@@ -59,6 +59,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     });
 });
 
+Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
+
 Route::get('/reset-password/{uid}/{token}', [AuthController::class, 'index'])->name('web.auth.index');
 //remover esse abaixo
 Route::get('/reset-password', function () {
