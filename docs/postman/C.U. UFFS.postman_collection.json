@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4d8c85e1-d71d-4dab-980f-2cb61df5d6d7",
+		"_postman_id": "aef603f2-2b76-4d33-a7a6-0d819ff7ace1",
 		"name": "C.U. UFFS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "15701954"
@@ -384,6 +384,26 @@
 						},
 						{
 							"name": "Register visitor ticket",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/v0/ticket/visitor",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"ticket",
+										"visitor"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register third party employee ticket",
 							"request": {
 								"method": "POST",
 								"header": [],
