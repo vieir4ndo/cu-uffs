@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SellController;
 use App\Http\Controllers\TicketController;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\MenuController;
@@ -32,6 +33,8 @@ Route::group(['middleware' => ['web']], function () {
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/dashboard',             [DashboardController::class, 'index'])->name('web.dashboard.index');
+
     Route::middleware(RUEmployeeMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
         Route::get('/menu',             [MenuController::class, 'index'])->name('web.menu.index');
         Route::post('/menu',             [MenuController::class, 'filter'])->name('web.menu.filter');
@@ -51,24 +54,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/entry', [EntryController::class, 'index'])->name('web.entry.index');
         Route::get('/ticket', [TicketController::class, 'index'])->name('web.ticket.index');
         Route::get('/report', [ReportController::class, 'index'])->name('web.report.index');
-        Route::get('/sell', [\App\Http\Controllers\SellController::class, 'index'])->name('web.sell.index');
+        Route::get('/sell', [SellController::class, 'index'])->name('web.sell.index');
     });
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+Route::get('/reset-password/{uid}/{token}', [AuthController::class, 'redirectResetPassword'])->name('web.auth.redirectResetPassword');
+Route::get('/', [AuthController::class, 'index'])->name('web.auth.index');
 
-Route::get('/reset-password/{uid}/{token}', [AuthController::class, 'index'])->name('web.auth.index');
-//remover esse abaixo
-Route::get('/reset-password', function () {
-    return view('auth.reset-password', ['uid' => null, 'token' => null, 'errors' => null]);
-})->name("web.auth.resetPassword");
-
-Route::get('/', function () {
-    if (Auth::check()) {
-        return redirect(config('fortify.home'));
-    } else {
-        return view('auth.login');
-    }
-});

@@ -6,6 +6,7 @@ use App\Interfaces\Services\IAuthService;
 use App\Models\PersonalAccessToken;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -17,7 +18,14 @@ class AuthController extends Controller
         $this->service = $service;
     }
 
-    public function index($uid, $token, $errors = null)
+    public function index(){
+        if (Auth::check()) {
+            return redirect(config('fortify.home'));
+        } else {
+            return view('auth.login');
+        }
+    }
+    public function redirectResetPassword($uid, $token, $errors = null)
     {
         return view('auth.reset-password', ['uid' => $uid, 'token' => $token, 'errors' => $errors]);
     }
