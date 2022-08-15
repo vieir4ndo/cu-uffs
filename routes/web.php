@@ -33,7 +33,6 @@ Route::group(['middleware' => ['web']], function () {
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::get('/dashboard',             [DashboardController::class, 'index'])->name('web.dashboard.index');
 
     Route::middleware(RUEmployeeMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
         Route::get('/menu',             [MenuController::class, 'index'])->name('web.menu.index');
@@ -57,6 +56,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/sell', [SellController::class, 'index'])->name('web.sell.index');
     });
 });
+
+Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard',             [DashboardController::class, 'index'])->name('web.dashboard.index');
 
 Route::get('/reset-password/{uid}/{token}', [AuthController::class, 'redirectResetPassword'])->name('web.auth.redirectResetPassword');
 Route::get('/', [AuthController::class, 'index'])->name('web.auth.index');
