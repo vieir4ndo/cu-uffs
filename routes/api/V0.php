@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->namespace('\App\Http\Controllers\Api\V0')->gr
     Route::get('/entry', [EntryController::class, 'getEntries'])->name('api.v0.entry.getEntries');
     Route::get('/ticket', [TicketController::class, 'getTickets'])->name('api.v0.ticket.getTickets');
     Route::get('/ticket/balance', [TicketController::class, 'getTicketBalance'])->name('api.v0.ticket.getTicketBalance');
+    Route::patch('/user', [UserController::class, 'updateUserWithoutIdUFFS'])->name('api.v0.user.updateUserWithoutIdUFFS');
 
     Route::middleware(ThirdPartyCashierEmployeeMiddleware::class)->namespace('\App\Http\Controllers\Api\V0')->group(function () {
         Route::post('/ticket/visitor', [TicketController::class, 'insertTicketsForVisitors'])->name('api.v0.ticket.insertTicketsForVisitors');
@@ -39,7 +40,6 @@ Route::middleware('auth:sanctum')->namespace('\App\Http\Controllers\Api\V0')->gr
     Route::middleware(RUEmployeeMiddleware::class)->namespace('\App\Http\Controllers\Api\V0')->group(function () {
         Route::put('/user/type', [UserController::class, 'changeUserType'])->name('api.v0.user.changeUserType');
         Route::post('/user', [UserController::class, 'createUserWithoutIdUFFS'])->name('api.v0.user.createWithoutIdUFFS');
-        Route::patch('/user', [UserController::class, 'updateUserWithoutIdUFFS'])->name('api.v0.user.updateUserWithoutIdUFFS');
         Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('api.v0.auth.forgotPassword');
         Route::post('/menu', [MenuController::class, 'createMenu'])->name('api.v0.menu.createMenu');
         Route::patch('/menu/{date}', [MenuController::class, 'updateMenu'])->name('api.v0.menu.updateMenu');
