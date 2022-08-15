@@ -51,7 +51,7 @@ class GenerateAndSaveBarCodeJob implements ShouldQueue
             if (OperationHelper::IsUpdateUserOperation($userDb->operation) && !array_key_exists("enrollment_id", $user)) {
                 Log::info("Update does not require bar code generation");
             } else {
-                $barcodePath = StorageHelper::saveBarCode($this->uid, $barcodeService->generateBase64($user["enrollment_id"]));
+                $barcodePath = $barcodeService->generateBase64($user["enrollment_id"]);
 
                 $user["bar_code"] = $barcodePath;
 

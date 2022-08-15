@@ -44,9 +44,8 @@ class UserService implements IUserService
     private function createUserBase($user): User
     {
         $user["profile_photo"] = $this->aiPassportPhotoService->validatePhoto($user["profile_photo"]);
-        $user["profile_photo"] = StorageHelper::saveProfilePhoto($user["uid"], $user["profile_photo"]);
 
-        $user["bar_code"] = StorageHelper::saveBarCode($user["uid"], $this->barcodeService->generateBase64($user["enrollment_id"]));
+        $user["bar_code"] = $this->barcodeService->generateBase64($user["enrollment_id"]);
 
         $user["password"] = Hash::make($user["password"]);
 
@@ -70,11 +69,6 @@ class UserService implements IUserService
         if (empty($user))
             throw new Exception("User not found.");
 
-        if ($withFiles) {
-            $user->profile_photo = StorageHelper::getFile($user->profile_photo);
-            $user->bar_code = StorageHelper::getFile($user->bar_code);
-        }
-
         return $user;
     }
 
@@ -83,9 +77,6 @@ class UserService implements IUserService
 
         if (empty($user))
             throw new Exception("User not found.");
-
-        $user->profile_photo = StorageHelper::getFile($user->profile_photo);
-        $user->bar_code = StorageHelper::getFile($user->bar_code);
 
         return $user;
     }
@@ -98,20 +89,12 @@ class UserService implements IUserService
         if (empty($user))
             return null;
 
-        if ($withFiles) {
-            $user->profile_photo = StorageHelper::getFile($user->profile_photo);
-            $user->bar_code = StorageHelper::getFile($user->bar_code);
-        }
-
         return $user;
     }
 
     public function deleteUserByUsername(string $uid): bool
     {
         $user = $this->getUserByUsername($uid);
-
-        StorageHelper::deleteProfilePhoto($user->uid);
-        StorageHelper::deleteBarCode($user->uid);
 
         $user->tokens()->delete();
 
@@ -150,14 +133,11 @@ class UserService implements IUserService
         }
 
         if (isset($data["enrollment_id"]) and $data["enrollment_id"] != $user->enrollment_id) {
-            StorageHelper::deleteBarCode($user->uid);
-            $data["bar_code"] = StorageHelper::saveBarCode($user->uid, $this->barcodeService->generateBase64($data["enrollment_id"]));
+            $data["bar_code"] = $this->barcodeService->generateBase64($data["enrollment_id"]);
         }
 
         if (isset($data["profile_photo"])) {
-            StorageHelper::deleteProfilePhoto($user->uid);
             $data["profile_photo"] = $this->aiPassportPhotoService->validatePhoto($data["profile_photo"]);
-            $data["profile_photo"] = StorageHelper::saveProfilePhoto($user->uid, $data["profile_photo"]);
         }
 
         $this->repository->updateUserByUsername($user->uid, $data);
@@ -192,11 +172,6 @@ class UserService implements IUserService
 
         if (empty($user))
             throw new Exception("User not found.");
-
-        if ($withFiles) {
-            $user->profile_photo = StorageHelper::getFile($user->profile_photo);
-            $user->bar_code = StorageHelper::getFile($user->bar_code);
-        }
 
         return $user;
     }

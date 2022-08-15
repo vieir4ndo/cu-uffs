@@ -53,9 +53,8 @@ class ValidateAndSaveProfilePhotoJob implements ShouldQueue
             } else {
 
                 $photoValidated = $aiPassportPhotoService->validatePhoto($user["profile_photo"]);
-                $photoValidatedPath = StorageHelper::saveProfilePhoto($this->uid, $photoValidated);
 
-                $user["profile_photo"] = $photoValidatedPath;
+                $user["profile_photo"] = $photoValidated;
 
                 $userPayloadService->updatePayloadByUid($this->uid, $user);
             }
