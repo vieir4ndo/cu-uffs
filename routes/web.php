@@ -32,10 +32,6 @@ Route::group(['middleware' => ['web']], function () {
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-
     Route::middleware(RUEmployeeMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
         Route::get('/menu',             [MenuController::class, 'index'])->name('web.menu.index');
         Route::post('/menu',             [MenuController::class, 'filter'])->name('web.menu.filter');
