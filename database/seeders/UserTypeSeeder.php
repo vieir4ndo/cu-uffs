@@ -28,6 +28,9 @@ class UserTypeSeeder extends Seeder
         ], [
             'id' => 4,
             'description' => 'Servidor Terceirizado Restaurante Universitário',
+        ],[
+            'id' => 5,
+            'description' => 'Administrador Cadastro de Salas',
         ]
         ]);
     }
