@@ -39,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('App\Interfaces\Services\IUserPayloadService', 'App\Services\UserPayloadService');
         $this->app->bind('App\Interfaces\Services\IUserService', 'App\Services\UserService');
         $this->app->bind('App\Interfaces\Services\IMenuService', 'App\Services\MenuService');
+        $this->app->bind('App\Interfaces\Services\IBlockService', 'App\Services\BlockService');
 
         # Registering repositories
         $this->app->bind('App\Interfaces\Repositories\IEntryRepository', 'App\Repositories\EntryRepository');
@@ -46,6 +47,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('App\Interfaces\Repositories\IUserPayloadRepository', 'App\Repositories\UserPayloadRepository');
         $this->app->bind('App\Interfaces\Repositories\IUserRepository', 'App\Repositories\UserRepository');
         $this->app->bind('App\Interfaces\Repositories\IMenuRepository', 'App\Repositories\MenuRepository');
+        $this->app->bind('App\Interfaces\Repositories\IBlockRepository', 'App\Repositories\BlockRepository');
 
         $this->app->when(StartCreateOrUpdateUserJob::class)
             ->needs(IUserPayloadService::class)
