@@ -30,8 +30,24 @@ class UserTypeSeeder extends Seeder
             'description' => 'Servidor Terceirizado Restaurante Universitário',
         ], [
             'id' => 5,
+<<<<<<< Updated upstream
             'description' => 'Servidor Terceirizado Restaurante Universitário',
         ]]
         );
+=======
+            'description' => 'Servidor de Cadastro de Salas',
+        ],
+        [
+            'id' => 6,
+            'description' => 'Usuário de Cadastro de Salas',
+        ], [
+            'id' => 7,
+            'description' => 'Locador de Salas',
+        ], [
+            'id' => 8,
+            'description' => 'Administrador do Cadastro de Salas',
+        ]
+        ]);
+>>>>>>> Stashed changes
     }
 }
