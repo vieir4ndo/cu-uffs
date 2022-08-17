@@ -31,6 +31,9 @@ class UserTypeSeeder extends Seeder
         ],[
             'id' => 5,
             'description' => 'Administrador Cadastro de Salas',
+        ], [
+            'id' => 6,
+            'description' => 'Locador de Salas',
         ]
         ]);
     }
