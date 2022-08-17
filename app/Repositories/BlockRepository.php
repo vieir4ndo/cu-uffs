@@ -7,26 +7,23 @@ use App\Models\Block;
 
 class BlockRepository implements IBlockRepository
 {
-    public function createBlock($data)
+    public function createOrUpdateBlock($data)
     {
-        return Block::create($data);
-    }
+        $id = $data["id"] ?? null;
+        unset($data["id"]);
 
-    public function updateBlock($data, $id)
-    {
         return Block::updateOrCreate(
             ["id" => $id],
             $data
         );
     }
 
-    public function deleteBlock($date)
-    {
-        return Block::where('id', $id)->delete();
-    }
-
     public function getBlock()
     {
         return Block::simplePaginate(15);
+    }
+
+    public function getBlockById($id){
+        return Block::where('id', $id)->first();
     }
 }

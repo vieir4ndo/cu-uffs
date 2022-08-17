@@ -8,8 +8,9 @@ class Block extends Model
 {
     protected $fillable = [
         "name",
-        "description"
+        "description",
+        "status_block"
     ];
 
-    public $timestamps = true;
+    public $timestamps = false;
 }

@@ -23,7 +23,8 @@ class BlockController extends Controller
         try {
             $block = [
                 "name" => $request->name,
-                "description" => $request->description
+                "description" => $request->description,
+                "status_block" => $request->status
             ];
 
             $validation = Validator::make($block, $this->createBlockRules());
@@ -44,7 +45,8 @@ class BlockController extends Controller
         try {
             $block = [
                 "name" => $request->name,
-                "description" => $request->description
+                "description" => $request->description,
+                "status_block" => $request->status
             ];
 
             $block = array_filter($block);
@@ -56,16 +58,6 @@ class BlockController extends Controller
             }
 
             $this->service->updateBlock($block, $id);
-
-            return ApiResponse::ok(null);
-        } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
-        }
-    }
-
-    public function deleteBlock($id){
-        try {
-            $block = $this->service->deleteBlock($block);
 
             return ApiResponse::ok(null);
         } catch (Exception $e) {
@@ -87,7 +79,8 @@ class BlockController extends Controller
     {
         return [
             "name" => ['string'],
-            "description" => ['string']
+            "description" => ['string'],
+            "status" => ['string']
         ];
     }
 
@@ -95,7 +88,8 @@ class BlockController extends Controller
     {
         return [
             "name" => ['required', 'string'],
-            "description" => ['string']
+            "description" => ['string'],
+            "status" => ['string']
         ];
     }
 

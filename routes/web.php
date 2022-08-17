@@ -4,12 +4,14 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SellController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\BlockController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\EntryController;
 use App\Http\Middleware\RUEmployeeMiddleware;
 use App\Http\Middleware\RUOrThirdPartyCashierEmployeeMiddleware;
+use App\Http\Middleware\RoomsAdministratorMiddleware;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 
@@ -54,6 +56,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/ticket', [TicketController::class, 'index'])->name('web.ticket.index');
         Route::get('/report', [ReportController::class, 'index'])->name('web.report.index');
         Route::get('/sell', [SellController::class, 'index'])->name('web.sell.index');
+    });
+
+    Route::middleware(RoomsAdministratorMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
+        Route::get('/block', [BlockController::class, 'index'])->name('web.block.index');
+        Route::get('/block/create', [BlockController::class, 'create'])->name('web.block.create');
+        Route::get('/block/edit/{id}', [BlockController::class, 'edit'])->name('block.edit');
+        Route::post('/block/form', [BlockController::class, 'createOrUpdate'])->name('web.block.createOrUpdate');
     });
 });
 

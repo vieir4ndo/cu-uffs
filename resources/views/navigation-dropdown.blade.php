@@ -55,6 +55,14 @@
                         </x-jet-nav-link>
                     </div>
                 @endif
+
+                @if (Auth::user()->type == \App\Enums\UserType::CSManager->value)
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-jet-nav-link href="{{ route('web.block.index') }}" :active="request()->routeIs('web.block.index')">
+                            {{ __('Blocos') }}
+                        </x-jet-nav-link>
+                    </div>
+                @endif
             </div>
 
             <!-- Settings Dropdown -->

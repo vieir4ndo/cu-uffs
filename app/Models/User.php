@@ -78,8 +78,7 @@ class User extends Authenticatable
         return $this->type == UserType::ThirdPartyCashierEmployee->value;
     }
 
-    // TODO -> Create this logic
     public function isRoomsAdministrator(){
-        return true;
+        return $this->type == UserType::CSManager->value;
     }
 }

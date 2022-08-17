@@ -17,21 +17,21 @@ class BlockService implements IBlockService
 
     public function createBlock($data)
     {
-        return $this->repository->createBlock($data);
+        return $this->repository->createOrUpdateBlock($data);
     }
 
     public function updateBlock($data, $id)
     {
-        $this->repository->updateBlock($data, Carbon::parse($id));
-    }
-
-    public function deleteBlock($id)
-    {
-        $this->repository->deleteBlock(Carbon::parse($id));
+        $this->repository->createOrUpdateBlock($data, Carbon::parse($id));
     }
 
     public function getBlock()
     {
         return $this->repository->getBlock();
+    }
+
+    public function getBlockById($id)
+    {
+        return $this->repository->getBlockById($id);
     }
 }
