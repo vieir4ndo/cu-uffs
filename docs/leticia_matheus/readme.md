@@ -16,3 +16,4 @@
 
 [Relational Logic Model - 13/08/2022](files/relational-logic-model.png)<br/>
 [Relational Logic Model - V2 - 14/08/2022](files/relational-logic-model-v2.png)<br/>
+[Relational Logic Model - V3 - 16/08/2022](files/relational-logic-model-v3.png)<br/>
