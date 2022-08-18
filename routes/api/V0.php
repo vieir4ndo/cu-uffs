@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V0\MenuController;
 use App\Http\Controllers\Api\V0\BlockController;
 use App\Http\Controllers\Api\V0\UserController;
 use App\Http\Controllers\Api\V0\TicketController;
+use App\Http\Controllers\Api\V0\RoomController;
 use App\Http\Middleware\ApiKeyMiddleware;
 use App\Http\Middleware\RUEmployeeMiddleware;
 use App\Http\Middleware\RoomsAdministratorMiddleware;
@@ -52,6 +53,11 @@ Route::middleware('auth:sanctum')->namespace('\App\Http\Controllers\Api\V0')->gr
         Route::post('/block', [BlockController::class, 'createBlock'])->name('api.v0.block.createBlock');
         Route::patch('/block/{id}', [BlockController::class, 'updateBlock'])->name('api.v0.block.updateBlock');
         Route::delete('/block/{id}', [BlockController::class, 'deleteBlock'])->name('api.v0.block.deleteBlock');
+        Route::get('/block', [BlockController::class, 'getBlock'])->name('api.v0.block.getBlock');
+        Route::post('/room', [RoomController::class, 'createRoom'])->name('api.v0.room.createRoom');
+        Route::patch('/room/{id}', [RoomController::class, 'updateRoom'])->name('api.v0.room.updateRoom');
+        Route::delete('/room/{id}', [RoomController::class, 'deleteRoom'])->name('api.v0.room.deleteRoom');
+        Route::get('/room', [RoomController::class, 'getRoom'])->name('api.v0.room.getRoom');
     });
 });
 
