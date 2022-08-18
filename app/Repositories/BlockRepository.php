@@ -23,7 +23,8 @@ class BlockRepository implements IBlockRepository
         return Block::simplePaginate(15);
     }
 
-    public function getBlockById($id){
+    public function getBlockById($id)
+    {
         return Block::where('id', $id)->first();
     }
 }

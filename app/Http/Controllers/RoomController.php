@@ -45,15 +45,15 @@ class RoomController extends Controller
                 "description" => $request->description,
                 "status_room" => $request->status,
                 "capacity" => $request->capacity,
-                "responsable_id" => $request->user()->id,
-                "block_id" => $request->blocks()->id
+                "responsable_id" => $request->responsable_id,
+                "block_id" => $request->block_id
             ];
 
             if (isset($request->id)) {
                 $room['id'] = $request->id;
             }
 
-            $validation = Validator::make($room, $this->createOrUpdateBlockRules());
+            $validation = Validator::make($room, $this->createOrUpdateRoomRules());
 
             // if ($validation->fails()) {
             //$errors = $validation->errors()->all(); with errors
@@ -73,7 +73,9 @@ class RoomController extends Controller
             "id" => ['string'],
             "name" => ['required', 'string'],
             "description" => ['string'],
-            "status" => ['required', 'string']
+            "status" => ['required', 'string'],
+            "responsable_id" => ['string'],
+            "block_id" => ['string']
         ];
     }
 }

@@ -7,26 +7,23 @@ use App\Models\Room;
 
 class RoomRepository implements IRoomRepository
 {
-    public function createRoom($data)
+    public function createOrUpdateRoom($data)
     {
-        return Room::create($data);
-    }
+        $id = $data["id"] ?? null;
+        unset($data["id"]);
 
-    public function updateRoom($data, $id)
-    {
         return Room::updateOrCreate(
             ["id" => $id],
             $data
         );
     }
 
-    public function deleteRoom($id)
-    {
-        return Room::where('id', $id)->delete();
-    }
-
     public function getRoom()
     {
         return Room::simplePaginate(15);
+    }
+
+    public function getRoomById($id){
+        return Room::where('id', $id)->first();
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SellController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\BlockController;
+use App\Http\Controllers\RoomController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\MenuController;
@@ -61,8 +62,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::middleware(RoomsAdministratorMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
         Route::get('/block', [BlockController::class, 'index'])->name('web.block.index');
         Route::get('/block/create', [BlockController::class, 'create'])->name('web.block.create');
-        Route::get('/block/edit/{id}', [BlockController::class, 'edit'])->name('block.edit');
+        Route::get('/block/edit/{id}', [BlockController::class, 'edit'])->name('web.block.edit');
         Route::post('/block/form', [BlockController::class, 'createOrUpdate'])->name('web.block.createOrUpdate');
+
+        Route::get('/room', [RoomController::class, 'index'])->name('web.room.index');
+        Route::get('/room/create', [RoomController::class, 'create'])->name('web.room.create');
+        Route::get('/room/edit/{id}', [RoomController::class, 'edit'])->name('web.room.edit');
+        Route::post('/room/form', [RoomController::class, 'createOrUpdate'])->name('web.room.createOrUpdate');
     });
 });
 

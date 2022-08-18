@@ -2,14 +2,14 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\Block;
+use App\Models\Room;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
 
-final class BlockTable extends PowerGridComponent
+final class RoomTable extends PowerGridComponent
 {
     use ActionButton;
 
@@ -46,11 +46,11 @@ final class BlockTable extends PowerGridComponent
     /**
     * PowerGrid datasource.
     *
-    * @return Builder<\App\Models\Block>
+    * @return Builder<\App\Models\Room>
     */
     public function datasource(): Builder
     {
-        return Block::query();
+        return Room::query();
     }
 
     /*
@@ -84,7 +84,10 @@ final class BlockTable extends PowerGridComponent
         return PowerGrid::eloquent()
             ->addColumn('name')
             ->addColumn('description')
-            ->addColumn('status_block');
+            ->addColumn('capacity')
+            ->addColumn('status_room')
+            ->addColumn('responsable_id')
+            ->addColumn('block_id');
     }
 
     /*
@@ -104,6 +107,7 @@ final class BlockTable extends PowerGridComponent
     public function columns(): array
     {
         return [
+
             Column::make('NAME', 'name')
                 ->sortable()
                 ->searchable()
@@ -114,10 +118,25 @@ final class BlockTable extends PowerGridComponent
                 ->searchable()
                 ->makeInputText(),
 
-            Column::make('STATUS BLOCK', 'status_block')
-                ->toggleable()
+            Column::make('CAPACITY', 'capacity')
+                ->sortable()
                 ->searchable()
-                ->sortable(),
+                ->makeInputRange(),
+
+            Column::make('STATUS ROOM', 'status_room')
+                ->sortable()
+                ->searchable()
+                ->toggleable(),
+
+            Column::make('RESPONSABLE ID', 'responsable_id')
+                ->sortable()
+                ->searchable()
+                ->makeInputRange(),
+
+            Column::make('BLOCK ID', 'block_id')
+                ->sortable()
+                ->searchable()
+                ->makeInputRange(),
 
         ]
 ;
@@ -132,18 +151,18 @@ final class BlockTable extends PowerGridComponent
     */
 
      /**
-     * PowerGrid Block Action Buttons.
+     * PowerGrid Room Action Buttons.
      *
      * @return array<int, Button>
      */
 
     public function actions(): array
     {
-       return [
-           Button::make('edit', 'Editar')
-               ->class('bg-green-400 cursor-pointer text-white px-2 py-1.5 m-1 rounded text-sm')
-               ->route('web.block.edit', ['id' => 'id'])
-               ->target('_self')
+        return [
+            Button::make('edit', 'Editar')
+                ->class('bg-green-400 cursor-pointer text-white px-2 py-1.5 m-1 rounded text-sm')
+                ->route('web.room.edit', ['id' => 'id'])
+                ->target('_self')
         ];
     }
 
@@ -156,7 +175,7 @@ final class BlockTable extends PowerGridComponent
     */
 
      /**
-     * PowerGrid Block Action Rules.
+     * PowerGrid Room Action Rules.
      *
      * @return array<int, RuleActions>
      */
@@ -168,7 +187,7 @@ final class BlockTable extends PowerGridComponent
 
            //Hide button edit for ID 1
             Rule::button('edit')
-                ->when(fn($block) => $block->id === 1)
+                ->when(fn($room) => $room->id === 1)
                 ->hide(),
         ];
     }

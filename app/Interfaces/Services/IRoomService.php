@@ -6,6 +6,6 @@ interface IRoomService
 {
     public function createRoom($data);
     public function updateRoom($data, $id);
-    public function deleteRoom($id);
     public function getRoom();
+    public function getRoomById($id);
 }

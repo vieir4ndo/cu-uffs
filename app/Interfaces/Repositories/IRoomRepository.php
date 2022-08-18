@@ -4,8 +4,7 @@ namespace App\Interfaces\Repositories;
 
 interface IRoomRepository
 {
-    public function createRoom($data);
-    public function updateRoom($data, $id);
-    public function deleteRoom($id);
+    public function createOrUpdateRoom($data);
     public function getRoom();
+    public function getRoomById($id);
 }

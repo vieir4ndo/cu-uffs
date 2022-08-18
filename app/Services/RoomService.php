@@ -17,21 +17,21 @@ class RoomService implements IRoomService
 
     public function createRoom($data)
     {
-        return $this->repository->createRoom($data);
+        return $this->repository->createOrUpdateRoom($data);
     }
 
     public function updateRoom($data, $id)
     {
-        $this->repository->updateRoom($data, Carbon::parse($id));
-    }
-
-    public function deleteRoom($id)
-    {
-        $this->repository->deleteRoom(Carbon::parse($id));
+        $this->repository->createOrUpdateRoom($data, Carbon::parse($id));
     }
 
     public function getRoom()
     {
         return $this->repository->getRoom();
+    }
+
+    public function getRoomById($id)
+    {
+        return $this->repository->getRoomById($id);
     }
 }
