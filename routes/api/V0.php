@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V0\BlockController;
 use App\Http\Controllers\Api\V0\UserController;
 use App\Http\Controllers\Api\V0\TicketController;
 use App\Http\Controllers\Api\V0\RoomController;
+use App\Http\Controllers\Api\V0\CcrController;
 use App\Http\Middleware\ApiKeyMiddleware;
 use App\Http\Middleware\RUEmployeeMiddleware;
 use App\Http\Middleware\RoomsAdministratorMiddleware;
@@ -58,6 +59,10 @@ Route::middleware('auth:sanctum')->namespace('\App\Http\Controllers\Api\V0')->gr
         Route::patch('/room/{id}', [RoomController::class, 'updateRoom'])->name('api.v0.room.updateRoom');
         Route::delete('/room/{id}', [RoomController::class, 'deleteRoom'])->name('api.v0.room.deleteRoom');
         Route::get('/room', [RoomController::class, 'getRoom'])->name('api.v0.room.getRoom');
+        Route::post('/ccr', [CcrController::class, 'createCcr'])->name('api.v0.ccr.createCcr');
+        Route::patch('/ccr/{id}', [CcrController::class, 'updateCcr'])->name('api.v0.ccr.updateCcr');
+        Route::delete('/ccr/{id}', [CcrController::class, 'deleteCcr'])->name('api.v0.ccr.deleteCcr');
+        Route::get('/ccr', [CcrController::class, 'getCcr'])->name('api.v0.ccr.getCcr');
     });
 });
 
