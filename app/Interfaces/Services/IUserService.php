@@ -20,4 +20,5 @@ interface IUserService
     function getUserByEnrollmentId(string $enrollment_id, bool $withFiles = true) : User ;
     function updateTicketAmount($uid, $amount);
     function getStudentCard(string $uid);
+    function getAllUsers();
 }

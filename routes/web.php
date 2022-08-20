@@ -57,6 +57,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/ticket', [TicketController::class, 'index']) ->name('web.ticket.index');
         Route::get('/report', [ReportController::class, 'index']) ->name('web.report.index');
         Route::get('/sell',   [SellController::class, 'index'])   ->name('web.sell.index');
+
+        Route::post('/sell', [SellController::class, 'sellTicket']) ->name('web.sell.sell-ticket');
+        Route::post('/sell-visitor', [SellController::class, 'sellVisitorTicket']) ->name('web.sell.sell-visitor-ticket');
+        Route::post('/sell-third-party', [SellController::class, 'sellThirdPartyTicket']) ->name('web.sell.sell-third-party-ticket');
     });
 });
 

@@ -180,4 +180,8 @@ class UserService implements IUserService
 
         return $this->repository->updateUserByUsername($uid, ["ticket_amount" => $user->ticket_amount + $amount]);
     }
+
+    public function getAllUsers(){
+        return $this->repository->getAllUsers();
+    }
 }

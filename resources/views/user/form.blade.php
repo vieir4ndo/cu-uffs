@@ -71,3 +71,12 @@
       </div>
     </div>
 </x-app-layout>
+
+<script type="text/javascript">
+  var field = document.getElementById('profile_photo');
+
+  field.addEventListener("change", (e) => {
+    debugger
+    var files = e.target.files[0];
+  })
+</script>
