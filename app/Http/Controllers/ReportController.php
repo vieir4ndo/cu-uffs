@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\Services\ITicketService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Api\ApiResponse;
@@ -12,11 +13,13 @@ use App\Interfaces\Services\IEntryService;
 
 class ReportController extends Controller
 {
-    private IEntryService $service;
+    private IEntryService $entryService;
+    private ITicketService $ticketService;
 
-    public function __construct(IEntryService $service)
+    public function __construct(IEntryService $service, ITicketService $ticketService)
     {
-        $this->service = $service;
+        $this->entryService = $service;
+        $this->ticketService = $ticketService;
     }
 
     public function index()
@@ -38,7 +41,7 @@ class ReportController extends Controller
             // $errors = $validation->errors()->all(); with errors
             // }
 
-            $report = $this->service->generateReport($request->initDate, $request->finalDate);
+            $report = $this->entryService->generateReport($request->initDate, $request->finalDate);
 
             return view('restaurant.report.entry', $report);
 
@@ -55,5 +58,28 @@ class ReportController extends Controller
             "init_date" => ['required', 'date'],
             "final_date" => ['required', 'date']
         ];
+    }
+
+    public function redirectTicketReport(Request $request)
+    {
+        try {
+            $dates = [
+                'init_date' => $request->initDate,
+                'final_date' => $request->finalDate
+            ];
+
+            $validation = Validator::make($dates, $this->redirectEntryReportRules($request->initDate, $request->finalDate));
+
+            // if ($validation->fails()) {
+            // $errors = $validation->errors()->all(); with errors
+            // }
+
+            $report = $this->ticketService->generateReport($request->initDate, $request->finalDate);
+
+            return view('restaurant.report.ticket', $report);
+
+        } catch (Exception $e) {
+            return ApiResponse::badRequest($e->getMessage());
+        }
     }
 }

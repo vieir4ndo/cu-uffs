@@ -40,4 +40,14 @@ class EntryController
         }
     }
 
+    public function getReport(Request $request){
+        try {
+            $entries = $this->service->generateReport($request->init_date, $request->final_date);
+
+            return ApiResponse::ok($entries);
+        } catch (Exception $e) {
+            return ApiResponse::badRequest($e->getMessage());
+        }
+    }
+
 }

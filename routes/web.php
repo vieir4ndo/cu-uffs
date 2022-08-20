@@ -61,6 +61,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/sell', [SellController::class, 'sellTicket']) ->name('web.sell.sell-ticket');
         Route::post('/sell-visitor', [SellController::class, 'sellVisitorTicket']) ->name('web.sell.sell-visitor-ticket');
         Route::post('/sell-third-party', [SellController::class, 'sellThirdPartyTicket']) ->name('web.sell.sell-third-party-ticket');
+        Route::post('/report/ticket', [ReportController::class, 'redirectTicketReport']) ->name('web.report.redirect-ticket-report');
     });
 });
 

@@ -46,7 +46,7 @@
         </th>
         <th scope="col" colspan="10">
             <p>Universidade Federal da Fronteira Sul - UFFS</p>
-            <p>C.U. UFFS - Relatório de Utilização de Restaurante Período: {{ $init_date }}
+            <p>C.U. UFFS - Relatório de Vendas do Restaurante Período: {{ $init_date }}
                 a {{ $final_date }}</p>
             <p>Restaurante Universitário Chapecó</p>
         </th>
@@ -84,24 +84,24 @@
         <th scope="col">Tot</th>
     </tr>
     </thead>
-    @foreach ($entries as $entry)
+    @foreach ($tickets as $ticket)
         <tr>
-            <th>{{$entry["day"]}}</th>
-            <td>{{$entry["student_lunch"]}}</td>
-            <td>{{$entry["employee_lunch"]}}</td>
-            <td>{{$entry["third_party_employee_lunch"]}}</td>
-            <td>{{$entry["visitor_lunch"]}}</td>
-            <td>{{$entry["total_lunch"]}}</td>
-            <td>{{$entry["student_dinner"]}}</td>
-            <td>{{$entry["employee_dinner"]}}</td>
-            <td>{{$entry["third_party_employee_dinner"]}}</td>
-            <td>{{$entry["visitor_dinner"]}}</td>
-            <td>{{$entry["total_dinner"]}}</td>
-            <td>{{$entry["student_total"]}}</td>
-            <td>{{$entry["employee_total"]}}</td>
-            <td>{{$entry["third_party_employee_total"]}}</td>
-            <td>{{$entry["visitor_total"]}}</td>
-            <td>{{$entry["total"]}}</td>
+            <th>{{$ticket["day"]}}</th>
+            <td>{{$ticket["student_lunch"]}}</td>
+            <td>{{$ticket["employee_lunch"]}}</td>
+            <td>{{$ticket["third_party_employee_lunch"]}}</td>
+            <td>{{$ticket["visitor_lunch"]}}</td>
+            <td>{{$ticket["total_lunch"]}}</td>
+            <td>{{$ticket["student_dinner"]}}</td>
+            <td>{{$ticket["employee_dinner"]}}</td>
+            <td>{{$ticket["third_party_employee_dinner"]}}</td>
+            <td>{{$ticket["visitor_dinner"]}}</td>
+            <td>{{$ticket["total_dinner"]}}</td>
+            <td>{{$ticket["student_total"]}}</td>
+            <td>{{$ticket["employee_total"]}}</td>
+            <td>{{$ticket["third_party_employee_total"]}}</td>
+            <td>{{$ticket["visitor_total"]}}</td>
+            <td>{{$ticket["total"]}}</td>
         </tr>
     @endforeach
     <tr>

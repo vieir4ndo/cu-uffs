@@ -100,4 +100,14 @@ class TicketController extends Controller
             'amount' => ['required','integer', 'min:0', 'not_in:0']
         ];
     }
+
+    public function getReport(Request $request){
+        try {
+            $tickets = $this->service->generateReport($request->init_date, $request->final_date);
+
+            return ApiResponse::ok($tickets);
+        } catch (Exception $e) {
+            return ApiResponse::badRequest($e->getMessage());
+        }
+    }
 }
