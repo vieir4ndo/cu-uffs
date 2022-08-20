@@ -42,6 +42,13 @@ class UserController extends Controller
     public function form(Request $request)
     {
         try {
+            // Converter data para dd-mm-yyyy
+            $birth_date = str_replace('/', '-', $request->birth_date);
+            // e depois formatar para yyyy-mm-dd
+            $formatted_date = date('Y-m-d', strtotime($birth_date));
+
+            echo($request);
+
             $user = [
                 "uid" => $request->uid,
                 "email" => $request->email,
@@ -49,7 +56,7 @@ class UserController extends Controller
                 "password" => $request->password,
                 "type" => $request->type,
                 "profile_photo" => $request->profile_photo,
-                "birth_date" => $request->birth_date
+                "birth_date" => $formatted_date
             ];
 
             $validation = Validator::make($user, $this->createUserWitoutIdUFFSRules());
@@ -64,18 +71,18 @@ class UserController extends Controller
                 return ApiResponse::conflict("User already has an account.");
             }
 
-            $this->userPayloadService->create($user, Operation::UserCreationWithoutIdUFFS);
+            // $this->userPayloadService->create($user, Operation::UserCreationWithoutIdUFFS);
 
-            StartCreateOrUpdateUserJob::dispatch($user["uid"]);
+            // StartCreateOrUpdateUserJob::dispatch($user["uid"]);
 
-            return redirect()->route('web.user.index');
+            // return redirect()->route('web.user.index');
         } catch (Exception $e) {
             echo ($e->getMessage());
             // return ApiResponse::badRequest($e->getMessage());
         }
     }
 
-    public function resetPassword($uid)
+    public function forgotPassword($uid)
     {
         try {
             $validation = Validator::make(["uid" => $uid], $this->forgotPasswordRules());
@@ -86,9 +93,11 @@ class UserController extends Controller
 
             $this->authService->forgotPassword($uid);
 
-            return ApiResponse::ok(null);
+            // return ApiResponse::ok(null);
+            return redirect()->route('web.user.index');
         } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
+            // return ApiResponse::badRequest($e->getMessage());
+            return redirect()->route('web.user.index');
         }
     }
 

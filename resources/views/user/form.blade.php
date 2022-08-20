@@ -18,8 +18,7 @@
               <label for="type">Tipo</label>
               <select name="type" id="type" class="form-select appearance-none" aria-label="Default select example" required="true">
                 <option value="" disabled selected >Selecione o tipo do usuário</option>
-                <option value="4">Servidor Terceirizado</option>
-                <option value="5">Caixa do Restaurante</option>
+                <option value="4">Caixa do Restaurante</option>
               </select>
             </div>
           </div>

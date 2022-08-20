@@ -97,7 +97,7 @@ class TicketController extends Controller
 
     public function insertTicketsRules(){
         return [
-            'amount' => ['required','numeric', 'min:0', 'not_in:0']
+            'amount' => ['required','integer', 'min:0', 'not_in:0']
         ];
     }
 }
