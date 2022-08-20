@@ -14,7 +14,7 @@ class UpdateTicketsTable extends Migration
     public function up()
     {
         Schema::table('tickets', function (Blueprint $table) {
-            $table->integer('type')->constrained('ticket_or_entry_types');
+            $table->foreignId('type')->constrained('ticket_or_entry_types');
         });
     }
 
@@ -26,7 +26,8 @@ class UpdateTicketsTable extends Migration
     public function down()
     {
         Schema::table('tickets', function (Blueprint $table) {
-            $table->dropColumn('type')->constrained('ticket_or_entry_types');
+            $table->dropForeign(['type']);
+            $table->dropColumn('ticket_or_entry_types');
         });
     }
 }
