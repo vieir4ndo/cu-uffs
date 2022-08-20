@@ -26,26 +26,9 @@ class AiPassportPhotoService implements IAiPassportPhotoService
 
             $signedUrl = json_decode($res->getBody())->signedUrl;
 
-            $res = $this->client->withHeaders([
-                "authority" => "idphotoapi.idphotoapp.com",
-                "method" => "POST",
-                "path" => str_replace('https://idphotoapi.idphotoapp.com', '', $signedUrl),
-                "scheme" => "https",
-                "accept" => "application/json, text/plain, */*",
-                "accept-encoding" => "gzip, deflate, br",
-                "accept-language" => "en-US,en;q=0.9,pt;q=0.8",
-                "content-length" => "355670",
-                "content-type" => "application/json;charset=UTF-8",
-                "origin" => "https://aipassportphoto.com",
-                "referer" => "https://aipassportphoto.com/",
-                "sec-ch-ua" => '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
-                "sec-ch-ua-mobile" => "?0",
-                "sec-ch-ua-platform" => "Windows",
-                "sec-fetch-dest" => "empty",
-                "sec-fetch-mode" => "cors",
-                "sec-fetch-site" => "cross-site",
-                "user-agent" => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
-            ])->post(
+            $base64Photo = explode(',', $base64Photo)[1];
+
+            $res = $this->client->post(
                 $signedUrl,
                 json_encode([
                     "imageBase64" => "{$base64Photo}",

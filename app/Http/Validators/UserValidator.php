@@ -59,7 +59,8 @@ class UserValidator
             'password' => ['required', 'string'],
             'name' => ['required', 'string', 'max:255'],
             'profile_photo' => ['required', 'string'],
-            'birth_date' => ['required', 'date']
+            'birth_date' => ['required', 'date'],
+            'type' => Rule::in(config('user.users_without_iduffs'))
         ];
     }
 }
