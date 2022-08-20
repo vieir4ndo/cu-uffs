@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Validators\AuthValidator;
 use App\Interfaces\Services\IAuthService;
 use App\Models\PersonalAccessToken;
 use Exception;
@@ -35,7 +36,7 @@ class AuthController extends Controller
         try {
             $tokenData = PersonalAccessToken::findToken($request->token)->first();
 
-            $validation = Validator::make(["new_password" => $request->new_password], $this->resetPasswordRules());
+            $validation = Validator::make(["new_password" => $request->new_password], AuthValidator::resetPasswordRules());
 
             if ($validation->fails()) {
                 return $this->redirectToResetPassword($tokenData->name, $request->token, $validation->errors()->all());
@@ -49,15 +50,5 @@ class AuthController extends Controller
             $errors[] = $e->getMessage();
             return $this->redirectToResetPassword($tokenData->name, $request->token, $errors);
         }
-    }
-
-    private static function resetPasswordRules()
-    {
-        return [
-            'new_password' => [
-                'required',
-                'string',
-            ]
-        ];
     }
 }

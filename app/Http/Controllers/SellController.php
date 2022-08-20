@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Validators\TicketValidator;
 use App\Interfaces\Services\IUserService;
 use App\Interfaces\Services\ITicketService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Enums\TicketOrEntryType;
@@ -37,7 +39,7 @@ class SellController extends Controller
                 'enrollment_id' => $request->enrollment_id
             ];
 
-            $validation = Validator::make($data, $this->insertTicketsRules());
+            $validation = Validator::make($data, TicketValidator::insertTicketsWithEnrollmentIdRules());
             // if ($validation->fails()) {
             // $errors = $validation->errors()->all(); with errors
             // }
@@ -87,10 +89,5 @@ class SellController extends Controller
         }
     }
 
-    private function insertTicketsRules(){
-        return [
-            'amount' => ['required','integer', 'min:0', 'not_in:0'],
-            'enrollment_id' => ['required']
-        ];
-    }
+
 }

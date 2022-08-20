@@ -84,7 +84,7 @@ class MenuController extends Controller
                 "ru_employee_id" => $request->user()->id
             ];
 
-            $validation = Validator::make($menu, $this->createMenuRules());
+            $validation = Validator::make($menu, MenuValidator::createMenuRules());
 
             // if ($validation->fails()) {
             //$errors = $validation->errors()->all(); with errors
@@ -100,25 +100,8 @@ class MenuController extends Controller
 
     public function delete($date)
     {
-        $menu = $this->service->deleteMenu($date);
+        $this->service->deleteMenu($date);
 
         return redirect()->route('web.menu.index');
-    }
-
-    private static function createMenuRules()
-    {
-        return [
-            "salad_1" => ['required', 'string'],
-            "salad_2" => ['required', 'string'],
-            "salad_3" => ['required', 'string'],
-            "grains_1" => ['required', 'string'],
-            "grains_2" => ['required', 'string'],
-            "grains_3" => ['required', 'string'],
-            "side_dish" => ['required', 'string'],
-            "mixture" => ['required', 'string'],
-            "vegan_mixture" => ['required', 'string'],
-            "dessert" => ['required', 'string'],
-            "date" => ['required', 'date', 'unique:menus']
-        ];
     }
 }

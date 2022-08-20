@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V0;
 use App\Enums\TicketOrEntryType;
 use App\Http\Controllers\Controller;
 use App\Http\Validators\ReportValidator;
+use App\Http\Validators\TicketValidator;
 use App\Interfaces\Services\ITicketService;
 use App\Models\Api\ApiResponse;
 use Exception;
@@ -29,7 +30,7 @@ class TicketController extends Controller
                 "amount" => $request->amount
             ];
 
-            $validation = Validator::make($data, $this->insertTicketsRules());
+            $validation = Validator::make($data, TicketValidator::insertTicketsRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -99,13 +100,6 @@ class TicketController extends Controller
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
-    }
-
-    public function insertTicketsRules()
-    {
-        return [
-            'amount' => ['required', 'integer', 'min:0', 'not_in:0']
-        ];
     }
 
     public function getReport(Request $request)

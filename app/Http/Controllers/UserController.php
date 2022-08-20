@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Validators\AuthValidator;
+use App\Http\Validators\UserValidator;
 use App\Interfaces\Services\IUserService;
 use App\Interfaces\Services\IUserPayloadService;
 use App\Interfaces\Services\IAuthService;
 use App\Models\Api\ApiResponse;
-use App\Enums\Operation;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Jobs\StartCreateOrUpdateUserJob;
 
 class UserController extends Controller
 {
@@ -59,7 +59,7 @@ class UserController extends Controller
                 "birth_date" => $formatted_date
             ];
 
-            $validation = Validator::make($user, $this->createUserWitoutIdUFFSRules());
+            $validation = Validator::make($user, UserValidator::createUserWitoutIdUFFSRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -85,7 +85,7 @@ class UserController extends Controller
     public function forgotPassword($uid)
     {
         try {
-            $validation = Validator::make(["uid" => $uid], $this->forgotPasswordRules());
+            $validation = Validator::make(["uid" => $uid], AuthValidator::forgotPasswordRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -101,25 +101,4 @@ class UserController extends Controller
         }
     }
 
-    private static function createUserWitoutIdUFFSRules()
-    {
-        return [
-            "uid" => ['required', 'string', 'unique:users'],
-            'email' => ['required', 'email', 'unique:users'],
-            'password' => ['required', 'string'],
-            'name' => ['required', 'string', 'max:255'],
-            'profile_photo' => ['required', 'string'],
-            'birth_date' => ['required', 'date']
-        ];
-    }
-
-    private static function forgotPasswordRules()
-    {
-        return [
-            'uid' => [
-                'required',
-                'string',
-            ]
-        ];
-    }
 }
