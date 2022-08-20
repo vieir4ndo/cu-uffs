@@ -41,5 +41,13 @@
         @livewireScripts
         @powerGridStyles
         @bukScripts(true)
+        <script>
+            var exist = '{{Session::has('alert')}}';
+            if(exist){
+                var msg = '{{Session::get('alert')}}';
+
+                alert(msg);
+            }
+        </script>
     </body>
 </html>

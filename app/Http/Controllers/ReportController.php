@@ -36,16 +36,16 @@ class ReportController extends Controller
 
             $validation = Validator::make($dates, ReportValidator::redirectReportRules());
 
-            // if ($validation->fails()) {
-            // $errors = $validation->errors()->all(); with errors
-            // }
+             if ($validation->fails()) {
+                 return redirect()->back() ->with('alert', "Erro: Intervalo informado é inválido!");
+             }
 
             $report = $this->entryService->generateReport($request->initDate, $request->finalDate);
 
             return view('restaurant.report.entry', $report);
 
         } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
+            return redirect()->back() ->with('alert', "Error: {$e->getMessage()}!");
         }
     }
 
@@ -59,16 +59,16 @@ class ReportController extends Controller
 
             $validation = Validator::make($dates, ReportValidator::redirectReportRules());
 
-            // if ($validation->fails()) {
-            // $errors = $validation->errors()->all(); with errors
-            // }
+            if ($validation->fails()) {
+                return redirect()->back() ->with('alert', "Erro: Intervalo informado é inválido!");
+            }
 
             $report = $this->ticketService->generateReport($request->initDate, $request->finalDate);
 
             return view('restaurant.report.ticket', $report);
 
         } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
+            return redirect()->back() ->with('alert', "Error: {$e->getMessage()}!");
         }
     }
 }
