@@ -46,7 +46,9 @@
         </th>
         <th scope="col" colspan="10">
             <p>Universidade Federal da Fronteira Sul - UFFS</p>
-            <p>C.U. UFFS - Relatório de Vendas do Restaurante Período: {{ $init_date }}
+            <p>C.U. UFFS - Relatório de Vendas
+            </p>
+            <p>Período: {{ $init_date }}
                 a {{ $final_date }}</p>
             <p>Restaurante Universitário Chapecó</p>
         </th>
@@ -160,10 +162,11 @@
         </th>
         <th scope="col" colspan="10">
             <p>Universidade Federal da Fronteira Sul - UFFS</p>
-            <p>C.U. UFFS - Relatório de Utilização de Restaurante Período: {{ $init_date }}
+            <p>C.U. UFFS - Quadro de Médias de Vendas por Dia da Semana</p>
+            <p> Período: {{ $init_date }}
                 a {{ $final_date }}</p>
             <p>Restaurante Universitário Chapecó</p>
-            <p>Quadro de médias por dia da semana durante o período</p>
+            <p></p>
         </th>
         <th colspan="3" scope="col" style="font-size: small">Legenda:<br/>Est - Vínculo de Estudante<br/>Srv - Vínculo
             de Servidor<br/>SvT - Vínculo de Servidor Terceirizado<br/>Vis - Cartão Visitante/outros<br/>T - Total<br/>G

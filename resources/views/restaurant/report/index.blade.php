@@ -105,16 +105,12 @@
                         Relatório de Vendas
                     </h3>
 
-                    <form name="ticket-report-modal" id="ticket-report-modal" class="default-form" method="post">
+                    <form name="ticket-report-modal" id="ticket-report-modal" class="default-form" method="post"  action="{{ route('web.report.redirect-ticket-report') }}">
                         @csrf
                         <div class="flex flex-wrap justify-end -mx-3 mb-3">
                             <div class="w-full px-3 mb-6 md:mb-5">
-                                <label for="enrollment_id">Período</label>
-                                <select>
-                                    <option>Mensal</option>
-                                    <option>Semestral</option>
-                                    <option>Anual</option>
-                                </select>
+                                <input name="initDate" type="text">
+                                <input name="finalDate" type="text">
                             </div>
                             <div class="w-full px-3 mb-6 md:mb-5">
 
