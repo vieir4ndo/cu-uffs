@@ -15,7 +15,7 @@ class CreateEntriesTable extends Migration
     {
         Schema::create('entries', function (Blueprint $table) {
             $table->id();
-            $table->dateTime("date_time");
+            $table->dateTime("date_time")->unique();
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->foreignId('type')->constrained('ticket_or_entry_types');
         });

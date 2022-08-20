@@ -15,7 +15,7 @@ class CreateTicketsTable extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();;
-            $table->dateTime("date_time");
+            $table->dateTime("date_time")->unique();
             $table->integer('amount');
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->foreignId('third_party_cashier_employee_id')->constrained('users');
