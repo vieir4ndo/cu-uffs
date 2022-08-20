@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api\V0;
 
 use App\Enums\TicketOrEntryType;
 use App\Http\Controllers\Controller;
+use App\Http\Validators\ReportValidator;
 use App\Interfaces\Services\ITicketService;
 use App\Models\Api\ApiResponse;
-use App\Validators\ReportValidator;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;

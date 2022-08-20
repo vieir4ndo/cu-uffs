@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api\V0;
 
+use App\Http\Validators\ReportValidator;
 use App\Interfaces\Services\IEntryService;
 use App\Models\Api\ApiResponse;
-use App\Validators\ReportValidator;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;

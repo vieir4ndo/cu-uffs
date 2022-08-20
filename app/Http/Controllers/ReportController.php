@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Validators\ReportValidator;
 use App\Interfaces\Services\ITicketService;
-use App\Validators\ReportValidator;
 use Illuminate\Http\Request;
 use App\Models\Api\ApiResponse;
 use Exception;

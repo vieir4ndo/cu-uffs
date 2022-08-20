@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Validators;
+namespace App\Http\Validators;
 
 class ReportValidator
 {
