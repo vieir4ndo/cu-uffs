@@ -6,6 +6,7 @@ use App\Enums\TicketOrEntryType;
 use App\Http\Controllers\Controller;
 use App\Interfaces\Services\ITicketService;
 use App\Models\Api\ApiResponse;
+use App\Validators\ReportValidator;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -19,7 +20,8 @@ class TicketController extends Controller
         $this->service = $service;
     }
 
-    public function insertTickets(Request $request){
+    public function insertTickets(Request $request)
+    {
         try {
             $data = [
                 'third_party_cashier_employee_id' => $request->user()->id,
@@ -41,7 +43,8 @@ class TicketController extends Controller
         }
     }
 
-    public function insertTicketsForVisitors(Request $request){
+    public function insertTicketsForVisitors(Request $request)
+    {
         try {
             $data = [
                 'third_party_cashier_employee_id' => $request->user()->id,
@@ -58,7 +61,8 @@ class TicketController extends Controller
         }
     }
 
-    public function insertTicketsForThirdPartyEmployee(Request $request){
+    public function insertTicketsForThirdPartyEmployee(Request $request)
+    {
         try {
             $data = [
                 'third_party_cashier_employee_id' => $request->user()->id,
@@ -75,7 +79,8 @@ class TicketController extends Controller
         }
     }
 
-    public function getTickets(Request $request){
+    public function getTickets(Request $request)
+    {
         try {
             $tickets = $this->service->getTicketsByUsername($request->user()->uid);
 
@@ -85,7 +90,8 @@ class TicketController extends Controller
         }
     }
 
-    public function getTicketBalance(Request $request){
+    public function getTicketBalance(Request $request)
+    {
         try {
             $tickets = $this->service->getTicketBalance($request->user()->uid);
 
@@ -95,14 +101,28 @@ class TicketController extends Controller
         }
     }
 
-    public function insertTicketsRules(){
+    public function insertTicketsRules()
+    {
         return [
-            'amount' => ['required','integer', 'min:0', 'not_in:0']
+            'amount' => ['required', 'integer', 'min:0', 'not_in:0']
         ];
     }
 
-    public function getReport(Request $request){
+    public function getReport(Request $request)
+    {
         try {
+
+            $dates = [
+                'init_date' => $request->init_date,
+                'final_date' => $request->final_date
+            ];
+
+            $validation = Validator::make($dates, ReportValidator::redirectReportRules());
+
+            if ($validation->fails()) {
+                return ApiResponse::badRequest($validation->errors()->all());
+            }
+
             $tickets = $this->service->generateReport($request->init_date, $request->final_date);
 
             return ApiResponse::ok($tickets);

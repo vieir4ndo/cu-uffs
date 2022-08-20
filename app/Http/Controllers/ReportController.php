@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Interfaces\Services\ITicketService;
+use App\Validators\ReportValidator;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Models\Api\ApiResponse;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Validator;
 use App\Interfaces\Services\IEntryService;
@@ -35,7 +34,7 @@ class ReportController extends Controller
                 'final_date' => $request->finalDate
             ];
 
-            $validation = Validator::make($dates, $this->redirectEntryReportRules($request->initDate, $request->finalDate));
+            $validation = Validator::make($dates, ReportValidator::redirectReportRules());
 
             // if ($validation->fails()) {
             // $errors = $validation->errors()->all(); with errors
@@ -50,16 +49,6 @@ class ReportController extends Controller
         }
     }
 
-    private function redirectEntryReportRules($initDate, $finalDate)
-    {
-        $initDate = Carbon::parse($initDate);
-        $finalDate = Carbon::parse($finalDate);
-        return [
-            "init_date" => ['required', 'date'],
-            "final_date" => ['required', 'date']
-        ];
-    }
-
     public function redirectTicketReport(Request $request)
     {
         try {
@@ -68,7 +57,7 @@ class ReportController extends Controller
                 'final_date' => $request->finalDate
             ];
 
-            $validation = Validator::make($dates, $this->redirectEntryReportRules($request->initDate, $request->finalDate));
+            $validation = Validator::make($dates, ReportValidator::redirectReportRules());
 
             // if ($validation->fails()) {
             // $errors = $validation->errors()->all(); with errors
