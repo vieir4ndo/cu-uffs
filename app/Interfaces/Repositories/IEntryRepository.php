@@ -8,4 +8,5 @@ interface IEntryRepository
     function getEntriesById(string $id);
     function getEntriesInInterval($init_date, $final_date);
     function getEntriesByDate($date);
+    function getLastEntryById(string $id);
 }

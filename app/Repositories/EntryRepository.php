@@ -22,4 +22,8 @@ class EntryRepository implements IEntryRepository
     public function getEntriesByDate($date){
         return Entry::where("date_time", $date)->get();
     }
+
+    public function getLastEntryById(string $id){
+        return Entry::where("user_id", $id)->orderBy('date_time', 'desc')->first();
+    }
 }

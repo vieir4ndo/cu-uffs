@@ -45,6 +45,13 @@ class EntryService implements IEntryService
                 throw new \Exception("User has no tickets available.");
             }
 
+            $entryDate = Carbon::parse($data["date_time"]);
+            $lastEntryDate = Carbon::parse($this->getLastEntryById($user->id)->date_time);
+
+            if ($entryDate->diffInHours($lastEntryDate) < 4.5 ){
+                throw new \Exception("User has already entered the restaurant in this period.");
+            }
+
             $data["user_id"] = $user->id;
             $data["type"] = ($user->type == UserType::Employee->value) ? TicketOrEntryType::Employee->value : TicketOrEntryType::Student->value;
 
@@ -295,6 +302,10 @@ class EntryService implements IEntryService
         }
 
         return $averagesByDayOfTheWeek;
+    }
+
+    public function getLastEntryById(string $id){
+        return $this->repository->getLastEntryById($id);
     }
 
 }
