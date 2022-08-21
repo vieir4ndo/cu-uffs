@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Validators\TicketValidator;
 use App\Interfaces\Services\IUserService;
 use App\Interfaces\Services\ITicketService;
+use App\Models\Api\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Enums\TicketOrEntryType;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class SellController extends Controller
 {
@@ -34,24 +36,24 @@ class SellController extends Controller
         try {
             $data = [
                 'third_party_cashier_employee_id' => $request->user()->id,
-                "date_time" => now(),
+                'date_time' => now(),
                 'amount' => $request->amount,
                 'enrollment_id' => $request->enrollment_id
             ];
 
             $validation = Validator::make($data, TicketValidator::insertTicketsWithEnrollmentIdRules());
-            // if ($validation->fails()) {
-            // $errors = $validation->errors()->all(); with errors
-            // }
+            if ($validation->fails()) {
+                $errors = $validation->errors()->all();
+            }
 
-            unset($data["enrollment_id"]);
-
+            unset($data['enrollment_id']);
             $this->ticketService->insertTicket($request->enrollment_id, $data);
 
-            return $this->index();
-
+            Alert::success('Sucesso', 'Venda registrada com sucesso!');
+            return back();
         } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
+            Alert::error('Erro', $e->getMessage());
+            return back();
         }
     }
 
@@ -66,9 +68,11 @@ class SellController extends Controller
 
             $this->ticketService->insertTicketForVisitors($data);
 
-            return $this->index();
+            Alert::success('Sucesso', 'Venda registrada com sucesso!');
+            return back();
         } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
+            Alert::error('Erro', $e->getMessage());
+            return back();
         }
     }
 
@@ -83,9 +87,11 @@ class SellController extends Controller
 
             $this->ticketService->insertTicketForVisitors($data);
 
-            return $this->index();
+            Alert::success('Sucesso', 'Venda registrada com sucesso!');
+            return back();
         } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
+            Alert::error('Erro', $e->getMessage());
+            return back();
         }
     }
 

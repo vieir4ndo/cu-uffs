@@ -1,7 +1,8 @@
+window.$ = window.jQuery = require('jquery');
+
 require('./bootstrap');
-
 require('alpinejs');
-
+require('select2');
 import 'flowbite';
 
 ///////////////////////
@@ -27,3 +28,13 @@ const dateRangePickers = document.querySelectorAll('[date-rangepicker=""]');
         autohide: true,
     });
 })
+
+$('.select2').select2();
+$('.select2').on('select2:select', function (e) {
+    var selectedEnrollmentId = e.target.value;
+    var amount = $(`#${selectedEnrollmentId}`).data('amount');
+
+    var display = $('#show-amount');
+    display.show();
+    display.find('.amount-data').html(`<span class='amount-number'>${amount}</span><span class='amount-text'> ficha(s)</span>`);
+  });

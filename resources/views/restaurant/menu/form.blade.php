@@ -15,7 +15,7 @@
                 <div class="icon">
                   <x-fas-calendar-day />
                 </div>
-                <input datepicker id="date" name="date" type="text" required="true" value="{{ $menu->date ?? '' }}" >
+                <input datepicker id="date" name="date" type="text" required="true" value="{{ $menu->date ?? '' }}" autocomplete="off">
               </div>
             </div>
           </div>

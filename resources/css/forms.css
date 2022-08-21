@@ -33,6 +33,21 @@
   @apply border-gray-200;
 }
 
+.default-form .select2 {
+  @apply w-full !important;
+}
+
+.default-form .select2 .select2-selection {
+  @apply h-auto;
+  @apply bg-gray-200;
+  @apply border;
+  @apply border-gray-200;
+  @apply rounded;
+  @apply py-3;
+  @apply px-4;
+  @apply leading-tight;
+}
+
 /* * * * * * * * * * */
 /* DATEPICKER STYLES */
 /* * * * * * * * * * */

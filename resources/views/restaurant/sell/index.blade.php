@@ -65,17 +65,26 @@
                             <form name="insert-ticket-form" id="insert-ticket-form" class="default-form white" method="post" action="{{ route('web.sell.sell-ticket') }}">
                                 @csrf
                                 <div class="flex flex-wrap justify-end -mx-3 mb-3">
-                                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-5">
+                                    <div class="w-full px-3 mb-6 md:mb-5">
                                         <label for="enrollment_id">Matrícula/SIAPE</label>
-                                        <select name="enrollment_id" id="enrollment_id">
+                                        <select name="enrollment_id" id="enrollment_id" class="select2">
+                                            <option value="" disabled selected >Selecione um usuário</option>
                                             @foreach($users as $user)
-                                                <option id="{{$user['enrollment_id']}}" value="{{ $user['enrollment_id'] }}" data-amount="{{ $user['ticket_amount'] }}">{{ $user['enrollment_id'] . " - " . $user['name'] }}</option>
+                                                <option id="{{ $user['enrollment_id'] }}" value="{{ $user['enrollment_id'] }}" data-amount="{{ $user['ticket_amount'] }}">
+                                                    {{ $user['enrollment_id'] . " - " . $user['name'] }}
+                                                </option>
                                             @endforeach
                                         </select>
-                                        <div id="showAmount"></div>
                                     </div>
+                                    <div class="w-full md:w-1/2 px-3">
+                                        <div id="show-amount" class="hidden">
+                                            <label>Saldo do usuário</label>
+                                            <div class="amount-data"></div>
+                                        </div>
+                                    </div>
+
                                     <div class="w-full md:w-1/2 px-3 mb-6 md:mb-5">
-                                        <label for="amount">Quantidade de Tickets</label>
+                                        <label for="amount">Quantidade de Fichas</label>
                                         <input id="amount" name="amount" type="number" min="1" required="true">
                                     </div>
 
@@ -154,14 +163,3 @@
 </div>
 
 </x-app-layout>
-
-<script type="text/javascript">
-    var field = document.getElementById('enrollment_id');
-
-    field.addEventListener("change", (e) => {
-        var amount = document.getElementById(e.target.value).dataset.amount;
-
-        var display = document.getElementById('showAmount');
-        display.innerHTML = amount;
-    });
-</script>
