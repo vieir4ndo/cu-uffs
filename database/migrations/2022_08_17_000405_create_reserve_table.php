@@ -15,13 +15,15 @@ class CreateReserveTable extends Migration
     {
         Schema::create('reserve', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('locator_id')->constrained('users');
-            $table->foreignId('room_id')->constrained('rooms');
-            //$table->foreignId('ccr_id')->constrained('ccr');
-            $table->timestamps();
+            $table->dateTime('begin');
+            $table->dateTime('end');
             $table->text('description');
             $table->integer('status');
             $table->text('observation');
+            $table->foreignId('locator_id')->constrained('users');
+            $table->foreignId('room_id')->constrained('rooms');
+            $table->foreignId('ccr_id')->constrained('ccr');
+            $table->timestamps();
         });
     }
 
