@@ -11,6 +11,10 @@ use App\Models\Api\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
+use App\Enums\Operation;
+use App\Jobs\StartCreateOrUpdateUserJob;
+
 
 class UserController extends Controller
 {
@@ -47,8 +51,6 @@ class UserController extends Controller
             // e depois formatar para yyyy-mm-dd
             $formatted_date = date('Y-m-d', strtotime($birth_date));
 
-            echo($request);
-
             $user = [
                 "uid" => $request->uid,
                 "email" => $request->email,
@@ -62,23 +64,25 @@ class UserController extends Controller
             $validation = Validator::make($user, UserValidator::createUserWitoutIdUFFSRules());
 
             if ($validation->fails()) {
-                return ApiResponse::badRequest($validation->errors()->all());
+                $errors = $validation->errors()->all();
             }
 
             $created = $this->service->getUserByUsernameFirstOrDefault($user['uid']);
 
             if ($created) {
-                return ApiResponse::conflict("User already has an account.");
+                Alert::error('Erro', 'Usuário informado já tem uma conta.');
+                return back();
             }
 
-            // $this->userPayloadService->create($user, Operation::UserCreationWithoutIdUFFS);
+            $this->userPayloadService->create($user, Operation::UserCreationWithoutIdUFFS);
 
-            // StartCreateOrUpdateUserJob::dispatch($user["uid"]);
+            StartCreateOrUpdateUserJob::dispatch($user["uid"]);
 
-            // return redirect()->route('web.user.index');
+            Alert::success('Sucesso', 'Usuário registrado com sucesso!');
+            return redirect()->route('web.user.index');
         } catch (Exception $e) {
-            echo ($e->getMessage());
-            // return ApiResponse::badRequest($e->getMessage());
+            Alert::error('Erro', $e->getMessage());
+            return back();
         }
     }
 

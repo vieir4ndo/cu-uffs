@@ -45990,9 +45990,8 @@ __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/alpine.js");
 
 __webpack_require__(/*! select2 */ "./node_modules/select2/dist/js/select2.js");
 
- ///////////////////////
-// DATEPICKER SCRIPT //
-///////////////////////
+
+/* DATEPICKER SCRIPT */
 
 
 
@@ -46013,6 +46012,10 @@ _toConsumableArray(dateRangePickers).map(function (n) {
     autohide: true
   });
 });
+/* DATEPICKER SCRIPT */
+
+/* SELECT2 SCRIPT */
+
 
 $('.select2').select2();
 $('.select2').on('select2:select', function (e) {
@@ -46022,6 +46025,25 @@ $('.select2').on('select2:select', function (e) {
   display.show();
   display.find('.amount-data').html("<span class='amount-number'>".concat(amount, "</span><span class='amount-text'> ficha(s)</span>"));
 });
+/* SELECT2 SCRIPT */
+
+/* PROFILE PICTURE SCRIPT */
+
+var fileField = $('#profile-photo');
+var base64Field = $('#profile-photo-base64');
+var imageOutput = $('#profile-image-output');
+fileField.on('change', function (e) {
+  var file = e.target.files[0];
+  var reader = new FileReader();
+  reader.readAsBinaryString(file);
+
+  reader.onload = function (e) {
+    var convertedImg = "data:image/jpeg;base64,".concat(btoa(reader.result));
+    base64Field.val(convertedImg);
+    imageOutput.attr("src", convertedImg);
+  };
+});
+/* PROFILE PICTURE SCRIPT */
 
 /***/ }),
 
@@ -46064,8 +46086,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/vieir4ndo/Workspace/cu-uffs/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/vieir4ndo/Workspace/cu-uffs/resources/css/app.css */"./resources/css/app.css");
+__webpack_require__(/*! /var/www/html/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /var/www/html/resources/css/app.css */"./resources/css/app.css");
 
 
 /***/ })
