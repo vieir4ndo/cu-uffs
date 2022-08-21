@@ -81,6 +81,10 @@
   @apply border-blue-500;
 }
 
+.datepicker-dropdown{
+  z-index: 50 !important;
+}
+
 /* * * * * * * * * */
 /* BUTTONS STYLES  */
 /* * * * * * * * * */
@@ -91,6 +95,12 @@
   @apply py-2;
   @apply px-4;
   @apply rounded;
+}
+
+.default-button.white {
+  @apply text-gray-500;
+  @apply border;
+  @apply border-gray-200;
 }
 
 .default-button svg {
