@@ -63,7 +63,8 @@ final class TicketTable extends PowerGridComponent
                         'tickets.amount',
                         'cashier_user.name as cashier_name',
                         'tickets.date_time'
-                    ]);
+                    ])
+                    ->orderBy('date_time', 'desc');
     }
 
     /*

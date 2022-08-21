@@ -57,7 +57,8 @@ final class EntryTable extends PowerGridComponent
                         'type.description as type',
                         'user.name as users_name',
                         'entries.date_time'
-                    ]);
+                    ])
+                    ->orderBy('date_time', 'desc');
     }
 
     /*
