@@ -22,8 +22,6 @@ final class EntryTable extends PowerGridComponent
     */
     public function setUp(): array
     {
-        $this->showCheckBox();
-
         return [
             Header::make()->showSearchInput(),
             Footer::make()
@@ -47,7 +45,19 @@ final class EntryTable extends PowerGridComponent
     */
     public function datasource(): Builder
     {
-        return Entry::query();
+        return Entry::query()
+                    -> leftJoin('users as user', function($users) {
+                        $users->on('entries.user_id', '=', 'user.id');
+                    })
+                    -> leftJoin('ticket_or_entry_types as type', function($types) {
+                        $types->on('entries.type', '=', 'type.id');
+                    })
+                    -> select([
+                        'entries.id',
+                        'type.description as type',
+                        'user.name as users_name',
+                        'entries.date_time'
+                    ]);
     }
 
     /*
@@ -79,10 +89,11 @@ final class EntryTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('id')
-            ->addColumn('name')
-            ->addColumn('created_at')
-            ->addColumn('created_at_formatted', fn (Entry $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
+            ->addColumn('type')
+            ->addColumn('users_name')
+            ->addColumn('date_time', function (Entry $entry) {
+                return Carbon::parse($entry->date_time)->format('d/m/Y H:i');
+            });
     }
 
     /*
@@ -102,21 +113,17 @@ final class EntryTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id')
+            Column::make('TIPO', 'type')
                 ->searchable()
                 ->sortable(),
 
-            Column::make('Name', 'name')
+            Column::make('USUÁRIO', 'users_name')
                 ->searchable()
-                ->makeInputText('name')
                 ->sortable(),
 
-            Column::make('Created at', 'created_at')
-                ->hidden(),
-
-            Column::make('Created at', 'created_at_formatted', 'created_at')
-                ->makeInputDatePicker()
+            Column::make('DATA', 'date_time')
                 ->searchable()
+                ->sortable(),
         ];
     }
 
