@@ -7,6 +7,7 @@ use App\Interfaces\Services\IMenuService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class MenuController extends Controller
 {
@@ -86,15 +87,17 @@ class MenuController extends Controller
 
             $validation = Validator::make($menu, MenuValidator::createMenuRules());
 
-            // if ($validation->fails()) {
-            //$errors = $validation->errors()->all(); with errors
-            // }
+            if ($validation->fails()) {
+                $errors = $validation->errors()->all();
+            }
 
             $this->service->createMenu($menu);
 
+            Alert::success('Sucesso', 'Cardápio registrado com sucesso!');
             return redirect()->route('web.menu.index');
         } catch (Exception $e) {
-            //return $this->index(); with errors $e->getMessage();
+            Alert::error('Erro', $e->getMessage());
+            return back();
         }
     }
 
