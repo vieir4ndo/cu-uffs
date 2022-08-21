@@ -18,8 +18,8 @@ class EntryService implements IEntryService
     private $thirdPartyEmployeeEnrollmentId;
 
     public function __construct(
-        IEntryRepository         $entryRepository,
-        IUserService $userService
+        IEntryRepository $entryRepository,
+        IUserService     $userService
     )
     {
         $this->repository = $entryRepository;
@@ -28,48 +28,52 @@ class EntryService implements IEntryService
         $this->thirdPartyEmployeeEnrollmentId = config("ticket.third_party_employee_enrollment_id");
     }
 
-    public function insertEntry($enrollment_id, $data){
-        if ($enrollment_id != $this->visitorEnrollmentId and $enrollment_id != $this->thirdPartyEmployeeEnrollmentId){
+    public function insertEntry($enrollment_id, $data)
+    {
+        if ($enrollment_id != $this->visitorEnrollmentId and $enrollment_id != $this->thirdPartyEmployeeEnrollmentId) {
 
             $user = $this->userService->getUserByEnrollmentId($enrollment_id, false);
 
-            if ($user->active == false){
+            if ($user->active == false) {
                 throw new \Exception("User is not active.");
             }
 
-            if ($user->status_enrollment_id == false){
+            if ($user->status_enrollment_id == false) {
                 throw new \Exception("User's enrollment id is not active.");
             }
 
-            if ($user->ticket_amount == 0){
+            if ($user->ticket_amount == 0) {
                 throw new \Exception("User has no tickets available.");
             }
 
             $entryDate = Carbon::parse($data["date_time"]);
-            $lastEntryDate = Carbon::parse($this->getLastEntryById($user->id)->date_time);
 
-            if ($entryDate->diffInHours($lastEntryDate) < 4.5 ){
-                throw new \Exception("User has already entered the restaurant in this period.");
+            if ($this->getLastEntryById($user->id) != null) {
+                $lastEntryDate = Carbon::parse($this->getLastEntryById($user->id)->date_time);
+
+                if ($entryDate->diffInHours($lastEntryDate) < 4.5) {
+                    throw new \Exception("User has already entered the restaurant in this period.");
+                }
             }
 
             $data["user_id"] = $user->id;
             $data["type"] = ($user->type == UserType::Employee->value) ? TicketOrEntryType::Employee->value : TicketOrEntryType::Student->value;
 
             $this->userService->updateTicketAmount($user->uid, -1);
-        }
-        else {
+        } else {
             $data["type"] = ($enrollment_id == $this->visitorEnrollmentId) ? TicketOrEntryType::Visitor->value : TicketOrEntryType::ThirdPartyEmployee->value;
         }
 
         $this->repository->insert($data);
     }
 
-    public function getEntriesByUsername(string $uid){
+    public function getEntriesByUsername(string $uid)
+    {
         $user = $this->userService->getUserByUsername($uid);
 
         $result = $this->repository->getEntriesById($user->id);
 
-        return  $result;
+        return $result;
     }
 
     public function generateReport($init_date, $final_date)
@@ -107,7 +111,7 @@ class EntryService implements IEntryService
 
         for ($i = 0; $i <= $differece; $i++) {
             $date_to_look_for = $init_date;
-            $entries = $this->repository->getEntriesInInterval($date_to_look_for->setTime(0,0,0)->toDateTimeString(), $date_to_look_for->setTime(23, 59, 59)->toDateTimeString());
+            $entries = $this->repository->getEntriesInInterval($date_to_look_for->setTime(0, 0, 0)->toDateTimeString(), $date_to_look_for->setTime(23, 59, 59)->toDateTimeString());
 
             $entry = [
                 "day" => $init_date->format("D d-m-Y"),
@@ -132,8 +136,7 @@ class EntryService implements IEntryService
                 $date_to_validate = $init_date;
                 $date = Carbon::parse($value->date_time);
 
-                if ($date->greaterThanOrEqualTo($date_to_validate->setTime(13, 30, 0)))
-                {
+                if ($date->greaterThanOrEqualTo($date_to_validate->setTime(13, 30, 0))) {
                     switch (intval($value->type)) {
                         case TicketOrEntryType::Student->value:
                             $entry["student_lunch"] = $entry["student_lunch"] + 1;
@@ -154,9 +157,7 @@ class EntryService implements IEntryService
                     }
 
                     $entry["total_lunch"] = $entry["total_lunch"] + 1;
-                }
-                else
-                {
+                } else {
                     switch (intval($value->type)) {
                         case TicketOrEntryType::Student->value:
                             $entry["student_dinner"] = $entry["student_dinner"] + 1;
@@ -304,7 +305,8 @@ class EntryService implements IEntryService
         return $averagesByDayOfTheWeek;
     }
 
-    public function getLastEntryById(string $id){
+    public function getLastEntryById(string $id)
+    {
         return $this->repository->getLastEntryById($id);
     }
 
