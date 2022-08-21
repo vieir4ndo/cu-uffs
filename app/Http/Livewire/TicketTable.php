@@ -23,8 +23,6 @@ final class TicketTable extends PowerGridComponent
     */
     public function setUp(): array
     {
-        $this->showCheckBox();
-
         return [
             Header::make()->showSearchInput(),
             Footer::make()
@@ -48,7 +46,24 @@ final class TicketTable extends PowerGridComponent
     */
     public function datasource(): Builder
     {
-        return Ticket::query();
+        return Ticket::query()
+                    -> leftJoin('users as user', function($users) {
+                        $users->on('tickets.user_id', '=', 'user.id');
+                    })
+                    -> leftJoin('users as cashier_user', function($users) {
+                        $users->on('tickets.third_party_cashier_employee_id', '=', 'cashier_user.id');
+                    })
+                    -> leftJoin('ticket_or_entry_types as type', function($types) {
+                        $types->on('tickets.type', '=', 'type.id');
+                    })
+                    -> select([
+                        'tickets.id',
+                        'type.description as type',
+                        'user.name as users_name',
+                        'tickets.amount',
+                        'cashier_user.name as cashier_name',
+                        'tickets.date_time'
+                    ]);
     }
 
     /*
@@ -80,11 +95,13 @@ final class TicketTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('date_time')
+            ->addColumn('type')
+            ->addColumn('users_name')
             ->addColumn('amount')
-            ->addColumn('user_id')
-            ->addColumn('third_party_cashier_employee_id')
-            ->addColumn('type');
+            ->addColumn('cashier_name')
+            ->addColumn('date_time', function (Ticket $ticket) {
+                return Carbon::parse($ticket->date_time)->format('d/m/Y H:i');
+            });
     }
 
     /*
@@ -104,23 +121,22 @@ final class TicketTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('DATE', 'date_time')
+            Column::make('TIPO', 'type')
                 ->searchable()
                 ->sortable(),
 
-                Column::make('DATE', 'amount')
+            Column::make('USUÁRIO', 'users_name')
                 ->searchable()
                 ->sortable(),
 
-                Column::make('DATE', 'user_id')
+            Column::make('QUANTIDADE', 'amount')
+                ->sortable(),
+
+            Column::make('VENDEDOR', 'cashier_name')
                 ->searchable()
                 ->sortable(),
 
-                Column::make('DATE', 'third_party_cashier_employee_id')
-                ->searchable()
-                ->sortable(),
-
-                Column::make('DATE', 'type')
+            Column::make('DATA', 'date_time')
                 ->searchable()
                 ->sortable(),
         ];
