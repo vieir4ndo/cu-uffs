@@ -62,14 +62,14 @@
                                     <div class="icon">
                                         <x-fas-calendar-day />
                                     </div>
-                                    <input name="start" type="text" required="true" placeholder="Data de ínicio" autocomplete="off">
+                                    <input name="initial_date" type="text" required="true" placeholder="Data de ínicio" autocomplete="off">
                                 </div>
                                 <span class="mx-4 text-gray-500">até</span>
                                 <div class="default-datepicker-field relative">
                                     <div class="icon">
                                         <x-fas-calendar-day />
                                     </div>
-                                    <input name="end" type="text" required="true" placeholder="Data de fim" autocomplete="off">
+                                    <input name="final_date" type="text" required="true" placeholder="Data de fim" autocomplete="off">
                                 </div>
                             </div>
 
@@ -109,14 +109,14 @@
                                     <div class="icon">
                                         <x-fas-calendar-day />
                                     </div>
-                                    <input name="start" type="text" required="true" placeholder="Data de ínicio" autocomplete="off">
+                                    <input name="init_date" type="text" required="true" placeholder="Data de ínicio" autocomplete="off">
                                 </div>
                                 <span class="mx-4 text-gray-500">até</span>
                                 <div class="default-datepicker-field relative">
                                     <div class="icon">
                                         <x-fas-calendar-day />
                                     </div>
-                                    <input name="end" type="text" required="true" placeholder="Data de fim" autocomplete="off">
+                                    <input name="final_date" type="text" required="true" placeholder="Data de fim" autocomplete="off">
                                 </div>
                             </div>
                             <div class="w-full px-3">
