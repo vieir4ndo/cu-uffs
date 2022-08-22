@@ -40,7 +40,7 @@ class ReportController extends Controller
                 'final_date' => $formatted_final_date
             ];
 
-            $validation = Validator::make($dates, ReportValidator::redirectReportRules());
+            $validation = Validator::make($dates, ReportValidator::redirectReportRules($formatted_init_date, $formatted_final_date));
 
              if ($validation->fails()) {
                  Alert::error('Erro', Arr::flatten($validation->errors()->all()));
@@ -77,7 +77,7 @@ class ReportController extends Controller
                 'final_date' => $formatted_final_date
             ];
 
-            $validation = Validator::make($dates, ReportValidator::redirectReportRules());
+            $validation = Validator::make($dates, ReportValidator::redirectReportRules($formatted_init_date, $formatted_final_date));
 
             if ($validation->fails()) {
                 Alert::error('Erro', Arr::flatten($validation->errors()->all()));

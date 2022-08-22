@@ -52,7 +52,7 @@ class EntryController
                 'final_date' => $request->final_date
             ];
 
-            $validation = Validator::make($dates, ReportValidator::redirectReportRules());
+            $validation = Validator::make($dates, ReportValidator::redirectReportRules($request->init_date, $request->final_date));
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
