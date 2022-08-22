@@ -8,6 +8,7 @@ use App\Interfaces\Services\ITicketService;
 use App\Models\Api\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use App\Enums\TicketOrEntryType;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -43,7 +44,8 @@ class SellController extends Controller
 
             $validation = Validator::make($data, TicketValidator::insertTicketsWithEnrollmentIdRules());
             if ($validation->fails()) {
-                $errors = $validation->errors()->all();
+                Alert::error('Erro', Arr::flatten($validation->errors()->all()));
+                return back();
             }
 
             unset($data['enrollment_id']);
@@ -94,6 +96,4 @@ class SellController extends Controller
             return back();
         }
     }
-
-
 }

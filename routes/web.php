@@ -67,6 +67,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard',             [DashboardController::class, 'index'])->name('dashboard');
 
-Route::get('/reset-password/{uid}/{token}', [AuthController::class, 'redirectResetPassword'])->name('web.auth.redirectResetPassword');
+Route::get('/reset-password', [AuthController::class, 'redirectResetPassword'])->name('web.auth.redirectResetPassword');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('web.auth.resetPassword');
 Route::get('/', [AuthController::class, 'index'])->name('web.auth.index');
 

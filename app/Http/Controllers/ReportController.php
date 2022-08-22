@@ -7,6 +7,7 @@ use App\Interfaces\Services\ITicketService;
 use Illuminate\Http\Request;
 use App\Models\Api\ApiResponse;
 use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use App\Interfaces\Services\IEntryService;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -31,8 +32,8 @@ class ReportController extends Controller
     {
         try {
             // Converter data para dd-mm-yyyy e depois formatar para yyyy-mm-dd
-            $formatted_init_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->init_date)));
-            $formatted_final_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->final_date)));
+            $formatted_init_date = date('d-m-Y', strtotime(str_replace('/', '-', $request->init_date)));
+            $formatted_final_date = date('d-m-Y', strtotime(str_replace('/', '-', $request->final_date)));
 
             $dates = [
                 'init_date' => $formatted_init_date,
@@ -42,7 +43,8 @@ class ReportController extends Controller
             $validation = Validator::make($dates, ReportValidator::redirectReportRules());
 
              if ($validation->fails()) {
-                $errors = $validation->errors()->all();
+                 Alert::error('Erro', Arr::flatten($validation->errors()->all()));
+                 return back();
              }
 
             $report = $this->entryService->generateReport($formatted_init_date, $formatted_final_date);
@@ -67,18 +69,19 @@ class ReportController extends Controller
     {
         try {
             // Converter data para dd-mm-yyyy e depois formatar para yyyy-mm-dd
-            $formatted_init_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->init_date)));
-            $formatted_final_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->final_date)));
+            $formatted_init_date = date('d-m-Y', strtotime(str_replace('/', '-', $request->init_date)));
+            $formatted_final_date = date('d-m-Y', strtotime(str_replace('/', '-', $request->final_date)));
 
             $dates = [
-                'init_date' => $request->initDate,
-                'final_date' => $request->finalDate
+                'init_date' => $formatted_init_date,
+                'final_date' => $formatted_final_date
             ];
 
             $validation = Validator::make($dates, ReportValidator::redirectReportRules());
 
             if ($validation->fails()) {
-                $errors = $validation->errors()->all();
+                Alert::error('Erro', Arr::flatten($validation->errors()->all()));
+                return back();
             }
 
             $report = $this->ticketService->generateReport($formatted_init_date, $formatted_final_date);

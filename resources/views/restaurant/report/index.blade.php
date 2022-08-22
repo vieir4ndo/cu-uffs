@@ -62,7 +62,7 @@
                                     <div class="icon">
                                         <x-fas-calendar-day />
                                     </div>
-                                    <input name="initial_date" type="text" required="true" placeholder="Data de ínicio" autocomplete="off">
+                                    <input name="init_date" type="text" required="true" placeholder="Data de ínicio" autocomplete="off">
                                 </div>
                                 <span class="mx-4 text-gray-500">até</span>
                                 <div class="default-datepicker-field relative">

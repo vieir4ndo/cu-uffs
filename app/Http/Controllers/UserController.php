@@ -10,6 +10,7 @@ use App\Interfaces\Services\IAuthService;
 use App\Models\Api\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Enums\Operation;
@@ -64,7 +65,8 @@ class UserController extends Controller
             $validation = Validator::make($user, UserValidator::createUserWitoutIdUFFSRules());
 
             if ($validation->fails()) {
-                $errors = $validation->errors()->all();
+                Alert::error('Erro', Arr::flatten($validation->errors()->all()));
+                return back();
             }
 
             $created = $this->service->getUserByUsernameFirstOrDefault($user['uid']);
@@ -97,11 +99,11 @@ class UserController extends Controller
 
             $this->authService->forgotPassword($uid);
 
-            // return ApiResponse::ok(null);
-            return redirect()->route('web.user.index');
+            Alert::success('Sucesso', 'Solicitação para recuperar egistrada com sucesso!');
+            return back();
         } catch (Exception $e) {
-            // return ApiResponse::badRequest($e->getMessage());
-            return redirect()->route('web.user.index');
+            Alert::error('Erro', $e->getMessage());
+            return back();
         }
     }
 

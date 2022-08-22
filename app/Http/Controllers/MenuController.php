@@ -6,6 +6,7 @@ use App\Http\Validators\MenuValidator;
 use App\Interfaces\Services\IMenuService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -88,7 +89,8 @@ class MenuController extends Controller
             $validation = Validator::make($menu, MenuValidator::createMenuRules());
 
             if ($validation->fails()) {
-                $errors = $validation->errors()->all();
+                Alert::error('Erro', Arr::flatten($validation->errors()->all()));
+                return back();
             }
 
             $this->service->createMenu($menu);

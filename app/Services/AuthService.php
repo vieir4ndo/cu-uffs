@@ -60,7 +60,7 @@ class AuthService implements IAuthService
 
         $token = $this->user->createToken($uid)->plainTextToken;
 
-        $redirectTo = env("APP_URL") . "/reset-password/{$uid}/{$token}";
+        $redirectTo = env("APP_URL") . "/reset-password?uid={$uid}&token={$token}";
 
         $subject = "Recuperação de Senha " . env("APP_NAME");
 
