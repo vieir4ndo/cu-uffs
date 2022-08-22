@@ -12,6 +12,8 @@ use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Heade
 final class RoomTable extends PowerGridComponent
 {
     use ActionButton;
+    public string $primaryKey = 'rooms.id';
+    public string $sortField = 'rooms.id';
 
     /*
     |--------------------------------------------------------------------------
@@ -25,9 +27,6 @@ final class RoomTable extends PowerGridComponent
         $this->showCheckBox();
 
         return [
-            Exportable::make('export')
-                ->striped()
-                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             Header::make()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
@@ -50,7 +49,18 @@ final class RoomTable extends PowerGridComponent
     */
     public function datasource(): Builder
     {
-        return Room::query();
+        return Room::query()
+            ->leftJoin('blocks', 'rooms.block_id', '=', 'blocks.id')
+            ->leftJoin('users', 'rooms.responsable_id', '=', 'users.id')
+            ->select(
+                'rooms.id as id',
+                'rooms.name',
+                'rooms.description',
+                'rooms.capacity',
+                'rooms.status_room',
+                'blocks.name as block',
+                'users.name as responsable'
+            );
     }
 
     /*
@@ -82,12 +92,13 @@ final class RoomTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
+            ->addColumn('rooms.id')
             ->addColumn('name')
             ->addColumn('description')
             ->addColumn('capacity')
             ->addColumn('status_room')
-            ->addColumn('responsable_id')
-            ->addColumn('block_id');
+            ->addColumn('responsable')
+            ->addColumn('block');
     }
 
     /*
@@ -123,20 +134,20 @@ final class RoomTable extends PowerGridComponent
                 ->searchable()
                 ->makeInputRange(),
 
+            Column::make('RESPONSABLE ID', 'responsable')
+                ->sortable()
+                ->searchable()
+                ->makeInputRange(),
+
+            Column::make('BLOCK ID', 'block')
+                ->sortable()
+                ->searchable()
+                ->makeInputRange(),
+
             Column::make('STATUS ROOM', 'status_room')
                 ->sortable()
                 ->searchable()
                 ->toggleable(),
-
-            Column::make('RESPONSABLE ID', 'responsable_id')
-                ->sortable()
-                ->searchable()
-                ->makeInputRange(),
-
-            Column::make('BLOCK ID', 'block_id')
-                ->sortable()
-                ->searchable()
-                ->makeInputRange(),
 
         ]
 ;

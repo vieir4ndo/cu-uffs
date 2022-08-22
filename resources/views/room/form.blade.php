@@ -26,11 +26,11 @@
                             </div>
                             <div class="w-full px-3 mb-6 md:mb-5">
                                 <label for="block_id">Bloco</label>
-                                <input id="block_id" name="block_id" type="text" required="true" value="{{ $room->block_id ?? '' }}">
+                                @livewire('blocks-search-bar')
                             </div>
                             <div class="w-full px-3 mb-6 md:mb-5">
                                 <label for="responsable_id">Responsável</label>
-                                <input id="responsable_id" name="responsable_id" type="text" required="true" value="{{ $room->responsable_id ?? '' }}">
+                                @livewire('responsable-search-bar')
                             </div>
                             <div class="w-full px-3 mb-6 md:mb-5">
                                 <label for="status">Status</label>
