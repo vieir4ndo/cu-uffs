@@ -94,12 +94,29 @@ class UserController extends Controller
             $validation = Validator::make(["uid" => $uid], AuthValidator::forgotPasswordRules());
 
             if ($validation->fails()) {
-                return ApiResponse::badRequest($validation->errors()->all());
+                Alert::error('Erro', Arr::flatten($validation->errors()->all()));
+                return back();
             }
 
             $this->authService->forgotPassword($uid);
 
-            Alert::success('Sucesso', 'Solicitação para recuperar egistrada com sucesso!');
+            Alert::success('Sucesso', 'Solicitação para recuperar registrada com sucesso!');
+            return back();
+        } catch (Exception $e) {
+            Alert::error('Erro', $e->getMessage());
+            return back();
+        }
+    }
+
+    public function deactivateUser($uid){
+        try {
+            $user = [
+                "active" => false,
+            ];
+
+            $this->service->deactivateUser($uid, $user);
+
+            Alert::success('Sucesso', 'Usuário desativado com sucesso!');
             return back();
         } catch (Exception $e) {
             Alert::error('Erro', $e->getMessage());

@@ -139,7 +139,11 @@ final class UserTable extends PowerGridComponent
            Button::make('web.user.forgot-password', 'Alteração de Senha')
                ->class('default-button bg-ccuffs-primary')
                ->route('web.user.forgot-password', ['uid' => 'uid'])
-               ->method('post')
+               ->method('post'),
+           Button::make('web.user.deactivate-user', 'Desativar')
+               ->class('default-button bg-ccuffs-tertiary')
+               ->route('web.user.deactivate-user', ['uid' => 'uid'])
+               ->method('delete')
         ];
     }
 

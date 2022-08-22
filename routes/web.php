@@ -46,6 +46,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get ('/user/create',                 [UserController::class, 'create'])         ->name('web.user.create');
         Route::post('/user/form',                   [UserController::class, 'form'])           ->name('web.user.form');
         Route::post('/user/forgot-password/${uid}', [UserController::class, 'forgotPassword']) ->name('web.user.forgot-password');
+        Route::delete('/user/deactivate-user/${uid}', [UserController::class, 'deactivateUser']) ->name('web.user.deactivate-user');
         Route::post('/user/reset-password/${uid}',  [UserController::class, 'resetPassword'])  ->name('web.user.reset-password');
         //Route::delete('/user/{id}',                 [UserController::class, 'delete'])        ->name('web.user.delete');
 
