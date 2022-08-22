@@ -86,7 +86,7 @@ class MenuController extends Controller
                 "ru_employee_id" => $request->user()->id
             ];
 
-            $validation = Validator::make($menu, MenuValidator::createMenuRules());
+            $validation = Validator::make($menu, MenuValidator::updateMenuRules());
 
             if ($validation->fails()) {
                 Alert::error('Erro', Arr::flatten($validation->errors()->all()));
