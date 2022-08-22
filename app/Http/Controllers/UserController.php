@@ -108,15 +108,16 @@ class UserController extends Controller
         }
     }
 
-    public function deactivateUser($uid){
+    public function changeUserActivity($uid, $active = false){
         try {
             $user = [
-                "active" => false,
+                "active" => $active,
             ];
 
             $this->service->deactivateUser($uid, $user);
 
-            Alert::success('Sucesso', 'Usuário desativado com sucesso!');
+            $operation = $active ? "ativado" : "desativado";
+            Alert::success('Sucesso', "Usuário {$operation} com sucesso!");
             return back();
         } catch (Exception $e) {
             Alert::error('Erro', $e->getMessage());
