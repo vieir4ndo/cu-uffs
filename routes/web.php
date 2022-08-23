@@ -6,6 +6,7 @@ use App\Http\Controllers\SellController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\BlockController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\CCRController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\MenuController;
@@ -69,6 +70,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/room/create', [RoomController::class, 'create'])->name('web.room.create');
         Route::get('/room/edit/{id}', [RoomController::class, 'edit'])->name('web.room.edit');
         Route::post('/room/form', [RoomController::class, 'createOrUpdate'])->name('web.room.createOrUpdate');
+
+        Route::get('/ccr', [CCRController::class, 'index'])->name('web.ccr.index');
+        Route::get('/ccr/create', [CCRController::class, 'create'])->name('web.ccr.create');
+        Route::get('/ccr/edit/{id}', [CCRController::class, 'edit'])->name('web.ccr.edit');
+        Route::post('/ccr/form', [CCRController::class, 'createOrUpdate'])->name('web.ccr.createOrUpdate');
     });
 });
 

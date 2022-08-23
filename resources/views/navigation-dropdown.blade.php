@@ -58,6 +58,11 @@
 
                 @if (Auth::user()->type == \App\Enums\UserType::CSManager->value)
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-jet-nav-link href="{{ route('web.ccr.index') }}" :active="request()->routeIs('web.ccr.index')">
+                            {{ __("CCR's") }}
+                        </x-jet-nav-link>
+                    </div>
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                         <x-jet-nav-link href="{{ route('web.block.index') }}" :active="request()->routeIs('web.block.index')">
                             {{ __('Blocos') }}
                         </x-jet-nav-link>

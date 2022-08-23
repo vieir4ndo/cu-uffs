@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('App\Interfaces\Services\IMenuService', 'App\Services\MenuService');
         $this->app->bind('App\Interfaces\Services\IBlockService', 'App\Services\BlockService');
         $this->app->bind('App\Interfaces\Services\IRoomService', 'App\Services\RoomService');
-        $this->app->bind('App\Interfaces\Services\ICcrService', 'App\Services\CcrService');
+        $this->app->bind('App\Interfaces\Services\ICCRService', 'App\Services\CCRService');
         $this->app->bind('App\Interfaces\Services\IReserveService', 'App\Services\ReserveService');
 
         # Registering repositories
@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('App\Interfaces\Repositories\IUserRepository', 'App\Repositories\UserRepository');
         $this->app->bind('App\Interfaces\Repositories\IMenuRepository', 'App\Repositories\MenuRepository');
         $this->app->bind('App\Interfaces\Repositories\IBlockRepository', 'App\Repositories\BlockRepository');
-        $this->app->bind('App\Interfaces\Repositories\ICcrRepository', 'App\Repositories\CcrRepository');
+        $this->app->bind('App\Interfaces\Repositories\ICCRRepository', 'App\Repositories\CCRRepository');
         $this->app->bind('App\Interfaces\Repositories\IRoomRepository', 'App\Repositories\RoomRepository');
         $this->app->bind('App\Interfaces\Repositories\IReserveRepository', 'App\Repositories\ReserveRepository');
 
