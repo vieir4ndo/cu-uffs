@@ -66,6 +66,7 @@
               <label for="dessert">Sobremesa</label>
               <input id="dessert" type="text" required="true" name="dessert" value="{{ $menu->dessert ?? '' }}">
             </div>
+              <input type="hidden" id="is_update" name="is_update" value="{{ isset($menu) ? true : false }}">
           </div>
 
           <div class="flex justify-end -mx-3 p-3">
