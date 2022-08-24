@@ -46,4 +46,8 @@ class UserRepository implements IUserRepository
         return DB::select("select u.name, u.enrollment_id, u.profile_photo, u.bar_code, t.description as type, u.active, u.course, u.status_enrollment_id, u.birth_date from users u inner join user_types t on u.type=t.id where u.uid='{$uid}'")[0];
     }
 
+    public function getAllUsers(){
+        return User::select('enrollment_id', 'name', "ticket_amount")->get();
+    }
+
 }

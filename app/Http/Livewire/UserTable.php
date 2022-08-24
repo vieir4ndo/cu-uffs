@@ -80,7 +80,9 @@ final class UserTable extends PowerGridComponent
             ->addColumn('uid')
             ->addColumn('name')
             ->addColumn('email')
-            ->addColumn('active');
+            ->addColumn('active', function (User $model) {
+                return ($model->active ? 'SIM' : 'NÃO');
+              });
     }
 
     /*
@@ -113,7 +115,7 @@ final class UserTable extends PowerGridComponent
                 ->searchable(),
 
             Column::make('ATIVO', 'active')
-                ->toggleable(),
+                ->sortable(),
         ];
     }
 
@@ -134,10 +136,20 @@ final class UserTable extends PowerGridComponent
     public function actions(): array
     {
        return [
-           Button::make('reset-password', 'Alteração de Senha')
+           Button::make('web.user.forgot-password', 'Alteração de Senha')
                ->class('default-button bg-ccuffs-primary')
-               ->route('web.user.reset-password', ['uid' => 'uid'])
-               ->method('post')
+               ->route('web.user.forgot-password', ['uid' => 'uid'])
+               ->method('post'),
+           Button::add("activate")
+               ->caption('Ativar')
+               ->class('default-button bg-ccuffs-primary')
+               ->route('web.user.changeUserActivity', ['uid' => 'uid', 'active' => true])
+               ->method('put'),
+           Button::add("deactivate")
+               ->caption('Desativar')
+               ->class('default-button bg-ccuffs-tertiary')
+               ->route('web.user.changeUserActivity', ['uid' => 'uid'])
+               ->method('put')
         ];
     }
 
@@ -155,16 +167,21 @@ final class UserTable extends PowerGridComponent
      * @return array<int, RuleActions>
      */
 
-    /*
+
     public function actionRules(): array
     {
        return [
-
-           //Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($user) => $user->id === 1)
-                ->hide(),
+            Rule::button('activate')
+                ->when(function (User $model) {
+                    return $model->active;
+                })
+                ->disable(),
+           Rule::button('deactivate')
+               ->when(function (User $model) {
+                   return !$model->active;
+               })
+               ->disable(),
         ];
     }
-    */
+
 }

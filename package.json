@@ -26,6 +26,8 @@
     },
     "dependencies": {
         "@themesberg/tailwind-datepicker": "^1.1.0",
-        "flowbite-datepicker": "^1.2.2"
+        "flowbite-datepicker": "^1.2.2",
+        "jquery": "^3.6.0",
+        "select2": "^4.1.0-rc.0"
     }
 }

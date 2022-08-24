@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V0\UserController;
 use App\Http\Controllers\Api\V0\TicketController;
 use App\Http\Middleware\ApiKeyMiddleware;
 use App\Http\Middleware\RUEmployeeMiddleware;
+use App\Http\Middleware\RUOrThirdPartyCashierEmployeeMiddleware;
 use App\Http\Middleware\ThirdPartyCashierEmployeeMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +45,11 @@ Route::middleware('auth:sanctum')->namespace('\App\Http\Controllers\Api\V0')->gr
         Route::post('/menu', [MenuController::class, 'createMenu'])->name('api.v0.menu.createMenu');
         Route::patch('/menu/{date}', [MenuController::class, 'updateMenu'])->name('api.v0.menu.updateMenu');
         Route::delete('/menu/{date}', [MenuController::class, 'deleteMenu'])->name('api.v0.menu.deleteMenu');
+        Route::get('/entry/report', [EntryController::class, 'getReport'])->name('api.v0.entry.getReport');
+    });
+    
+    Route::middleware(RUOrThirdPartyCashierEmployeeMiddleware::class)->namespace('\App\Http\Controllers\Api\V0')->group(function () {
+        Route::get('/ticket/report', [TicketController::class, 'getReport'])->name('api.v0.ticket.getReport');
     });
 });
 

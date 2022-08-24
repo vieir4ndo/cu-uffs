@@ -6,7 +6,9 @@ use App\Http\Validators\MenuValidator;
 use App\Interfaces\Services\IMenuService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class MenuController extends Controller
 {
@@ -24,7 +26,7 @@ class MenuController extends Controller
         $date ??= now();
         $menu = $this->service->getMenuByDate($date);
 
-        return view('menu.index', [
+        return view('restaurant.menu.index', [
             'menu' => $menu,
             'date' => date('d/m/Y', strtotime($date))
         ]);
@@ -34,7 +36,7 @@ class MenuController extends Controller
     {
         $title = 'Novo Cardápio';
 
-        return view('menu.form', [
+        return view('restaurant.menu.form', [
             'title' => $title
         ]);
     }
@@ -45,7 +47,7 @@ class MenuController extends Controller
         $menu = $this->service->getMenuById($id);
         $menu->date = date('d/m/Y', strtotime($menu->date));
 
-        return view('menu.form', [
+        return view('restaurant.menu.form', [
             'title' => $title,
             'menu' => $menu
         ]);
@@ -84,41 +86,29 @@ class MenuController extends Controller
                 "ru_employee_id" => $request->user()->id
             ];
 
-            $validation = Validator::make($menu, $this->createMenuRules());
+            $menuFromDb = $this->service->getMenuByDate($formatted_date);
 
-            // if ($validation->fails()) {
-            //$errors = $validation->errors()->all(); with errors
-            // }
+            $validation =  Validator::make($menu, ($menuFromDb != null) ? MenuValidator::updateMenuRules() : MenuValidator::createMenuRules());
+
+            if ($validation->fails()) {
+                Alert::error('Erro', Arr::flatten($validation->errors()->all()));
+                return back();
+            }
 
             $this->service->createMenu($menu);
 
+            Alert::success('Sucesso', 'Cardápio registrado com sucesso!');
             return redirect()->route('web.menu.index');
         } catch (Exception $e) {
-            //return $this->index(); with errors $e->getMessage();
+            Alert::error('Erro', $e->getMessage());
+            return back();
         }
     }
 
     public function delete($date)
     {
-        $menu = $this->service->deleteMenu($date);
+        $this->service->deleteMenu($date);
 
         return redirect()->route('web.menu.index');
-    }
-
-    private static function createMenuRules()
-    {
-        return [
-            "salad_1" => ['required', 'string'],
-            "salad_2" => ['required', 'string'],
-            "salad_3" => ['required', 'string'],
-            "grains_1" => ['required', 'string'],
-            "grains_2" => ['required', 'string'],
-            "grains_3" => ['required', 'string'],
-            "side_dish" => ['required', 'string'],
-            "mixture" => ['required', 'string'],
-            "vegan_mixture" => ['required', 'string'],
-            "dessert" => ['required', 'string'],
-            "date" => ['required', 'date', 'unique:menus']
-        ];
     }
 }

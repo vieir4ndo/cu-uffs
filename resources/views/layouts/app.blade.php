@@ -40,6 +40,7 @@
 
         @livewireScripts
         @powerGridStyles
+        @include('sweetalert::alert')
         @bukScripts(true)
     </body>
 </html>

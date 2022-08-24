@@ -30,6 +30,7 @@
         "owenvoke/blade-fontawesome": "^1.6",
         "power-components/livewire-powergrid": "^3.2",
         "predis/predis": "^2.0",
+        "realrashid/sweet-alert": "^5.1",
         "ukfast/laravel-health-check": "^1.13"
     },
     "require-dev": {

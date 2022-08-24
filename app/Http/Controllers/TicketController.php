@@ -8,6 +8,6 @@ class TicketController extends Controller
 {
     public function index()
     {
-        return view('ticket.index');
+        return view('restaurant.ticket.index');
     }
 }

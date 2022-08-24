@@ -52,7 +52,7 @@ class JetstreamServiceProvider extends ServiceProvider
             $this->user = $this->userService->getUserByUsernameFirstOrDefault($request->input('email'), false);
             $password = $request->input('password');
 
-            if ($this->user == null) {
+            if ($this->user == null or $this->user->active == false) {
                 return null;
             }
 

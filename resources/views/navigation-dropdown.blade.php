@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-jet-application-mark class="block h-9 w-auto" />
+                        <img src="{{url('/assets/images/logo-cu.png')}}" class="block h-9 w-auto"width="50" height="50" >
                     </a>
                 </div>
 
@@ -37,16 +37,16 @@
 
                 @if (Auth::user()->type == \App\Enums\UserType::ThirdPartyCashierEmployee->value)
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                        <x-jet-nav-link href="{{ route('web.ticket.index') }}" :active="request()->routeIs('web.ticket.index')">
-                            {{ __('Fichas de Refeição') }}
+                        <x-jet-nav-link href="{{ route('web.sell.index') }}" :active="request()->routeIs('web.sell.index')">
+                            {{ __('Vendas de Fichas de Refeição') }}
                         </x-jet-nav-link>
                     </div>
                 @endif
 
                 @if (Auth::user()->type == \App\Enums\UserType::RUEmployee->value || Auth::user()->type == \App\Enums\UserType::ThirdPartyCashierEmployee->value)
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                        <x-jet-nav-link href="{{ route('web.sell.index') }}" :active="request()->routeIs('web.sell.index')">
-                            {{ __('Vendas de Fichas de Refeição') }}
+                        <x-jet-nav-link href="{{ route('web.ticket.index') }}" :active="request()->routeIs('web.ticket.index')">
+                            {{ __('Fichas de Refeição') }}
                         </x-jet-nav-link>
                     </div>
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">

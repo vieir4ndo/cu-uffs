@@ -18,8 +18,7 @@
               <label for="type">Tipo</label>
               <select name="type" id="type" class="form-select appearance-none" aria-label="Default select example" required="true">
                 <option value="" disabled selected >Selecione o tipo do usuário</option>
-                <option value="4">Servidor Terceirizado</option>
-                <option value="5">Caixa do Restaurante</option>
+                <option value="4">Caixa do Restaurante</option>
               </select>
             </div>
           </div>
@@ -46,19 +45,19 @@
                 <div class="icon">
                   <x-fas-calendar-day />
                 </div>
-                <input datepicker id="date" name="birth_date" type="text" required="true">
+                <input datepicker id="date" name="birth_date" type="text" required="true" autocomplete="off">
               </div>
             </div>
           </div>
 
-          <div class="flex flex-wrap -mx-3 mb-3">
+          <div class="flex flex-wrap items-center -mx-3 mb-3">
             <div class="w-full md:w-1/2 px-3 mb-6 md:mb-5">
               <label for="profile_photo">Foto de Perfil</label>
-              <input id="profile_photo" name="profile_photo" type="file" accept="image/*">
+              <input id="profile-photo" type="file" accept="image/*">
+              <input id="profile-photo-base64" name="profile_photo" type="text" class="hidden">
             </div>
+            <img id="profile-image-output" class="w-20 h-20 rounded-full object-cover" src="{{url('/assets/images/img-user-default.png')}}"/>
           </div>
-
-          <!-- PROFILE PHOTO -->
 
           <div class="flex justify-end -mx-3 p-3">
             <button class="default-button bg-ccuffs-primary" type="submit">

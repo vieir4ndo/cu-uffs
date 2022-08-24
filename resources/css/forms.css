@@ -33,6 +33,21 @@
   @apply border-gray-200;
 }
 
+.default-form .select2 {
+  @apply w-full !important;
+}
+
+.default-form .select2 .select2-selection {
+  @apply h-auto;
+  @apply bg-gray-200;
+  @apply border;
+  @apply border-gray-200;
+  @apply rounded;
+  @apply py-3;
+  @apply px-4;
+  @apply leading-tight;
+}
+
 /* * * * * * * * * * */
 /* DATEPICKER STYLES */
 /* * * * * * * * * * */
@@ -66,6 +81,10 @@
   @apply border-blue-500;
 }
 
+.datepicker-dropdown{
+  z-index: 50 !important;
+}
+
 /* * * * * * * * * */
 /* BUTTONS STYLES  */
 /* * * * * * * * * */
@@ -76,6 +95,12 @@
   @apply py-2;
   @apply px-4;
   @apply rounded;
+}
+
+.default-button.white {
+  @apply text-gray-500;
+  @apply border;
+  @apply border-gray-200;
 }
 
 .default-button svg {

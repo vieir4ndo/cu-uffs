@@ -6,4 +6,6 @@ interface IEntryService
 {
     function insertEntry($enrollment_id, $data);
     function getEntriesByUsername(string $uid);
+    function generateReport($init_date, $final_date);
+    function getLastEntryById(string $id);
 }

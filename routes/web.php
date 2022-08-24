@@ -35,30 +35,40 @@ Route::group(['middleware' => ['web']], function () {
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::middleware(RUEmployeeMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
-        Route::get('/menu',             [MenuController::class, 'index'])->name('web.menu.index');
-        Route::post('/menu',             [MenuController::class, 'filter'])->name('web.menu.filter');
-        Route::get('/menu/create',      [MenuController::class, 'create'])->name('web.menu.create');
-        Route::get('/menu/edit/{id}',   [MenuController::class, 'edit'])->name('web.menu.edit');
-        Route::post('/menu/form',        [MenuController::class, 'createOrUpdate'])->name('web.menu.createOrUpdate');
-        Route::delete('/menu/{date}',      [MenuController::class, 'delete'])->name('web.menu.delete');
+        Route::get   ('/menu',           [MenuController::class, 'index'])          ->name('web.menu.index');
+        Route::post  ('/menu',           [MenuController::class, 'filter'])         ->name('web.menu.filter');
+        Route::get   ('/menu/create',    [MenuController::class, 'create'])         ->name('web.menu.create');
+        Route::get   ('/menu/edit/{id}', [MenuController::class, 'edit'])           ->name('web.menu.edit');
+        Route::post  ('/menu/form',      [MenuController::class, 'createOrUpdate']) ->name('web.menu.createOrUpdate');
+        Route::delete('/menu/{date}',    [MenuController::class, 'delete'])         ->name('web.menu.delete');
 
-        Route::get('/user',                         [UserController::class, 'index'])->name('web.user.index');
-        Route::get('/user/create',                  [UserController::class, 'create'])->name('web.user.create');
-        Route::post('/user/form',                    [UserController::class, 'form'])->name('web.user.form');
-        Route::post('/user/reset-password/${uid}',   [UserController::class, 'resetPassword'])->name('web.user.reset-password');
-        // Route::delete('/user/{id}',                 [UserController::class, 'delete'        ]) ->name('web.user.delete'        );
+        Route::get ('/user',                        [UserController::class, 'index'])          ->name('web.user.index');
+        Route::get ('/user/create',                 [UserController::class, 'create'])         ->name('web.user.create');
+        Route::post('/user/form',                   [UserController::class, 'form'])           ->name('web.user.form');
+        Route::post('/user/forgot-password/${uid}', [UserController::class, 'forgotPassword']) ->name('web.user.forgot-password');
+        Route::put('/user/${uid}/${active?}', [UserController::class, 'changeUserActivity']) ->name('web.user.changeUserActivity');
+        Route::post('/user/reset-password/${uid}',  [UserController::class, 'resetPassword'])  ->name('web.user.reset-password');
+        //Route::delete('/user/{id}',                 [UserController::class, 'delete'])        ->name('web.user.delete');
+
+        Route::post('/report/entry', [ReportController::class, 'redirectEntryReport']) ->name('web.report.redirect-entry-report');
     });
 
     Route::middleware(RUOrThirdPartyCashierEmployeeMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
-        Route::get('/entry', [EntryController::class, 'index'])->name('web.entry.index');
-        Route::get('/ticket', [TicketController::class, 'index'])->name('web.ticket.index');
-        Route::get('/report', [ReportController::class, 'index'])->name('web.report.index');
-        Route::get('/sell', [SellController::class, 'index'])->name('web.sell.index');
+        Route::get('/entry',  [EntryController::class, 'index'])  ->name('web.entry.index');
+        Route::get('/ticket', [TicketController::class, 'index']) ->name('web.ticket.index');
+        Route::get('/report', [ReportController::class, 'index']) ->name('web.report.index');
+        Route::get('/sell',   [SellController::class, 'index'])   ->name('web.sell.index');
+
+        Route::post('/sell', [SellController::class, 'sellTicket']) ->name('web.sell.sell-ticket');
+        Route::post('/sell-visitor', [SellController::class, 'sellVisitorTicket']) ->name('web.sell.sell-visitor-ticket');
+        Route::post('/sell-third-party', [SellController::class, 'sellThirdPartyTicket']) ->name('web.sell.sell-third-party-ticket');
+        Route::post('/report/ticket', [ReportController::class, 'redirectTicketReport']) ->name('web.report.redirect-ticket-report');
     });
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard',             [DashboardController::class, 'index'])->name('dashboard');
 
-Route::get('/reset-password/{uid}/{token}', [AuthController::class, 'redirectResetPassword'])->name('web.auth.redirectResetPassword');
+Route::get('/reset-password', [AuthController::class, 'redirectResetPassword'])->name('web.auth.redirectResetPassword');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('web.auth.resetPassword');
 Route::get('/', [AuthController::class, 'index'])->name('web.auth.index');
 
