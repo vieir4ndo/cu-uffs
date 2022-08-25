@@ -34,13 +34,13 @@ class AuthService implements IAuthService
             $data = $this->idUffsService->authWithIdUFFS($uid, $password);
 
             if ($data == null) {
-                throw new Exception("The password is incorrect.");
+                throw new Exception("A senha informada está incorreta.");
             }
 
             $this->service->updateUser($this->user, $data);
         } else {
             if (!Hash::check($password, $this->user->password)) {
-                throw new Exception("The password is incorrect.");
+                throw new Exception("A senha informada está incorreta.");
             }
         }
 
@@ -53,7 +53,7 @@ class AuthService implements IAuthService
         $this->user = $this->service->getUserByUsername($uid, false);
 
         if (in_array($this->user->type, config("user.users_auth_iduffs"))) {
-            throw new Exception("User not allowed to reset password. Please continue at <a href='https://id.uffs.edu.br/id/XUI/?realm=/#passwordReset/'>IdUFFS</a>.");
+            throw new Exception("Usuário não pode alterar sua senha nessa plataforma. Por favor continue em <a href='https://id.uffs.edu.br/id/XUI/?realm=/#passwordReset/'>IdUFFS</a>.");
         }
 
         $this->user->tokens()->delete();
@@ -74,7 +74,7 @@ class AuthService implements IAuthService
         $this->user = $this->service->getUserByUsername($uid, false);
 
         if (in_array($this->user->type, config("user.users_auth_iduffs"))) {
-            throw new Exception("User not allowed to reset password. Please continue at <a href='https://id.uffs.edu.br/id/XUI/?realm=/#passwordReset/'>IdUFFS</a>.");
+            throw new Exception("Usuário não pode alterar sua senha nessa plataforma. Por favor continue em <a href='https://id.uffs.edu.br/id/XUI/?realm=/#passwordReset/'>IdUFFS</a>.");
         }
 
         $data = [

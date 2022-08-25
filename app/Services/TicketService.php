@@ -24,11 +24,11 @@ class TicketService implements ITicketService
         $user = $this->userService->getUserByEnrollmentId($enrollment_id, false);
 
         if ($user->active == false){
-            throw new \Exception("User is not active.");
+            throw new \Exception("Usuário não está ativo.");
         }
 
         if ($user->status_enrollment_id == false){
-            throw new \Exception("User's enrollment id is not active.");
+            throw new \Exception("Usuário possui matrícula inativa.");
         }
 
         $data["user_id"] = $user->id;

@@ -20,7 +20,7 @@ class MailjetService implements IMailjetService
         $response = $this->mailJetClient->post(Resources::$Email, ['body' => $this->mountEmailBody($email, $name, $subject, $message)]);
 
         if (!$response->success()){
-            throw new Exception("It wasn't possible to send your email. Please try again later.");
+            throw new Exception("Não foi possível encaminhar o e-mail nesse momento. Por favor tente mais tarde.");
         }
     }
 

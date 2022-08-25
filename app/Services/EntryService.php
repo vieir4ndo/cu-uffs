@@ -35,15 +35,15 @@ class EntryService implements IEntryService
             $user = $this->userService->getUserByEnrollmentId($enrollment_id, false);
 
             if ($user->active == false) {
-                throw new \Exception("User is not active.");
+                throw new \Exception("Usuário não está ativo.");
             }
 
             if ($user->status_enrollment_id == false) {
-                throw new \Exception("User's enrollment id is not active.");
+                throw new \Exception("Usuário possui matrícula inativa.");
             }
 
             if ($user->ticket_amount == 0) {
-                throw new \Exception("User has no tickets available.");
+                throw new \Exception("Usuário não possui tickets de refeição disponíveis.");
             }
 
             $entryDate = Carbon::parse($data["date_time"]);
@@ -52,7 +52,7 @@ class EntryService implements IEntryService
                 $lastEntryDate = Carbon::parse($this->getLastEntryById($user->id)->date_time);
 
                 if ($entryDate->diffInHours($lastEntryDate) < 4.5) {
-                    throw new \Exception("User has already entered the restaurant in this period.");
+                    throw new \Exception("Usuário já acessou o restaurante nesse período.");
                 }
             }
 
