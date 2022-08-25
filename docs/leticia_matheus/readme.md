@@ -10,6 +10,7 @@
 [Use cases - V2 - 03/07/2022](files/use_cases_v2.pdf)<br/>
 [Use cases - V3 - 28/07/2022](files/use_cases_v3.png)<br/>
 [Use cases - V4 - 14/08/2022](files/use_cases_v4.png)<br/>
+[Use cases - V5 - 25/08/2022](files/use_cases_v5.png)<br/>
 
 [Conceptual Data Model - 07/07/2022](files/conceptual-model.png)<br/>
 [Conceptual Data Model - V2 - 14/08/2022](files/conceptual-model-v2.png)<br/>
