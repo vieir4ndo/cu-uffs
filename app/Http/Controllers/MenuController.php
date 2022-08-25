@@ -107,8 +107,15 @@ class MenuController extends Controller
 
     public function delete($date)
     {
-        $this->service->deleteMenu($date);
+        try {
 
-        return redirect()->route('web.menu.index');
+            $this->service->deleteMenu($date);
+
+            Alert::success('Sucesso', 'Cardápio deletado com sucesso!');
+            return redirect()->route('web.menu.index');
+        } catch (Exception $e) {
+            Alert::error('Erro', $e->getMessage());
+            return back();
+        }
     }
 }
