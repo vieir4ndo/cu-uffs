@@ -54,7 +54,7 @@ class AiPassportPhotoService implements IAiPassportPhotoService
                 return $base64Photo;
             }
         } catch (Exception $e) {
-            throw new Exception("Não foi possível validar sua foto de perfil nesse momento, por favor tente novamente.");
+            throw new Exception("Não foi possível validar sua foto de perfil nesse momento.");
         }
     }
 }
