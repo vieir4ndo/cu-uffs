@@ -65,11 +65,11 @@ class IdUffsService implements IIdUffsService
         $response = $this->client->post("{$this->activeUserApi}", $this->getIsActivePayload($enrollment_id, $viewState, $captcha));
 
         if (!StringHelper::checkIfContains($response->getBody(), "Vínculo ativo")) {
-            throw new Exception("Matrícula/SIAPE informado não possui vículo ativo.");
+            throw new Exception("Matrícula/SIAPE informado não possui vínculo ativo.");
         }
 
         if (!StringHelper::checkIfContains($response->getBody(), $name)){
-            throw new Exception("Matrícula/SIAPE informado não pertence ao usuário em criação.");
+            throw new Exception("Matrícula/SIAPE não pertence ao idUFFS informado.");
         }
 
         if (StringHelper::checkIfContains($response->getBody(), '<p class="descricaoVinculo">Estudante</p>')) {
