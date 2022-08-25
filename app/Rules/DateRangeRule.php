@@ -39,6 +39,6 @@ class DateRangeRule implements Rule
      */
     public function message()
     {
-        return 'Dates informed exceeded limit of 120 days.';
+        return 'Datas informadas excedem o limite de 120 dias.';
     }
 }
