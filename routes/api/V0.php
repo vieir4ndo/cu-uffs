@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V0\UserController;
 use App\Http\Controllers\Api\V0\TicketController;
 use App\Http\Controllers\Api\V0\RoomController;
 use App\Http\Controllers\Api\V0\CCRController;
+use App\Http\Controllers\Api\V0\ReserveController;
 use App\Http\Middleware\ApiKeyMiddleware;
 use App\Http\Middleware\RUEmployeeMiddleware;
 use App\Http\Middleware\RoomsAdministratorMiddleware;

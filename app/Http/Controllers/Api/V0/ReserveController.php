@@ -25,11 +25,9 @@ class ReserveController extends Controller
                 "begin" => $request->begin,
                 "end" => $request->end,
                 "description" => $request->description,
-                "status" => $request->status_reserve,
-                "observation" => $request->observation,
-                "locator_id" => $request->locator_id,
                 "room_id" => $request->room_id,
                 "ccr_id" => $request->ccr_id,
+                "locator_id" => 1,
             ];
 
             $validation = Validator::make($reserve, $this->createReserveRules());
@@ -95,19 +93,16 @@ class ReserveController extends Controller
         }
     }
 
-    private function updateReserveRules()
-    {
-        return [
-            "name" => ['string'],
-            "description" => ['string']
-        ];
-    }
 
     private function createReserveRules()
     {
         return [
-            "name" => ['required', 'string'],
-            "description" => ['string']
+            "begin" => ['required', 'string'],
+            "end" => ['required', 'string'],
+            "description" => ['string'],
+            "room_id" => ['required', 'integer'],
+            "ccr_id" => ['integer'],
+            "locator_id" => ['required', 'integer'],
         ];
     }
 
