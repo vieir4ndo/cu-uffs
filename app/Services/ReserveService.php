@@ -10,33 +10,27 @@ class ReserveService implements IReserveService
 {
     private IReserveRepository $repository;
 
-    public function __construct(IReserveRepository $repository)
-    {
+    public function __construct(IReserveRepository $repository) {
         $this->repository = $repository;
     }
 
-    public function createReserve($data)
-    {
+    public function createReserve($data) {
         return $this->repository->createOrUpdateReserve($data);
     }
 
-    public function updateReserve($data, $id)
-    {
+    public function updateReserve($data, $id) {
         $this->repository->createOrUpdateReserve($data, Carbon::parse($id));
     }
 
-    public function getReserve()
-    {
+    public function getReserve() {
         return $this->repository->getReserve();
     }
 
-    public function getReserveById($id)
-    {
+    public function getReserveById($id) {
         return $this->repository->getReserveById($id);
     }
 
-    public function getReservesByLocatorId($id)
-    {
+    public function getReservesByLocatorId($id) {
         return $this->repository->getReservesByLocatorId($id);
     }
 }

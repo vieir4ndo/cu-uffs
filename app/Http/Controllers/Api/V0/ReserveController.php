@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V0;
 use App\Http\Controllers\Controller;
 use App\Interfaces\Services\IReserveService;
 use App\Models\Api\ApiResponse;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -53,17 +52,23 @@ class ReserveController extends Controller
         }
     }
 
-    public function getReserve() {
+    public function getLocatorReserves(Request $request) {
         try {
-            return ApiResponse::ok($this->service->getReserve());
+            return ApiResponse::ok($this->service->getReservesByLocatorId($request->user()->id));
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
     }
 
-    public function getLocatorReserves(Request $request) {
+    public function getReserveById(Request $request, $id) {
         try {
-            return ApiResponse::ok($this->service->getReservesByLocatorId($request->user()->id));
+            $reserve = $this->service->getReserveById($id);
+
+            if ($reserve->locator_id != $request->user()->id) {
+                return ApiResponse::forbidden();
+            }
+
+            return ApiResponse::ok($reserve);
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
