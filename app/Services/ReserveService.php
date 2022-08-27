@@ -22,6 +22,10 @@ class ReserveService implements IReserveService
         $this->repository->createOrUpdateReserve($data, Carbon::parse($id));
     }
 
+    public function deleteReserve($id) {
+        $this->repository->deleteReserve($id);
+    }
+
     public function getReserve() {
         return $this->repository->getReserve();
     }

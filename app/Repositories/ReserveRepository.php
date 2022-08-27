@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\Repositories\IReserveRepository;
 use App\Models\Reserve;
+use Carbon\Carbon;
 
 class ReserveRepository implements IReserveRepository
 {
@@ -15,6 +16,10 @@ class ReserveRepository implements IReserveRepository
             ["id" => $id],
             $data
         );
+    }
+
+    public function deleteReserve($id) {
+        return Reserve::where('id', $id)->delete();
     }
 
     public function getReserve() {
@@ -37,6 +42,7 @@ class ReserveRepository implements IReserveRepository
         return Reserve::select('reserves.id as id', 'begin', 'status', 'ccr.name as ccr', 'rooms.name as room')
             ->leftJoin('ccr', 'reserves.ccr_id', '=', 'ccr.id')
             ->leftJoin('rooms', 'reserves.room_id', '=', 'rooms.id')
+            ->where('reserves.end', '>=', Carbon::now())
             ->where('locator_id', $id)
             ->simplePaginate(15);
     }

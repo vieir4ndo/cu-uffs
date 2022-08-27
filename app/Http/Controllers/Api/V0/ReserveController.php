@@ -19,9 +19,17 @@ class ReserveController extends Controller
 
     public function createReserve(Request $request) {
         try {
+            // Converter datas para dd-mm-yyyy e depois para yyyy-mm-dd
+            $begin = date('Y-m-d H:i:s',
+                strtotime(str_replace('/', '-', $request->begin))
+            );
+            $end = date('Y-m-d H:i:s',
+                strtotime(str_replace('/', '-', $request->end))
+            );
+
             $reserve = [
-                "begin" => $request->begin,
-                "end" => $request->end,
+                "begin" => $begin,
+                "end" => $end,
                 "description" => $request->description,
                 "room_id" => $request->room_id,
                 "ccr_id" => $request->ccr_id,
@@ -42,9 +50,42 @@ class ReserveController extends Controller
         }
     }
 
-    public function deleteReserve($id) {
+    public function deleteReserve(Request $request, $id) {
         try {
-            //$reserve = $this->service->deleteReserve($reserve);
+            // TODO: Mover para o middleware
+            $reserve = $this->service->getReserveById($id);
+
+            if ($reserve->locator_id != $request->user()->id) {
+                return ApiResponse::forbidden();
+            }
+
+            $this->service->deleteReserve($id);
+            return ApiResponse::ok(null);
+        } catch (Exception $e) {
+            return ApiResponse::badRequest($e->getMessage());
+        }
+    }
+
+    public function changeStatus(Request $request, $id) {
+        try {
+            // TODO: Mover para o middleware
+            $reserve = $this->service->getReserveById($id);
+
+            if ($reserve->locator_id != $request->user()->id) {
+                return ApiResponse::forbidden();
+            }
+
+            $reserve = [
+                "status" => $request->new_status
+            ];
+
+            $validation = Validator::make(array_filter($reserve), $this->changeReserveStatusRules());
+
+            if ($validation->fails()) {
+                return ApiResponse::badRequest($validation->errors()->all());
+            }
+
+            $this->service->updateReserve($reserve, $id);
 
             return ApiResponse::ok(null);
         } catch (Exception $e) {
@@ -54,7 +95,14 @@ class ReserveController extends Controller
 
     public function getLocatorReserves(Request $request) {
         try {
-            return ApiResponse::ok($this->service->getReservesByLocatorId($request->user()->id));
+            $reserves = $this->service->getReservesByLocatorId($request->user()->id);
+
+            foreach ($reserves as $reserve) {
+                $reserve->begin = date('d/m/Y H:i', strtotime($reserve->begin));
+                $reserve->end = date('d/m/Y H:i', strtotime($reserve->end));
+            }
+
+            return ApiResponse::ok($reserves);
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
@@ -62,11 +110,15 @@ class ReserveController extends Controller
 
     public function getReserveById(Request $request, $id) {
         try {
+            // TODO: Mover para o middleware
             $reserve = $this->service->getReserveById($id);
 
             if ($reserve->locator_id != $request->user()->id) {
                 return ApiResponse::forbidden();
             }
+
+            $reserve->begin = date('d/m/Y H:i', strtotime($reserve->begin));
+            $reserve->end = date('d/m/Y H:i', strtotime($reserve->end));
 
             return ApiResponse::ok($reserve);
         } catch (Exception $e) {
@@ -76,12 +128,18 @@ class ReserveController extends Controller
 
     private function createReserveRules() {
         return [
-            "begin" => ['required', 'date'],
-            "end" => ['required', 'date'],
+            "begin" => ['required', 'date_format:Y-m-d H:i:s'],
+            "end" => ['required', 'date_format:Y-m-d H:i:s'],
             "description" => ['string'],
             "room_id" => ['required', 'integer'],
             "ccr_id" => ['integer'],
             "locator_id" => ['required', 'integer'],
+        ];
+    }
+
+    private function changeReserveStatusRules() {
+        return [
+            "new_status" => ['required', 'integer'],
         ];
     }
 
