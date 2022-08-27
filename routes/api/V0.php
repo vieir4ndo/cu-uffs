@@ -67,7 +67,7 @@ Route::middleware('auth:sanctum')->namespace('\App\Http\Controllers\Api\V0')->gr
         Route::post('/reserve', [ReserveController::class, 'createReserve'])->name('api.v0.reserve.createReserve');
         Route::patch('/reserve/{id}', [ReserveController::class, 'updateReserve'])->name('api.v0.reserve.updateReserve');
         Route::delete('/reserve/{id}', [ReserveController::class, 'deleteReserve'])->name('api.v0.reserve.deleteReserve');
-        Route::get('/reserve', [ReserveController::class, 'getReserve'])->name('api.v0.reserve.getReserve');
+        Route::get('/reserves', [ReserveController::class, 'getLocatorReserves'])->name('api.v0.reserve.getLocatorReserves');
     });
 });
 

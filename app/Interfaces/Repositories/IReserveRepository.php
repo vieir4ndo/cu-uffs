@@ -7,4 +7,5 @@ interface IReserveRepository
     public function createOrUpdateReserve($data);
     public function getReserve();
     public function getReserveById($id);
+    public function getReservesByLocatorId($id);
 }

@@ -8,4 +8,5 @@ interface IReserveService
     public function updateReserve($data, $id);
     public function getReserve();
     public function getReserveById($id);
+    public function getReservesByLocatorId($id);
 }

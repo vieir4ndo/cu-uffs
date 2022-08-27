@@ -34,4 +34,9 @@ class ReserveService implements IReserveService
     {
         return $this->repository->getReserveById($id);
     }
+
+    public function getReservesByLocatorId($id)
+    {
+        return $this->repository->getReservesByLocatorId($id);
+    }
 }

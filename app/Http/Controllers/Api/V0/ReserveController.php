@@ -14,12 +14,11 @@ class ReserveController extends Controller
 {
     private IReserveService $service;
 
-    public function __construct(IReserveService $service)
-    {
+    public function __construct(IReserveService $service) {
         $this->service = $service;
     }
 
-    public function createReserve(Request $request){
+    public function createReserve(Request $request) {
         try {
             $reserve = [
                 "begin" => $request->begin,
@@ -27,10 +26,10 @@ class ReserveController extends Controller
                 "description" => $request->description,
                 "room_id" => $request->room_id,
                 "ccr_id" => $request->ccr_id,
-                "locator_id" => 1,
+                "locator_id" => $request->user()->id,
             ];
 
-            $validation = Validator::make($reserve, $this->createReserveRules());
+            $validation = Validator::make(array_filter($reserve), $this->createReserveRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -44,36 +43,7 @@ class ReserveController extends Controller
         }
     }
 
-    public function updateReserve(Request $request, $id){
-        try {
-            $reserve = [
-                "begin" => $request->begin,
-                "end" => $request->end,
-                "description" => $request->description,
-                "status" => $request->status_reserve,
-                "observation" => $request->observation,
-                "locator_id" => $request->locator_id,
-                "room_id" => $request->room_id,
-                "ccr_id" => $request->ccr_id,
-            ];
-
-            $reserve = array_filter($reserve);
-
-            $validation = Validator::make($reserve, $this->updateReserveRules());
-
-            if ($validation->fails()) {
-                return ApiResponse::badRequest($validation->errors()->all());
-            }
-
-            $this->service->updateReserve($reserve, $id);
-
-            return ApiResponse::ok(null);
-        } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
-        }
-    }
-
-    public function deleteReserve($id){
+    public function deleteReserve($id) {
         try {
             //$reserve = $this->service->deleteReserve($reserve);
 
@@ -83,22 +53,26 @@ class ReserveController extends Controller
         }
     }
 
-    public function getReserve(){
+    public function getReserve() {
         try {
-            $reserves = $this->service->getReserve();
-
-            return ApiResponse::ok($reserves);
+            return ApiResponse::ok($this->service->getReserve());
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
     }
 
+    public function getLocatorReserves(Request $request) {
+        try {
+            return ApiResponse::ok($this->service->getReservesByLocatorId($request->user()->id));
+        } catch (Exception $e) {
+            return ApiResponse::badRequest($e->getMessage());
+        }
+    }
 
-    private function createReserveRules()
-    {
+    private function createReserveRules() {
         return [
-            "begin" => ['required', 'string'],
-            "end" => ['required', 'string'],
+            "begin" => ['required', 'date'],
+            "end" => ['required', 'date'],
             "description" => ['string'],
             "room_id" => ['required', 'integer'],
             "ccr_id" => ['integer'],

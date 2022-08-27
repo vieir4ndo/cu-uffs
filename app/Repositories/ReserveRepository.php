@@ -26,4 +26,12 @@ class ReserveRepository implements IReserveRepository
     public function getReserveById($id){
         return Reserve::where('id', $id)->first();
     }
+
+    public function getReservesByLocatorId($id){
+        return Reserve::select('reserves.id as id', 'begin', 'status', 'ccr.name as ccr', 'rooms.name as room')
+            ->leftJoin('ccr', 'reserves.ccr_id', '=', 'ccr.id')
+            ->leftJoin('rooms', 'reserves.room_id', '=', 'rooms.id')
+            ->where('locator_id', $id)
+            ->simplePaginate(15);
+    }
 }
