@@ -66,17 +66,23 @@ class ReserveController extends Controller
         }
     }
 
-    public function changeStatus(Request $request, $id) {
+    public function changeRequestStatus(Request $request, $id) {
         try {
             // TODO: Mover para o middleware
             $reserve = $this->service->getReserveById($id);
 
-            if ($reserve->locator_id != $request->user()->id) {
-                return ApiResponse::forbidden();
+            if ($request->user()->id != $reserve->responsable_id) {
+                return ApiResponse::forbidden('Você não tem permissão para realizar esta ação');
+            }
+
+            if ($reserve->status != 0) {
+                $statusString = $reserve->status == 1 ? 'aprovado' : 'negado';
+                return ApiResponse::badRequest('Este agendamento já foi ' . $statusString . '.');
             }
 
             $reserve = [
-                "status" => $request->new_status
+                "status" => $request->new_status,
+                "observation" => $request->observation
             ];
 
             $validation = Validator::make(array_filter($reserve), $this->changeReserveStatusRules());
@@ -108,12 +114,27 @@ class ReserveController extends Controller
         }
     }
 
+    public function getResponsableRequests(Request $request) {
+        try {
+            $reserves = $this->service->getRequestsByResponsableID($request->user()->id);
+
+            foreach ($reserves as $reserve) {
+                $reserve->begin = date('d/m/Y H:i', strtotime($reserve->begin));
+                $reserve->end = date('d/m/Y H:i', strtotime($reserve->end));
+            }
+
+            return ApiResponse::ok($reserves);
+        } catch (Exception $e) {
+            return ApiResponse::badRequest($e->getMessage());
+        }
+    }
+
     public function getReserveById(Request $request, $id) {
         try {
             // TODO: Mover para o middleware
             $reserve = $this->service->getReserveById($id);
 
-            if ($reserve->locator_id != $request->user()->id) {
+            if (!in_array($request->user()->id, [$reserve->locator_id, $reserve->responsable_id])) {
                 return ApiResponse::forbidden();
             }
 
@@ -139,7 +160,8 @@ class ReserveController extends Controller
 
     private function changeReserveStatusRules() {
         return [
-            "new_status" => ['required', 'integer'],
+            "status" => ['required', 'integer'],
+            "observation" => ['string'],
         ];
     }
 

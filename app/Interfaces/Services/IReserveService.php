@@ -10,4 +10,5 @@ interface IReserveService
     public function getReserve();
     public function getReserveById($id);
     public function getReservesByLocatorId($id);
+    public function getRequestsByResponsableID($id);
 }

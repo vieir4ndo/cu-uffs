@@ -19,7 +19,8 @@ class ReserveService implements IReserveService
     }
 
     public function updateReserve($data, $id) {
-        $this->repository->createOrUpdateReserve($data, Carbon::parse($id));
+        $data["id"] = $id;
+        $this->repository->createOrUpdateReserve($data);
     }
 
     public function deleteReserve($id) {
@@ -36,5 +37,9 @@ class ReserveService implements IReserveService
 
     public function getReservesByLocatorId($id) {
         return $this->repository->getReservesByLocatorId($id);
+    }
+
+    public function getRequestsByResponsableID($id) {
+        return $this->repository->getRequestsByResponsableID($id);
     }
 }
