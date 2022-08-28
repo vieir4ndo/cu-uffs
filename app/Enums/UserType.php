@@ -8,4 +8,6 @@ enum UserType: int
     case Student = 2;
     case RUEmployee = 3;
     case ThirdPartyCashierEmployee = 4;
+    case CSManager = 5;
+    case CSLocator = 6;
 }
