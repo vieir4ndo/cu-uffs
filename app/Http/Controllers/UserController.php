@@ -7,6 +7,7 @@ use App\Interfaces\Services\IUserPayloadService;
 use App\Interfaces\Services\IAuthService;
 use App\Models\Api\ApiResponse;
 use App\Enums\Operation;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -92,6 +93,37 @@ class UserController extends Controller
         }
     }
 
+    public function lessee()
+    {
+        return view('locator.index');
+    }
+
+    public function changeLesseePermission(Request $request)
+    {
+        try {
+            $permission = [
+                "is_lessee" => $request->is_lessee,
+                "uid" => $request->uid
+            ];
+
+            $validation = Validator::make($permission, $this->changeLesseePermissionRules());
+
+            if ($validation->fails()) {
+                return ApiResponse::badRequest($validation->errors()->all());
+            }
+
+            $user = new User();
+            $user->uid = $permission['uid'];
+
+            $this->service->updateUser($user, $permission);
+
+            return ApiResponse::ok(null);
+        } catch (Exception $e) {
+            echo ($e->getMessage());
+            // return ApiResponse::badRequest($e->getMessage());
+        }
+    }
+
     private static function createUserWitoutIdUFFSRules()
     {
         return [
@@ -111,6 +143,14 @@ class UserController extends Controller
                 'required',
                 'string',
             ]
+        ];
+    }
+
+    private static function changeLesseePermissionRules()
+    {
+        return [
+            'uid' => ['required', 'string'],
+            'is_lessee' => ['required', 'boolean']
         ];
     }
 }

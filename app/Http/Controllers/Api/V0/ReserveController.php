@@ -33,7 +33,7 @@ class ReserveController extends Controller
                 "description" => $request->description,
                 "room_id" => $request->room_id,
                 "ccr_id" => $request->ccr_id,
-                "locator_id" => $request->user()->id,
+                "lessee_id" => $request->user()->id,
             ];
 
             $validation = Validator::make(array_filter($reserve), $this->createReserveRules());
@@ -55,7 +55,7 @@ class ReserveController extends Controller
             // TODO: Mover para o middleware
             $reserve = $this->service->getReserveById($id);
 
-            if ($reserve->locator_id != $request->user()->id) {
+            if ($reserve->lessee_id != $request->user()->id) {
                 return ApiResponse::forbidden();
             }
 
@@ -99,9 +99,9 @@ class ReserveController extends Controller
         }
     }
 
-    public function getLocatorReserves(Request $request) {
+    public function getLesseeReserves(Request $request) {
         try {
-            $reserves = $this->service->getReservesByLocatorId($request->user()->id);
+            $reserves = $this->service->getReservesByLesseeId($request->user()->id);
 
             foreach ($reserves as $reserve) {
                 $reserve->begin = date('d/m/Y H:i', strtotime($reserve->begin));
@@ -134,7 +134,7 @@ class ReserveController extends Controller
             // TODO: Mover para o middleware
             $reserve = $this->service->getReserveById($id);
 
-            if (!in_array($request->user()->id, [$reserve->locator_id, $reserve->responsable_id])) {
+            if (!in_array($request->user()->id, [$reserve->lessee_id, $reserve->responsable_id])) {
                 return ApiResponse::forbidden();
             }
 
@@ -154,7 +154,7 @@ class ReserveController extends Controller
             "description" => ['string'],
             "room_id" => ['required', 'integer'],
             "ccr_id" => ['integer'],
-            "locator_id" => ['required', 'integer'],
+            "lessee_id" => ['required', 'integer'],
         ];
     }
 

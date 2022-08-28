@@ -75,6 +75,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/ccr/create', [CCRController::class, 'create'])->name('web.ccr.create');
         Route::get('/ccr/edit/{id}', [CCRController::class, 'edit'])->name('web.ccr.edit');
         Route::post('/ccr/form', [CCRController::class, 'createOrUpdate'])->name('web.ccr.createOrUpdate');
+
+        Route::get('/lessee', [UserController::class, 'lessee'])->name('web.lessee.index');
+        Route::post('/lessee/{uid}', [UserController::class, 'changeLesseePermission'])->name('web.lessee.changeLesseePermission');
     });
 });
 

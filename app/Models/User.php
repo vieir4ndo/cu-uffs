@@ -36,7 +36,8 @@ class User extends Authenticatable
         'birth_date',
         'course',
         'status_enrollment_id',
-        'ticket_amount'
+        'ticket_amount',
+        'is_lessee'
     ];
 
     /**
@@ -80,5 +81,9 @@ class User extends Authenticatable
 
     public function isRoomsAdministrator(){
         return $this->type == UserType::CSManager->value;
+    }
+
+    public function isRoomsLessee(){
+        return $this->is_lessee;
     }
 }
