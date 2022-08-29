@@ -40,6 +40,12 @@
 
         @livewireScripts
         @powerGridStyles
+        @include('sweetalert::alert')
         @bukScripts(true)
+        <script>
+            window.addEventListener('showAlert', event => {
+                alert(event.detail.message);
+            })
+        </script>
     </body>
 </html>

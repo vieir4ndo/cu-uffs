@@ -19,7 +19,12 @@ class ReserveService implements IReserveService
     }
 
     public function updateReserve($data, $id) {
-        $this->repository->createOrUpdateReserve($data, Carbon::parse($id));
+        $data["id"] = $id;
+        $this->repository->createOrUpdateReserve($data);
+    }
+
+    public function deleteReserve($id) {
+        $this->repository->deleteReserve($id);
     }
 
     public function getReserve() {
@@ -30,8 +35,12 @@ class ReserveService implements IReserveService
         return $this->repository->getReserveById($id);
     }
 
-    public function getReservesByLocatorId($id) {
-        return $this->repository->getReservesByLocatorId($id);
+    public function getReservesByLesseeId($id) {
+        return $this->repository->getReservesByLesseeId($id);
+    }
+
+    public function getRequestsByResponsableID($id) {
+        return $this->repository->getRequestsByResponsableID($id);
     }
 
     public function getRoomWithoutReserve($begin, $end){

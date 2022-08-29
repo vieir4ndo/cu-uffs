@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Validators\AuthValidator;
+use App\Http\Validators\UserValidator;
 use App\Interfaces\Services\IUserService;
 use App\Interfaces\Services\IUserPayloadService;
 use App\Interfaces\Services\IAuthService;
 use App\Models\Api\ApiResponse;
-use App\Enums\Operation;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
+use App\Enums\Operation;
 use App\Jobs\StartCreateOrUpdateUserJob;
+
 
 class UserController extends Controller
 {
@@ -42,6 +48,11 @@ class UserController extends Controller
     public function form(Request $request)
     {
         try {
+            // Converter data para dd-mm-yyyy
+            $birth_date = str_replace('/', '-', $request->birth_date);
+            // e depois formatar para yyyy-mm-dd
+            $formatted_date = date('Y-m-d', strtotime($birth_date));
+
             $user = [
                 "uid" => $request->uid,
                 "email" => $request->email,
@@ -49,68 +60,108 @@ class UserController extends Controller
                 "password" => $request->password,
                 "type" => $request->type,
                 "profile_photo" => $request->profile_photo,
-                "birth_date" => $request->birth_date
+                "birth_date" => $formatted_date
             ];
 
-            $validation = Validator::make($user, $this->createUserWitoutIdUFFSRules());
+            $validation = Validator::make($user, UserValidator::createUserWitoutIdUFFSRules());
 
             if ($validation->fails()) {
-                return ApiResponse::badRequest($validation->errors()->all());
+                Alert::error('Erro', Arr::flatten($validation->errors()->all()));
+                return back();
             }
 
             $created = $this->service->getUserByUsernameFirstOrDefault($user['uid']);
 
             if ($created) {
-                return ApiResponse::conflict("User already has an account.");
+                Alert::error('Erro', 'Usuário informado já tem uma conta.');
+                return back();
             }
 
             $this->userPayloadService->create($user, Operation::UserCreationWithoutIdUFFS);
 
             StartCreateOrUpdateUserJob::dispatch($user["uid"]);
 
+            Alert::success('Sucesso', 'Usuário registrado com sucesso!');
             return redirect()->route('web.user.index');
+        } catch (Exception $e) {
+            Alert::error('Erro', $e->getMessage());
+            return back();
+        }
+    }
+
+    public function forgotPassword($uid)
+    {
+        try {
+            $validation = Validator::make(["uid" => $uid], AuthValidator::forgotPasswordRules());
+
+            if ($validation->fails()) {
+                Alert::error('Erro', Arr::flatten($validation->errors()->all()));
+                return back();
+            }
+
+            $this->authService->forgotPassword($uid);
+
+            Alert::success('Sucesso', 'Solicitação para recuperar registrada com sucesso!');
+            return back();
+        } catch (Exception $e) {
+            Alert::error('Erro', $e->getMessage());
+            return back();
+        }
+    }
+
+    public function changeUserActivity($uid, $active = false){
+        try {
+            $user = [
+                "active" => $active,
+            ];
+
+            $this->service->deactivateUser($uid, $user);
+
+            $operation = $active ? "ativado" : "desativado";
+            Alert::success('Sucesso', "Usuário {$operation} com sucesso!");
+            return back();
+        } catch (Exception $e) {
+            Alert::error('Erro', $e->getMessage());
+            return back();
+        }
+    }
+
+    public function lessee()
+    {
+        return view('locator.index');
+    }
+
+    public function changeLesseePermission(Request $request)
+    {
+        try {
+            $permission = [
+                "is_lessee" => $request->is_lessee,
+                "uid" => $request->uid
+            ];
+
+            $validation = Validator::make($permission, $this->changeLesseePermissionRules());
+
+            if ($validation->fails()) {
+                return ApiResponse::badRequest($validation->errors()->all());
+            }
+
+            $user = new User();
+            $user->uid = $permission['uid'];
+
+            $this->service->updateUser($user, $permission);
+
+            return ApiResponse::ok(null);
         } catch (Exception $e) {
             echo ($e->getMessage());
             // return ApiResponse::badRequest($e->getMessage());
         }
     }
 
-    public function resetPassword($uid)
-    {
-        try {
-            $validation = Validator::make(["uid" => $uid], $this->forgotPasswordRules());
-
-            if ($validation->fails()) {
-                return ApiResponse::badRequest($validation->errors()->all());
-            }
-
-            $this->authService->forgotPassword($uid);
-
-            return ApiResponse::ok(null);
-        } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
-        }
-    }
-
-    private static function createUserWitoutIdUFFSRules()
+    private static function changeLesseePermissionRules()
     {
         return [
-            "uid" => ['required', 'string', 'unique:users'],
-            'email' => ['required', 'email', 'unique:users'],
-            'password' => ['required', 'string'],
-            'name' => ['required', 'string', 'max:255'],
-            'profile_photo' => ['required', 'string'],
-            'birth_date' => ['required', 'date']
-        ];
-    }
-
-    private static function forgotPasswordRules()
-    {
-        return [
-            'uid' => [
-                'required',
-                'string',
-            ]
+            'uid' => ['required', 'string'],
+            'is_lessee' => ['required', 'boolean']
         ];
     }
 }

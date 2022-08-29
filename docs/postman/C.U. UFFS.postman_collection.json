@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4d8c85e1-d71d-4dab-980f-2cb61df5d6d7",
+		"_postman_id": "aef603f2-2b76-4d33-a7a6-0d819ff7ace1",
 		"name": "C.U. UFFS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "15701954"
@@ -165,6 +165,47 @@
 										"v0",
 										"entry",
 										"{{user.enrollment_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Entry Report",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								},
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"init_date\":\"01-08-2022\",\n    \"final_date\":\"30-08-2022\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/entry/report",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"entry",
+										"report"
 									]
 								}
 							},
@@ -348,6 +389,38 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Get Menu As String",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"init_date\":\"01-08-2022\",\n    \"final_date\":\"31-08-2022\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/menu/written",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"menu",
+										"written"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
@@ -355,13 +428,54 @@
 					"name": "Tickets",
 					"item": [
 						{
+							"name": "Ticket Report",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								},
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"init_date\":\"01-08-2022\",\n    \"final_date\":\"30-08-2022\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/ticket/report",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"ticket",
+										"report"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Insert tickets",
 							"request": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"enrollment_id\":\"{{user.enrollment_id}}\",\n    \"amount\":10\n}",
+									"raw": "{\n    \"enrollment_id\":\"{{user.enrollment_id}}\",\n    \"amount\":10.9\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -397,6 +511,26 @@
 										"v0",
 										"ticket",
 										"visitor"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register third party employee ticket",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/v0/ticket/thrid-party-employee",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"ticket",
+										"thrid-party-employee"
 									]
 								}
 							},
@@ -467,7 +601,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"uid\":\"{{user.uid}}\",\r\n    \"password\":\"{{user.password}}\",\r\n    \"profile_photo\": \"{{user.profile_photo}}\",\r\n    \"enrollment_id\":\"{{user.enrollment_id}}\",\r\n    \"birth_date\": \"{{user.birth_date}}\"\r\n}",
+									"raw": "{\r\n    \"uid\":\"{{user.uid}}\",\r\n    \"enrollment_id\":\"{{user.enrollment_id}}\",\r\n    \"birth_date\": \"{{user.birth_date}}\",\r\n    \"password\":\"{{user.password}}\",\r\n    \"profile_photo\":\"{{user.profile_photo}}\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"

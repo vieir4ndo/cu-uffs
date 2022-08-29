@@ -48,7 +48,7 @@ class ValidateIdUFFSCredentialsJob implements ShouldQueue
             $user_data_from_auth = $idUffsService->authWithIdUFFS($this->uid, $user["password"]);
 
             if (!$user_data_from_auth) {
-                throw new Exception("The IdUFFS password does not match the one informed.");
+                throw new Exception("O idUFFS ou senha informado está incorreto.");
             }
 
             $user["password"] = $user_data_from_auth["password"];

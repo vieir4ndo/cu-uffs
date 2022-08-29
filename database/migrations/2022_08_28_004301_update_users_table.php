@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateEntriesTable extends Migration
+class UpdateUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class UpdateEntriesTable extends Migration
      */
     public function up()
     {
-        Schema::table('entries', function (Blueprint $table) {
-            $table->integer('type')->constrained('ticket_or_entry_types');
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('is_lessee')->default(false);
         });
     }
 
@@ -25,8 +25,8 @@ class UpdateEntriesTable extends Migration
      */
     public function down()
     {
-        Schema::table('entries', function (Blueprint $table) {
-            $table->dropColumn('type')->constrained('ticket_or_entry_types');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('is_lessee');
         });
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V0;
 
 use App\Http\Controllers\Controller;
+use App\Http\Validators\MenuValidator;
 use App\Interfaces\Services\IMenuService;
 use App\Models\Api\ApiResponse;
 use Carbon\Carbon;
@@ -37,7 +38,7 @@ class MenuController extends Controller
                 "ru_employee_id" => $request->user()->id
             ];
 
-            $validation = Validator::make($menu, $this->createMenuRules());
+            $validation = Validator::make($menu, MenuValidator::createMenuRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -69,7 +70,7 @@ class MenuController extends Controller
 
             $menu = array_filter($menu);
 
-            $validation = Validator::make($menu, $this->updateMenuRules());
+            $validation = Validator::make($menu, MenuValidator::updateMenuRules());
 
             if ($validation->fails()) {
                 return ApiResponse::badRequest($validation->errors()->all());
@@ -86,7 +87,7 @@ class MenuController extends Controller
     public function deleteMenu($date)
     {
         try {
-            $menu = $this->service->deleteMenu($date);
+            $this->service->deleteMenu($date);
 
             return ApiResponse::ok(null);
         } catch (Exception $e) {
@@ -105,36 +106,4 @@ class MenuController extends Controller
         }
     }
 
-    private static function updateMenuRules()
-    {
-        return [
-            "salad_1" => ['string'],
-            "salad_2" => ['string'],
-            "salad_3" => ['string'],
-            "grains_1" => ['string'],
-            "grains_2" => ['string'],
-            "grains_3" => ['string'],
-            "side_dish" => ['string'],
-            "mixture" => ['string'],
-            "vegan_mixture" => ['string'],
-            "dessert" => ['string'],
-        ];
-    }
-
-    private static function createMenuRules()
-    {
-        return [
-            "salad_1" => ['required', 'string'],
-            "salad_2" => ['required', 'string'],
-            "salad_3" => ['required', 'string'],
-            "grains_1" => ['required', 'string'],
-            "grains_2" => ['required', 'string'],
-            "grains_3" => ['required', 'string'],
-            "side_dish" => ['required', 'string'],
-            "mixture" => ['required', 'string'],
-            "vegan_mixture" => ['required', 'string'],
-            "dessert" => ['required', 'string'],
-            "date" => ['required', 'date', 'unique:menus']
-        ];
-    }
 }

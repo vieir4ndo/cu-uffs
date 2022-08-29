@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api\V0;
 
+use App\Http\Validators\ReportValidator;
 use App\Interfaces\Services\IEntryService;
 use App\Models\Api\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class EntryController
 {
@@ -16,7 +18,8 @@ class EntryController
         $this->service = $service;
     }
 
-    public function insertEntry($enrollment_id){
+    public function insertEntry($enrollment_id)
+    {
         try {
             $data = [
                 "date_time" => now(),
@@ -30,9 +33,32 @@ class EntryController
         }
     }
 
-    public function getEntries(Request $request){
+    public function getEntries(Request $request)
+    {
         try {
             $entries = $this->service->getEntriesByUsername($request->user()->uid);
+
+            return ApiResponse::ok($entries);
+        } catch (Exception $e) {
+            return ApiResponse::badRequest($e->getMessage());
+        }
+    }
+
+    public function getReport(Request $request)
+    {
+        try {
+            $dates = [
+                'init_date' => $request->init_date,
+                'final_date' => $request->final_date
+            ];
+
+            $validation = Validator::make($dates, ReportValidator::redirectReportRules($request->init_date, $request->final_date));
+
+            if ($validation->fails()) {
+                return ApiResponse::badRequest($validation->errors()->all());
+             }
+
+            $entries = $this->service->generateReport($request->init_date, $request->final_date);
 
             return ApiResponse::ok($entries);
         } catch (Exception $e) {

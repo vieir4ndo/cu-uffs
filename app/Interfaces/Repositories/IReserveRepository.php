@@ -9,4 +9,7 @@ interface IReserveRepository
     public function getReserveById($id);
     public function getReservesByLocatorId($id);
     public function getRoomWithoutReserve($begin, $end);
+    public function getReservesByLesseeId($id);
+    public function getRequestsByResponsableID($id);
+
 }

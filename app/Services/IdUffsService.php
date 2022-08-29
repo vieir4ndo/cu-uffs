@@ -64,14 +64,18 @@ class IdUffsService implements IIdUffsService
 
         $response = $this->client->post("{$this->activeUserApi}", $this->getIsActivePayload($enrollment_id, $viewState, $captcha));
 
-        if (!StringHelper::checkIfContains($response->getBody(), "Vínculo ativo") || !StringHelper::checkIfContains($response->getBody(), $name)) {
-            return null;
+        if (!StringHelper::checkIfContains($response->getBody(), "Vínculo ativo")) {
+            throw new Exception("Matrícula/SIAPE informado não possui vínculo ativo.");
+        }
+
+        if (!StringHelper::checkIfContains($response->getBody(), $name)){
+            throw new Exception("Matrícula/SIAPE não pertence ao idUFFS informado.");
         }
 
         if (StringHelper::checkIfContains($response->getBody(), '<p class="descricaoVinculo">Estudante</p>')) {
 
             if (array_keys(config('course.chapeco'), substr($enrollment_id, 3, 4))) {
-                return null;
+                throw new Exception("Matrícula informada não pertence ao campus Chapecó.");
             }
 
             return [
@@ -100,7 +104,7 @@ class IdUffsService implements IIdUffsService
                     "course" => null
                 ];
             }
-            return null;
+            throw new Exception("Matrícula informada não pertence ao campus Chapecó.");
         } else {
             return [
                 "status_enrollment_id" => false,

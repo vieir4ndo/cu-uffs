@@ -7,8 +7,7 @@ use App\Models\CCR;
 
 class CCRRepository implements ICCRRepository
 {
-    public function createOrUpdateCCR($data)
-    {
+    public function createOrUpdateCCR($data) {
         $id = $data["id"] ?? null;
         unset($data["id"]);
 
@@ -18,13 +17,11 @@ class CCRRepository implements ICCRRepository
         );
     }
 
-    public function getCCR()
-    {
-        return CCR::simplePaginate(15);
+    public function getCCR() {
+        return CCR::where('status_ccr', 1)->simplePaginate(15);
     }
 
-    public function getCCRById($id)
-    {
+    public function getCCRById($id) {
         return CCR::where('id', $id)->first();
     }
 }

@@ -2,15 +2,7 @@
 
 namespace App\Providers;
 
-use App\Interfaces\Services\IUserPayloadService;
-use App\Jobs\FinishCreateOrUpdateUserJob;
-use App\Jobs\GenerateAndSaveBarCodeJob;
-use App\Jobs\StartCreateOrUpdateUserJob;
-use App\Jobs\UpdateUserEnrollmentIdStatusJob;
-use App\Jobs\ValidateEnrollmentIdAtIdUFFSJob;
-use App\Jobs\ValidateIdUFFSCredentialsJob;
 use App\Models\PersonalAccessToken;
-use App\Services\UserPayloadService;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\Sanctum;
@@ -50,15 +42,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('App\Interfaces\Repositories\IUserPayloadRepository', 'App\Repositories\UserPayloadRepository');
         $this->app->bind('App\Interfaces\Repositories\IUserRepository', 'App\Repositories\UserRepository');
         $this->app->bind('App\Interfaces\Repositories\IMenuRepository', 'App\Repositories\MenuRepository');
+
         $this->app->bind('App\Interfaces\Repositories\IBlockRepository', 'App\Repositories\BlockRepository');
         $this->app->bind('App\Interfaces\Repositories\ICCRRepository', 'App\Repositories\CCRRepository');
         $this->app->bind('App\Interfaces\Repositories\IRoomRepository', 'App\Repositories\RoomRepository');
         $this->app->bind('App\Interfaces\Repositories\IReserveRepository', 'App\Repositories\ReserveRepository');
-
-        $this->app->when(StartCreateOrUpdateUserJob::class)
-            ->needs(IUserPayloadService::class)
-            ->give(UserPayloadService::class);
-
     }
 
     /**

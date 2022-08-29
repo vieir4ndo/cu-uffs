@@ -66,7 +66,7 @@ class StartCreateOrUpdateUserJob implements ShouldQueue
                     ValidateAndSaveProfilePhotoJob::dispatch($this->uid);
                     break;
                 default:
-                    throw new \Exception('Invalid operation.');
+                    throw new \Exception('Operação inválida.');
             }
 
             Log::info("Finished job {$this->className}");

@@ -2,16 +2,46 @@
 
 namespace App\Http\Livewire;
 
+use App\Http\Validators\AuthValidator;
+use App\Interfaces\Services\IAuthService;
+use App\Interfaces\Services\IUserService;
 use App\Models\User;
-use Illuminate\Support\Carbon;
+use App\Repositories\UserRepository;
+use App\Services\AiPassportPhotoService;
+use App\Services\AuthService;
+use App\Services\BarcodeService;
+use App\Services\CaptchaMonsterService;
+use App\Services\IdUffsService;
+use App\Services\MailjetService;
+use App\Services\UserService;
+use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
-use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
+use PowerComponents\LivewirePowerGrid\{Button, Column, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
 
 final class UserTable extends PowerGridComponent
 {
+    private IUserService $service;
+    private IAuthService $authService;
+
     use ActionButton;
+
+    public function __construct($id = null)
+    {
+        parent::__construct($id);
+        $repository = new UserRepository();
+        $barcodeService = new BarcodeService();
+        $aiPassportPhotoService = new AiPassportPhotoService();
+        $this->service = new UserService($repository, $barcodeService, $aiPassportPhotoService);
+        $captchaMonsterService = new CaptchaMonsterService();
+        $idUffsService = new IdUffsService($captchaMonsterService);
+        $mailJetService = new MailjetService();
+        $this->authService = new AuthService($this->service, $mailJetService, $idUffsService);
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -80,7 +110,9 @@ final class UserTable extends PowerGridComponent
             ->addColumn('uid')
             ->addColumn('name')
             ->addColumn('email')
-            ->addColumn('active');
+            ->addColumn('active', function (User $model) {
+                return ($model->active ? 'SIM' : 'NÃO');
+              });
     }
 
     /*
@@ -113,7 +145,7 @@ final class UserTable extends PowerGridComponent
                 ->searchable(),
 
             Column::make('ATIVO', 'active')
-                ->toggleable(),
+                ->sortable(),
         ];
     }
 
@@ -134,10 +166,17 @@ final class UserTable extends PowerGridComponent
     public function actions(): array
     {
        return [
-           Button::make('reset-password', 'Alteração de Senha')
+           Button::make('web.user.forgot-password', 'Alteração de Senha')
                ->class('default-button bg-ccuffs-primary')
-               ->route('web.user.reset-password', ['uid' => 'uid'])
-               ->method('post')
+               ->emit('forgotPassword', ['uid' => 'uid']),
+           Button::add("activate")
+               ->caption('Ativar')
+               ->class('default-button bg-ccuffs-primary')
+               ->emit('enableUser', ['uid' => 'uid']),
+           Button::add("deactivate")
+               ->caption('Desativar')
+               ->class('default-button bg-ccuffs-tertiary')
+               ->emit('disableUser', ['uid' => 'uid'])
         ];
     }
 
@@ -155,16 +194,84 @@ final class UserTable extends PowerGridComponent
      * @return array<int, RuleActions>
      */
 
-    /*
+
     public function actionRules(): array
     {
        return [
-
-           //Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($user) => $user->id === 1)
-                ->hide(),
+            Rule::button('activate')
+                ->when(function (User $model) {
+                    return $model->active;
+                })
+                ->disable(),
+           Rule::button('deactivate')
+               ->when(function (User $model) {
+                   return !$model->active;
+               })
+               ->disable(),
         ];
     }
-    */
+
+    protected function getListeners()
+    {
+        return array_merge(
+            parent::getListeners(),
+            [
+                'disableUser',
+                "enableUser",
+                'forgotPassword'
+            ]);
+    }
+
+    public function enableUser(array $data): void
+    {
+        try {
+            $user = [
+                "active" => true,
+            ];
+
+            $this->service->deactivateUser($data['uid'], $user);
+
+            //Alert::success('Sucesso', "Usuário {$operation} com sucesso!");
+            $this->dispatchBrowserEvent('showAlert', ['message' => "Usuário ativado com sucesso!"]);
+        } catch (Exception $e) {
+            //Alert::error('Erro', $e->getMessage());
+            $this->dispatchBrowserEvent("showAlert", ["message" => $e->getMessage()]);
+        }
+    }
+
+    public function disableUser(array $data): void
+    {
+        try {
+            $user = [
+                "active" => false,
+            ];
+
+            $this->service->deactivateUser($data['uid'], $user);
+
+            //Alert::success('Sucesso', "Usuário {$operation} com sucesso!");
+            $this->dispatchBrowserEvent('showAlert', ['message' => "Usuário desativado com sucesso!"]);
+        } catch (Exception $e) {
+            //Alert::error('Erro', $e->getMessage());
+            $this->dispatchBrowserEvent("showAlert", ["message" => $e->getMessage()]);
+        }
+    }
+
+    public function forgotPassword(array $data): void{
+        try {
+            $validation = Validator::make(["uid" => $data["uid"]], AuthValidator::forgotPasswordRules());
+
+            if ($validation->fails()) {
+                //Alert::error('Erro', Arr::flatten($validation->errors()->all()));
+                $this->dispatchBrowserEvent("showAlert", ["message" => Arr::flatten($validation->errors()->all())]);
+            }
+
+            $this->authService->forgotPassword($data["uid"]);
+
+            //Alert::success('Sucesso', 'Solicitação para recuperar registrada com sucesso!');
+            $this->dispatchBrowserEvent('showAlert', ['message' => 'Solicitação para recuperar registrada com sucesso!']);
+        } catch (Exception $e) {
+            //Alert::error('Erro', $e->getMessage());
+            $this->dispatchBrowserEvent("showAlert", ["message" => $e->getMessage()]);
+        }
+    }
 }

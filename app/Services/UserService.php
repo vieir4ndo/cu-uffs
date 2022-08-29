@@ -66,7 +66,7 @@ class UserService implements IUserService
         $user = $this->repository->getUserByUsername($uid);
 
         if (empty($user))
-            throw new Exception("User not found.");
+            throw new Exception("Usuário não encontrado.");
 
         return $user;
     }
@@ -75,7 +75,7 @@ class UserService implements IUserService
         $user = (object)$this->repository->getStudentCard($uid);
 
         if (empty($user))
-            throw new Exception("User not found.");
+            throw new Exception("Usuário não encontrado.");
 
         return $user;
     }
@@ -106,7 +106,7 @@ class UserService implements IUserService
 
         if (!in_array($user->type, config('user.users_auth_iduffs'))) {
             $app_url = env('app_url');
-            throw new Exception("Cannot update user through this endpoint, please use {$app_url}/api/user.");
+            throw new Exception("Não é possivel atualizar usuário com esse endpoint, por favor continue em {$app_url}/api/user.");
         }
 
         return $this->updateUser($user, $data);
@@ -118,7 +118,7 @@ class UserService implements IUserService
 
         if (in_array($user->type, config('user.users_auth_iduffs'))) {
             $app_url = env('app_url');
-            throw new Exception("Cannot update user through this endpoint, please use {$app_url}/api/user/iduffs.");
+            throw new Exception("Não é possivel atualizar usuário com esse endpoint, por favor continue em {$app_url}/api/user/iduffs.");
         }
 
         return $this->updateUser($user, $data);
@@ -170,7 +170,7 @@ class UserService implements IUserService
         $user = $this->repository->getUserByEnrollmentId($enrollment_id);
 
         if (empty($user))
-            throw new Exception("User not found.");
+            throw new Exception("Usuário não encontrado.");
 
         return $user;
     }
@@ -179,5 +179,9 @@ class UserService implements IUserService
         $user = $this->repository->getUserByUsername($uid);
 
         return $this->repository->updateUserByUsername($uid, ["ticket_amount" => $user->ticket_amount + $amount]);
+    }
+
+    public function getAllUsers(){
+        return $this->repository->getAllUsers();
     }
 }

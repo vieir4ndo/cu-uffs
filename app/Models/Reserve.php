@@ -12,7 +12,7 @@ class Reserve extends Model
         "description",
         "status",
         "observation",
-        "locator_id",
+        "lessee_id",
         "room_id",
         "ccr_id"
     ];

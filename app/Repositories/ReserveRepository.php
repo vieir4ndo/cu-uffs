@@ -4,8 +4,8 @@ namespace App\Repositories;
 
 use App\Interfaces\Repositories\IReserveRepository;
 use App\Models\Reserve;
-use App\Models\Room;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ReserveRepository implements IReserveRepository
 {
@@ -19,6 +19,10 @@ class ReserveRepository implements IReserveRepository
         );
     }
 
+    public function deleteReserve($id) {
+        return Reserve::where('id', $id)->delete();
+    }
+
     public function getReserve() {
         return Reserve::simplePaginate(15);
     }
@@ -26,7 +30,8 @@ class ReserveRepository implements IReserveRepository
     public function getReserveById($id) {
         return Reserve::select(
             'reserves.id as id', 'begin', 'end', 'status', 'ccr.name as ccr', 'rooms.name as room',
-            'responsable.name as responsable', 'locator_id', 'reserves.description as description'
+            'responsable.name as responsable', 'responsable.id as responsable_id', 'reserves.observation as observation',
+            'lessee_id', 'reserves.description as description'
         )
             ->leftJoin('ccr', 'reserves.ccr_id', '=', 'ccr.id')
             ->leftJoin('rooms', 'reserves.room_id', '=', 'rooms.id')
@@ -35,11 +40,22 @@ class ReserveRepository implements IReserveRepository
             ->first();
     }
 
-    public function getReservesByLocatorId($id) {
+    public function getReservesByLesseeId($id) {
         return Reserve::select('reserves.id as id', 'begin', 'status', 'ccr.name as ccr', 'rooms.name as room')
             ->leftJoin('ccr', 'reserves.ccr_id', '=', 'ccr.id')
             ->leftJoin('rooms', 'reserves.room_id', '=', 'rooms.id')
-            ->where('locator_id', $id)
+//            ->where('reserves.end', '>=', Carbon::now())
+            ->where('lessee_id', $id)
+            ->simplePaginate(15);
+    }
+
+    public function getRequestsByResponsableID($id) {
+        return Reserve::select('reserves.id as id', 'begin', 'status', 'ccr.name as ccr', 'rooms.name as room')
+            ->leftJoin('ccr', 'reserves.ccr_id', '=', 'ccr.id')
+            ->leftJoin('rooms', 'reserves.room_id', '=', 'rooms.id')
+            ->leftJoin('users as responsable', 'rooms.responsable_id', '=', 'responsable.id')
+//            ->where('reserves.end', '>=', Carbon::now())
+            ->where('responsable.id', $id)
             ->simplePaginate(15);
     }
 

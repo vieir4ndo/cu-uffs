@@ -64,3 +64,12 @@
     @apply h-auto;
   }
 }
+
+.amount-data {
+  line-height: 45px;
+}
+
+.amount-data .amount-number {
+  font-size: 2rem;
+  font-weight: 800;
+}
