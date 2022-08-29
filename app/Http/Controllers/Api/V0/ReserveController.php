@@ -72,6 +72,19 @@ class ReserveController extends Controller
         } catch (Exception $e) {
             return ApiResponse::badRequest($e->getMessage());
         }
+    }    
+    
+    public function getRoomWithoutReserve(Request $request, $begin, $end){
+        try{
+            $begin=str_replace('T', ' ', "'".$begin."'");
+            $end=str_replace('T', ' ', "'".$end."'");
+
+            $room = $this->service->getRoomWithoutReserve($begin, $end);
+
+            return ApiResponse::ok($room);
+        }catch(Exception $e){
+            return ApiResponse::badRequest($e->getMessage());
+        }
     }
 
     private function createReserveRules() {

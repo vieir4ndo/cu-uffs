@@ -33,4 +33,8 @@ class ReserveService implements IReserveService
     public function getReservesByLocatorId($id) {
         return $this->repository->getReservesByLocatorId($id);
     }
+
+    public function getRoomWithoutReserve($begin, $end){
+        return $this->repository->getRoomWithoutReserve($begin, $end);
+    }
 }
