@@ -19,7 +19,7 @@
 
         <div class="bg-ccuffs overflow-hidden sm:rounded-lg">
             <div class="p-3 sm:p-10">
-                @livewire('ccr-table')
+                @livewire('c-c-r-table')
             </div>
         </div>
     </div>

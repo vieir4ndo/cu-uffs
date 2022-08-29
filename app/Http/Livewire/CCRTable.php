@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\CCR;
+use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
@@ -80,7 +81,9 @@ final class CCRTable extends PowerGridComponent
     {
         return PowerGrid::eloquent()
             ->addColumn('name')
-            ->addColumn('status_ccr');
+            ->addColumn('status', function (CCR $model) {
+            return ($model->status_ccr ? 'Ativo' : 'Inativo');
+        });
     }
 
     /*
@@ -100,13 +103,12 @@ final class CCRTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('NAME', 'name')
+            Column::make('NOME', 'name')
                 ->sortable()
                 ->searchable()
                 ->makeInputText(),
 
-            Column::make('STATUS', 'status_ccr')
-                ->toggleable()
+            Column::make('STATUS', 'status')
                 ->searchable()
                 ->sortable(),
 

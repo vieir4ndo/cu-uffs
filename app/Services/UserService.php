@@ -184,4 +184,17 @@ class UserService implements IUserService
     public function getAllUsers(){
         return $this->repository->getAllUsers();
     }
+
+    public function getAllNonLesseeUsers(){
+        return $this->repository->getAllNonLesseeUsers();
+    }
+
+    public function changeLesseePermission(string $uid, $data): User
+    {
+        $user = $this->getUserByUsername($uid, false);
+
+        $this->repository->updateUserByUsername($user->uid, $data);
+
+        return $this->getUserByUsername($uid);
+    }
 }

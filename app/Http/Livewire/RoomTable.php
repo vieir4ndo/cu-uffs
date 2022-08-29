@@ -96,7 +96,9 @@ final class RoomTable extends PowerGridComponent
             ->addColumn('name')
             ->addColumn('description')
             ->addColumn('capacity')
-            ->addColumn('status_room')
+            ->addColumn('status', function (Room $model) {
+                return ($model->status_room ? 'Ativo' : 'Inativo');
+            })
             ->addColumn('responsable')
             ->addColumn('block');
     }
@@ -119,35 +121,34 @@ final class RoomTable extends PowerGridComponent
     {
         return [
 
-            Column::make('NAME', 'name')
+            Column::make('NOME', 'name')
                 ->sortable()
                 ->searchable()
                 ->makeInputText(),
 
-            Column::make('DESCRIPTION', 'description')
+            Column::make('DESCRIÇÃO', 'description')
                 ->sortable()
                 ->searchable()
                 ->makeInputText(),
 
-            Column::make('CAPACITY', 'capacity')
+            Column::make('CAPACIDADE', 'capacity')
                 ->sortable()
                 ->searchable()
                 ->makeInputRange(),
 
-            Column::make('RESPONSABLE ID', 'responsable')
+            Column::make('RESPONSÁVEL', 'responsable')
                 ->sortable()
                 ->searchable()
                 ->makeInputRange(),
 
-            Column::make('BLOCK ID', 'block')
+            Column::make('BLOCO', 'block')
                 ->sortable()
                 ->searchable()
                 ->makeInputRange(),
 
-            Column::make('STATUS ROOM', 'status_room')
+            Column::make('STATUS', 'status')
                 ->sortable()
-                ->searchable()
-                ->toggleable(),
+                ->searchable(),
 
         ]
 ;

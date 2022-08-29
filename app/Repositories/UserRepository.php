@@ -50,4 +50,11 @@ class UserRepository implements IUserRepository
         return User::select('enrollment_id', 'name', "ticket_amount")->get();
     }
 
+    public function getAllNonLesseeUsers(){
+        return User::select('uid', 'name')
+            ->where('active', true)
+            ->where('is_lessee', false)
+            ->get();
+    }
+
 }

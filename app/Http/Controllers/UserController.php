@@ -128,7 +128,11 @@ class UserController extends Controller
 
     public function lessee()
     {
-        return view('locator.index');
+        $users = $this->service->getAllNonLesseeUsers();
+
+        return view('lessee.index', [
+            'users' => $users
+        ]);
     }
 
     public function changeLesseePermission(Request $request)
@@ -145,15 +149,13 @@ class UserController extends Controller
                 return ApiResponse::badRequest($validation->errors()->all());
             }
 
-            $user = new User();
-            $user->uid = $permission['uid'];
+            $this->service->changeLesseePermission($request->uid, $permission);
 
-            $this->service->updateUser($user, $permission);
-
-            return ApiResponse::ok(null);
+            Alert::success('Sucesso', 'Permissão alterada com sucesso!');
+            return back();
         } catch (Exception $e) {
-            echo ($e->getMessage());
-            // return ApiResponse::badRequest($e->getMessage());
+            Alert::error('Erro', $e->getMessage());
+            return back();
         }
     }
 

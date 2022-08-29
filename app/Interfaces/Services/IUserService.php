@@ -21,4 +21,6 @@ interface IUserService
     function updateTicketAmount($uid, $amount);
     function getStudentCard(string $uid);
     function getAllUsers();
+    function getAllNonLesseeUsers();
+    function changeLesseePermission(string $uid, $data): User;
 }

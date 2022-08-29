@@ -2,8 +2,12 @@
 
 namespace App\Http\Livewire;
 
+use App\Interfaces\Services\IUserService;
 use App\Models\User;
-use Illuminate\Support\Carbon;
+use App\Repositories\UserRepository;
+use App\Services\AiPassportPhotoService;
+use App\Services\BarcodeService;
+use App\Services\UserService;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
@@ -11,7 +15,18 @@ use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Heade
 
 final class LesseeTable extends PowerGridComponent
 {
+    private IUserService $service;
+
     use ActionButton;
+
+    public function __construct($id = null)
+    {
+        parent::__construct($id);
+        $repository = new UserRepository();
+        $barcodeService = new BarcodeService();
+        $aiPassportPhotoService = new AiPassportPhotoService();
+        $this->service = new UserService($repository, $barcodeService, $aiPassportPhotoService);
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -135,10 +150,10 @@ final class LesseeTable extends PowerGridComponent
     public function actions(): array
     {
         return [
-            Button::make('edit', 'Remover Permissão')
-                ->class('bg-red-500 cursor-pointer text-white px-2 py-1.5 m-1 rounded text-sm')
-                ->route('web.lessee.changeLesseePermission', ['uid' => 'uid', 'is_lessee' => false])
-                ->method('post')
+            Button::add("removePermission")
+                ->class('default-button bg-ccuffs-tertiary')
+                ->caption('Remover Permissão')
+                ->emit('removePermission', ['uid' => 'uid'])
         ];
     }
 
@@ -169,4 +184,29 @@ final class LesseeTable extends PowerGridComponent
         ];
     }
     */
+
+    protected function getListeners()
+    {
+        return array_merge(
+            parent::getListeners(),
+            [
+                'removePermission'
+            ]);
+    }
+
+    public function removePermission(array $data): void
+    {
+        try {
+            $permission = [
+                "is_lessee" => false,
+            ];
+
+            $this->service->changeLesseePermission($data['uid'], $permission);
+
+            $this->dispatchBrowserEvent('showAlert', ['message' => "Permissão removida com sucesso!"]);
+        } catch (Exception $e) {
+            //Alert::error('Erro', $e->getMessage());
+            $this->dispatchBrowserEvent("showAlert", ["message" => $e->getMessage()]);
+        }
+    }
 }

@@ -81,7 +81,9 @@ final class BlockTable extends PowerGridComponent
         return PowerGrid::eloquent()
             ->addColumn('name')
             ->addColumn('description')
-            ->addColumn('status_block');
+            ->addColumn('status', function (Block $model) {
+                return ($model->status_block ? 'Ativo' : 'Inativo');
+        });
     }
 
     /*
@@ -101,18 +103,17 @@ final class BlockTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('NAME', 'name')
+            Column::make('NOME', 'name')
                 ->sortable()
                 ->searchable()
                 ->makeInputText(),
 
-            Column::make('DESCRIPTION', 'description')
+            Column::make('DESCRIÇÃO', 'description')
                 ->sortable()
                 ->searchable()
                 ->makeInputText(),
 
-            Column::make('STATUS BLOCK', 'status_block')
-                ->toggleable()
+            Column::make('STATUS', 'status')
                 ->searchable()
                 ->sortable(),
 
