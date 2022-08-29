@@ -36,7 +36,12 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         try {
-            $tokenData = PersonalAccessToken::findToken($request->token)->first();
+            $tokenData = PersonalAccessToken::findToken($request->senha);
+
+            if ($tokenData == null){
+                Alert::error('Erro', "Token inválido.");
+                return back();
+            }
 
             $validation = Validator::make(["new_password" => $request->new_password], AuthValidator::resetPasswordRules());
 

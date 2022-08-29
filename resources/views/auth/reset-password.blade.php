@@ -8,7 +8,7 @@
 
         <form name="reset-password" method="POST" action="{{route('web.auth.resetPassword')}}">
             @csrf
-            <input type="hidden" name="token" value="{{ $token }}">
+            <input type="hidden" id="senha" name="senha" value="{{ $token }}">
             <div class="mt-4">
                 <x-jet-label for="new_password" value="{{ __('Nova Senha') }}" />
                 <x-jet-input id="new_password" class="block mt-1 w-full" type="password" name="new_password" required autocomplete="new_password" />
