@@ -14,7 +14,7 @@ class UpdateUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_locator')->default(false);
+            $table->boolean('is_lessee')->default(false);
         });
     }
 
@@ -25,6 +25,8 @@ class UpdateUsersTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('is_lessee');
+        });
     }
 }

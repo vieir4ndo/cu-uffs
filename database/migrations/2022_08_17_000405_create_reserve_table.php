@@ -20,10 +20,9 @@ class CreateReserveTable extends Migration
             $table->text('description')->nullable();
             $table->integer('status')->default(0);
             $table->text('observation')->nullable();
-            $table->foreignId('locator_id')->constrained('users');
+            $table->foreignId('lessee_id')->constrained('users');
             $table->foreignId('room_id')->constrained('rooms');
             $table->foreignId('ccr_id')->nullable()->constrained('ccr');
-            $table->timestamps();
         });
     }
 
