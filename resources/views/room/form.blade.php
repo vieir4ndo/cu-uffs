@@ -36,8 +36,8 @@
                                 <label for="status">Status</label>
                                 <select name="status" id="status" class="form-select appearance-none"
                                         aria-label="Default select example" required="true">
-                                    <option value="1">Ativo</option>
-                                    <option {{ (isset($room->status_room) and $room->status_room) ? '' : 'selected' }} value="0">Inativo</option>
+                                    <option value=1>Ativo</option>
+                                    <option {{ (isset($room->status_room) and !$room->status_room) ? 'selected' : '' }} value=0>Inativo</option>
                                 </select>
                             </div>
                         </div>

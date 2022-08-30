@@ -23,9 +23,9 @@
                             <div class="w-full px-3 mb-6 md:mb-5">
                                 <label for="status">Status</label>
                                 <select name="status" id="status" class="form-select appearance-none"
-                                        aria-label="Default select example" required="true">
-                                    <option value="1">Ativo</option>
-                                    <option {{ (isset($block->status_block) and $block->status_block) ? '' : 'selected' }} value="0">Inativo</option>
+                                        required="true">
+                                    <option value=1>Ativo</option>
+                                    <option {{ (isset($block->status_block) and !$block->status_block) ? 'selected' : '' }} value=0>Inativo</option>
                                 </select>
                             </div>
                         </div>
