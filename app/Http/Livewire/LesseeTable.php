@@ -119,12 +119,12 @@ final class LesseeTable extends PowerGridComponent
                 ->searchable()
                 ->makeInputText(),
 
-            Column::make('NAME', 'name')
+            Column::make('NOME', 'name')
                 ->sortable()
                 ->searchable()
                 ->makeInputText(),
 
-            Column::make('EMAIL', 'email')
+            Column::make('E-MAIL', 'email')
                 ->sortable()
                 ->searchable()
                 ->makeInputText(),

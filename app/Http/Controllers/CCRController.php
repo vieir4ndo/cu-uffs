@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Interfaces\Services\ICCRService;
+use App\Jobs\StartCreateOrUpdateUserJob;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class CCRController extends Controller
 {
@@ -49,15 +52,18 @@ class CCRController extends Controller
 
             $validation = Validator::make($ccr, $this->createOrUpdateCCRRules());
 
-            // if ($validation->fails()) {
-            //$errors = $validation->errors()->all(); with errors
-            // }
+            if ($validation->fails()) {
+                Alert::error('Erro', Arr::flatten($validation->errors()->all()));
+                return back();
+            }
 
             $this->service->createCCR($ccr);
 
+            Alert::success('Sucesso', 'CCR cadastrado com sucesso!');
             return redirect()->route('web.ccr.index');
         } catch (Exception $e) {
-            //return $this->index(); with errors $e->getMessage();
+            Alert::error('Erro', $e->getMessage());
+            return back();
         }
     }
 
@@ -66,7 +72,7 @@ class CCRController extends Controller
         return [
             "id" => ['string'],
             "name" => ['required', 'string'],
-            "status_ccr" => ['required', 'string']
+            "status_ccr" => ['required', 'boolean']
         ];
     }
 }

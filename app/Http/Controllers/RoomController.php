@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Exception;
 use App\Interfaces\Services\IRoomService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 
 class RoomController extends Controller
@@ -55,15 +57,18 @@ class RoomController extends Controller
 
             $validation = Validator::make($room, $this->createOrUpdateRoomRules());
 
-            // if ($validation->fails()) {
-            //$errors = $validation->errors()->all(); with errors
-            // }
+            if ($validation->fails()) {
+                Alert::error('Erro', Arr::flatten($validation->errors()->all()));
+                return back();
+            }
 
             $this->service->createRoom($room);
 
+            Alert::success('Sucesso', 'Sala cadastrada com sucesso!');
             return redirect()->route('web.room.index');
         } catch (Exception $e) {
-            //return $this->index(); with errors $e->getMessage();
+            Alert::error('Erro', $e->getMessage());
+            return back();
         }
     }
 
@@ -73,7 +78,7 @@ class RoomController extends Controller
             "id" => ['string'],
             "name" => ['required', 'string'],
             "description" => ['string'],
-            "status" => ['required', 'string'],
+            "status_room" => ['required', 'boolean'],
             "responsable_id" => ['string'],
             "block_id" => ['string']
         ];
