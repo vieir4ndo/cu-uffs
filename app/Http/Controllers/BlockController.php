@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Interfaces\Services\IBlockService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class BlockController extends Controller
 {
@@ -50,15 +52,18 @@ class BlockController extends Controller
 
             $validation = Validator::make($block, $this->createOrUpdateBlockRules());
 
-            // if ($validation->fails()) {
-            //$errors = $validation->errors()->all(); with errors
-            // }
+            if ($validation->fails()) {
+                Alert::error('Erro', Arr::flatten($validation->errors()->all()));
+                return back();
+            }
 
             $this->service->createBlock($block);
 
+            Alert::success('Sucesso', 'Bloco cadastrado com sucesso!');
             return redirect()->route('web.block.index');
         } catch (Exception $e) {
-            //return $this->index(); with errors $e->getMessage();
+            Alert::error('Erro', $e->getMessage());
+            return back();
         }
     }
 
@@ -68,7 +73,7 @@ class BlockController extends Controller
             "id" => ['string'],
             "name" => ['required', 'string'],
             "description" => ['string'],
-            "status" => ['required', 'string']
+            "status_block" => ['required', 'boolean']
         ];
     }
 }

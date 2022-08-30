@@ -46,6 +46,8 @@ class ReserveRepository implements IReserveRepository
             ->leftJoin('rooms', 'reserves.room_id', '=', 'rooms.id')
 //            ->where('reserves.end', '>=', Carbon::now())
             ->where('lessee_id', $id)
+            ->orderBy('reserves.status', 'asc')
+            ->orderBy('reserves.begin', 'asc')
             ->simplePaginate(15);
     }
 
@@ -56,6 +58,8 @@ class ReserveRepository implements IReserveRepository
             ->leftJoin('users as responsable', 'rooms.responsable_id', '=', 'responsable.id')
 //            ->where('reserves.end', '>=', Carbon::now())
             ->where('responsable.id', $id)
+            ->orderBy('reserves.status', 'asc')
+            ->orderBy('reserves.begin', 'asc')
             ->simplePaginate(15);
     }
 
@@ -81,16 +85,23 @@ class ReserveRepository implements IReserveRepository
 
         select r.name from rooms r left join reserves on reserves.room_id = r.id
         where r.id not in (select reserves.room_id from reserves) and r.status_room = true');*/
-        $theRoom = DB::select('select * from rooms
+        $theRoom = DB::select('
+            select
+            rooms.name as room, blocks.name as block, responsables.name as responsable, capacity, rooms.id as room_id
+            from rooms
+            left join blocks on rooms.block_id = blocks.id
+            left join users responsables on rooms.responsable_id = responsables.id
 
-        where rooms.status_room=true
+            where rooms.status_room=true
 
-        and not exists (
-             select * from reserves
-             where rooms.id=reserves.room_id
-             and reserves.status<>2
-             and '.$begin.' between reserves.begin and reserves.end
-             and '.$end.' between reserves.begin and reserves.end )'
+            and not exists (
+                 select * from reserves
+                 where rooms.id=reserves.room_id
+                 and reserves.status<>2
+                 and (' . $begin . ' between reserves.begin and reserves.end
+                 or ' . $end . ' between reserves.begin and reserves.end
+                 or reserves.begin between ' . $begin . ' and ' . $end . ')
+            )'
         );
 
         return $theRoom;

@@ -19,8 +19,8 @@
                             <div class="w-full px-3 mb-6 md:mb-5">
                                 <label for="status_ccr">Status</label>
                                 <select name="status_ccr" id="status_ccr" class="form-select appearance-none" required="true">
-                                    <option value="1">Ativo</option>
-                                    <option {{ (isset($ccr->status_ccr) and $ccr->status_ccr) ? '' : 'selected' }} value="0">Inativo</option>
+                                    <option value=1>Ativo</option>
+                                    <option {{ (isset($ccr->status_ccr) and !$ccr->status_ccr) ? 'selected' : '' }} value=0>Inativo</option>
                                 </select>
                             </div>
                         </div>

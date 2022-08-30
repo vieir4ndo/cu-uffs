@@ -82,7 +82,6 @@ Route::middleware('auth:sanctum')->namespace('\App\Http\Controllers\Api\V0')->gr
         Route::delete('/reserve/{id}', [ReserveController::class, 'deleteReserve'])->name('api.v0.reserve.deleteReserve');
         Route::get('/reserve', [ReserveController::class, 'getLesseeReserves'])->name('api.v0.reserve.getLesseeReserves');
         Route::get('/reserve/{id}', [ReserveController::class, 'getReserveById'])->name('api.v0.reserve.getReserveById');
-        Route::get('/reserve', [ReserveController::class, 'getLocatorReserves'])->name('api.v0.reserve.getLocatorReserves');
         Route::get('/reserve/time/{begin}/{end}', [ReserveController::class, 'getRoomWithoutReserve'])->name('api.v0.reserve.getRoomWithoutReserve');
         Route::patch('/request/{id}', [ReserveController::class, 'changeRequestStatus'])->name('api.v0.reserve.changeRequestStatus');
         Route::get('/request', [ReserveController::class, 'getResponsableRequests'])->name('api.v0.reserve.getResponsableRequests');
