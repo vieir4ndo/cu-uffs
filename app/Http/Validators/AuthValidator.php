@@ -23,4 +23,18 @@ class AuthValidator
             ]
         ];
     }
+
+    public static function loginRules()
+    {
+        return [
+            'uid' => [
+                'required',
+                'string',
+            ],
+            'password' => [
+                'required',
+                'string',
+            ]
+        ];
+    }
 }
