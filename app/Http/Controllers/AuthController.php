@@ -53,7 +53,7 @@ class AuthController extends Controller
             $this->service->resetPassword($tokenData->name, $request->new_password);
 
             Alert::success('Sucesso', 'Senha alterada com sucesso!');
-            return redirect()->route('web.auth.index');
+            return back();
         } catch (Exception $e) {
             Alert::error('Erro', $e->getMessage());
             return back();
