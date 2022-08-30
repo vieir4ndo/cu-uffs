@@ -15,10 +15,16 @@
 
         <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.7.3/dist/alpine.js" defer></script>
+        @livewireStyles
+        @bukStyles(true)
     </head>
     <body>
         <div class="font-sans text-gray-900 antialiased">
             {{ $slot }}
         </div>
+        @stack('modals')
+        @livewireScripts
+        @include('sweetalert::alert')
+        @bukScripts(true)
     </body>
 </html>

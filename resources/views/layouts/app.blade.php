@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
         @livewireStyles
+        @powerGridStyles
         @bukStyles(true)
 
         <!-- Scripts -->
@@ -39,7 +40,7 @@
         @stack('modals')
 
         @livewireScripts
-        @powerGridStyles
+        @powerGridScripts
         @include('sweetalert::alert')
         @bukScripts(true)
         <script>
