@@ -9,8 +9,7 @@ interface IReserveService
     public function deleteReserve($id);
     public function getReserve();
     public function getReserveById($id);
-    public function getReservesByLocatorId($id);
-    public function getRoomWithoutReserve($begin, $end);
     public function getReservesByLesseeId($id);
+    public function getRoomWithoutReserve($begin, $end);
     public function getRequestsByResponsableID($id);
 }

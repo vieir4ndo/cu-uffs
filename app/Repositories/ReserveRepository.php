@@ -78,17 +78,17 @@ class ReserveRepository implements IReserveRepository
         and reserves.end < '.$end.'
 
         union
-        
+
         select r.name from rooms r left join reserves on reserves.room_id = r.id
         where r.id not in (select reserves.room_id from reserves) and r.status_room = true');*/
         $theRoom = DB::select('select * from rooms
 
         where rooms.status_room=true
-        
+
         and not exists (
-             select * from reserves 
-             where rooms.id=reserves.room_id 
-             and reserves.status<>2 
+             select * from reserves
+             where rooms.id=reserves.room_id
+             and reserves.status<>2
              and '.$begin.' between reserves.begin and reserves.end
              and '.$end.' between reserves.begin and reserves.end )'
         );
