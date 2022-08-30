@@ -8,6 +8,7 @@ use App\Interfaces\Services\IUserService;
 use App\Interfaces\Services\IUserPayloadService;
 use App\Interfaces\Services\IAuthService;
 use App\Models\Api\ApiResponse;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -125,4 +126,44 @@ class UserController extends Controller
         }
     }
 
+    public function lessee()
+    {
+        $users = $this->service->getAllNonLesseeUsers();
+
+        return view('lessee.index', [
+            'users' => $users
+        ]);
+    }
+
+    public function changeLesseePermission(Request $request)
+    {
+        try {
+            $permission = [
+                "is_lessee" => $request->is_lessee,
+                "uid" => $request->uid
+            ];
+
+            $validation = Validator::make($permission, $this->changeLesseePermissionRules());
+
+            if ($validation->fails()) {
+                return ApiResponse::badRequest($validation->errors()->all());
+            }
+
+            $this->service->changeLesseePermission($request->uid, $permission);
+
+            Alert::success('Sucesso', 'Permissão alterada com sucesso!');
+            return back();
+        } catch (Exception $e) {
+            Alert::error('Erro', $e->getMessage());
+            return back();
+        }
+    }
+
+    private static function changeLesseePermissionRules()
+    {
+        return [
+            'uid' => ['required', 'string'],
+            'is_lessee' => ['required', 'boolean']
+        ];
+    }
 }

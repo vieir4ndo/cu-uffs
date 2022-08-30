@@ -4,12 +4,16 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SellController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\BlockController;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\CCRController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\EntryController;
 use App\Http\Middleware\RUEmployeeMiddleware;
 use App\Http\Middleware\RUOrThirdPartyCashierEmployeeMiddleware;
+use App\Http\Middleware\RoomsAdministratorMiddleware;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 
@@ -63,6 +67,26 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/sell-visitor', [SellController::class, 'sellVisitorTicket']) ->name('web.sell.sell-visitor-ticket');
         Route::post('/sell-third-party', [SellController::class, 'sellThirdPartyTicket']) ->name('web.sell.sell-third-party-ticket');
         Route::post('/report/ticket', [ReportController::class, 'redirectTicketReport']) ->name('web.report.redirect-ticket-report');
+    });
+
+    Route::middleware(RoomsAdministratorMiddleware::class)->namespace('\App\Http\Controllers')->group(function () {
+        Route::get('/block', [BlockController::class, 'index'])->name('web.block.index');
+        Route::get('/block/create', [BlockController::class, 'create'])->name('web.block.create');
+        Route::get('/block/edit/{id}', [BlockController::class, 'edit'])->name('web.block.edit');
+        Route::post('/block/form', [BlockController::class, 'createOrUpdate'])->name('web.block.createOrUpdate');
+
+        Route::get('/room', [RoomController::class, 'index'])->name('web.room.index');
+        Route::get('/room/create', [RoomController::class, 'create'])->name('web.room.create');
+        Route::get('/room/edit/{id}', [RoomController::class, 'edit'])->name('web.room.edit');
+        Route::post('/room/form', [RoomController::class, 'createOrUpdate'])->name('web.room.createOrUpdate');
+
+        Route::get('/ccr', [CCRController::class, 'index'])->name('web.ccr.index');
+        Route::get('/ccr/create', [CCRController::class, 'create'])->name('web.ccr.create');
+        Route::get('/ccr/edit/{id}', [CCRController::class, 'edit'])->name('web.ccr.edit');
+        Route::post('/ccr/form', [CCRController::class, 'createOrUpdate'])->name('web.ccr.createOrUpdate');
+
+        Route::get('/lessee', [UserController::class, 'lessee'])->name('web.lessee.index');
+        Route::post('/lessee', [UserController::class, 'changeLesseePermission'])->name('web.lessee.changeLesseePermission');
     });
 });
 

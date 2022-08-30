@@ -14,4 +14,5 @@ interface IUserRepository
     function getAllUsersWithIdUFFS();
     function getStudentCard(string $uid);
     function getAllUsers();
+    function getAllNonLesseeUsers();
 }

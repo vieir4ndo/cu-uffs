@@ -3,11 +3,17 @@
 use App\Http\Controllers\Api\V0\AuthController;
 use App\Http\Controllers\Api\V0\EntryController;
 use App\Http\Controllers\Api\V0\MenuController;
+use App\Http\Controllers\Api\V0\BlockController;
 use App\Http\Controllers\Api\V0\UserController;
 use App\Http\Controllers\Api\V0\TicketController;
+use App\Http\Controllers\Api\V0\RoomController;
+use App\Http\Controllers\Api\V0\CCRController;
+use App\Http\Controllers\Api\V0\ReserveController;
 use App\Http\Middleware\ApiKeyMiddleware;
 use App\Http\Middleware\RUEmployeeMiddleware;
 use App\Http\Middleware\RUOrThirdPartyCashierEmployeeMiddleware;
+use App\Http\Middleware\RoomsAdministratorMiddleware;
+use App\Http\Middleware\RoomsLesseeMiddleware;
 use App\Http\Middleware\ThirdPartyCashierEmployeeMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -47,9 +53,39 @@ Route::middleware('auth:sanctum')->namespace('\App\Http\Controllers\Api\V0')->gr
         Route::delete('/menu/{date}', [MenuController::class, 'deleteMenu'])->name('api.v0.menu.deleteMenu');
         Route::get('/entry/report', [EntryController::class, 'getReport'])->name('api.v0.entry.getReport');
     });
-    
+
     Route::middleware(RUOrThirdPartyCashierEmployeeMiddleware::class)->namespace('\App\Http\Controllers\Api\V0')->group(function () {
         Route::get('/ticket/report', [TicketController::class, 'getReport'])->name('api.v0.ticket.getReport');
+    });
+
+    Route::middleware(RoomsAdministratorMiddleware::class)->namespace('\App\Http\Controllers\Api\V0')->group(function () {
+        Route::post('/block', [BlockController::class, 'createBlock'])->name('api.v0.block.createBlock');
+        Route::patch('/block/{id}', [BlockController::class, 'updateBlock'])->name('api.v0.block.updateBlock');
+        Route::delete('/block/{id}', [BlockController::class, 'deleteBlock'])->name('api.v0.block.deleteBlock');
+
+        Route::post('/room', [RoomController::class, 'createRoom'])->name('api.v0.room.createRoom');
+        Route::patch('/room/{id}', [RoomController::class, 'updateRoom'])->name('api.v0.room.updateRoom');
+        Route::delete('/room/{id}', [RoomController::class, 'deleteRoom'])->name('api.v0.room.deleteRoom');
+
+        Route::post('/ccr', [CCRController::class, 'createCCR'])->name('api.v0.ccr.createCCR');
+        Route::patch('/ccr/{id}', [CCRController::class, 'updateCCR'])->name('api.v0.ccr.updateCCR');
+        Route::delete('/ccr/{id}', [CCRController::class, 'deleteCCR'])->name('api.v0.ccr.deleteCCR');
+    });
+
+    Route::middleware(RoomsLesseeMiddleware::class)->namespace('\App\Http\Controllers\Api\V0')->group(function () {
+        Route::get('/ccr', [CCRController::class, 'getCCR'])->name('api.v0.ccr.getCCR');
+        Route::get('/room', [RoomController::class, 'getRoom'])->name('api.v0.room.getRoom');
+        Route::get('/block', [BlockController::class, 'getBlock'])->name('api.v0.block.getBlock');
+
+        Route::post('/reserve', [ReserveController::class, 'createReserve'])->name('api.v0.reserve.createReserve');
+        Route::patch('/reserve/{id}', [ReserveController::class, 'updateReserve'])->name('api.v0.reserve.updateReserve');
+        Route::delete('/reserve/{id}', [ReserveController::class, 'deleteReserve'])->name('api.v0.reserve.deleteReserve');
+        Route::get('/reserve', [ReserveController::class, 'getLesseeReserves'])->name('api.v0.reserve.getLesseeReserves');
+        Route::get('/reserve/{id}', [ReserveController::class, 'getReserveById'])->name('api.v0.reserve.getReserveById');
+        Route::get('/reserve', [ReserveController::class, 'getLocatorReserves'])->name('api.v0.reserve.getLocatorReserves');
+        Route::get('/reserve/time/{begin}/{end}', [ReserveController::class, 'getRoomWithoutReserve'])->name('api.v0.reserve.getRoomWithoutReserve');
+        Route::patch('/request/{id}', [ReserveController::class, 'changeRequestStatus'])->name('api.v0.reserve.changeRequestStatus');
+        Route::get('/request', [ReserveController::class, 'getResponsableRequests'])->name('api.v0.reserve.getResponsableRequests');
     });
 });
 
