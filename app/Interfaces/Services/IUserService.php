@@ -23,4 +23,5 @@ interface IUserService
     function getAllUsers();
     function getAllNonLesseeUsers();
     function changeLesseePermission(string $uid, $data): User;
+    function getAllStudentsAndEmployees();
 }

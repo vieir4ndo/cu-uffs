@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\UserType;
 use App\Interfaces\Repositories\IUserRepository;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -57,4 +58,10 @@ class UserRepository implements IUserRepository
             ->get();
     }
 
+    function getAllStudentsAndEmployees()
+    {
+        return User::select('enrollment_id', 'name', "ticket_amount")
+            ->where('type', "!=", UserType::ThirdPartyCashierEmployee)
+            ->get();
+    }
 }

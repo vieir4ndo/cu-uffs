@@ -185,6 +185,10 @@ class UserService implements IUserService
         return $this->repository->getAllUsers();
     }
 
+    public function getAllStudentsAndEmployees(){
+        return $this->repository->getAllStudentsAndEmployees();
+    }
+
     public function getAllNonLesseeUsers(){
         return $this->repository->getAllNonLesseeUsers();
     }

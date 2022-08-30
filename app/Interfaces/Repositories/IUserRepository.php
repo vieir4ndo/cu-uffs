@@ -15,4 +15,5 @@ interface IUserRepository
     function getStudentCard(string $uid);
     function getAllUsers();
     function getAllNonLesseeUsers();
+    function getAllStudentsAndEmployees();
 }

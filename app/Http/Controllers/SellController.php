@@ -26,7 +26,7 @@ class SellController extends Controller
 
     public function index()
     {
-        $users = $this->userService->getAllUsers();
+        $users = $this->userService->getAllStudentsAndEmployees();
 
         return view('restaurant.sell.index', [
             'users'=> $users
