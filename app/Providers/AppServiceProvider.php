@@ -35,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('App\Interfaces\Services\IRoomService', 'App\Services\RoomService');
         $this->app->bind('App\Interfaces\Services\ICCRService', 'App\Services\CCRService');
         $this->app->bind('App\Interfaces\Services\IReserveService', 'App\Services\ReserveService');
+        $this->app->bind('App\Interfaces\Services\IReportService', 'App\Services\ReportService');
 
         # Registering repositories
         $this->app->bind('App\Interfaces\Repositories\IEntryRepository', 'App\Repositories\EntryRepository');

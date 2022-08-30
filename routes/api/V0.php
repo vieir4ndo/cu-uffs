@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V0\AuthController;
 use App\Http\Controllers\Api\V0\EntryController;
 use App\Http\Controllers\Api\V0\MenuController;
 use App\Http\Controllers\Api\V0\BlockController;
+use App\Http\Controllers\Api\V0\ReportController;
 use App\Http\Controllers\Api\V0\UserController;
 use App\Http\Controllers\Api\V0\TicketController;
 use App\Http\Controllers\Api\V0\RoomController;
@@ -51,11 +52,11 @@ Route::middleware('auth:sanctum')->namespace('\App\Http\Controllers\Api\V0')->gr
         Route::post('/menu', [MenuController::class, 'createMenu'])->name('api.v0.menu.createMenu');
         Route::patch('/menu/{date}', [MenuController::class, 'updateMenu'])->name('api.v0.menu.updateMenu');
         Route::delete('/menu/{date}', [MenuController::class, 'deleteMenu'])->name('api.v0.menu.deleteMenu');
-        Route::get('/entry/report', [EntryController::class, 'getReport'])->name('api.v0.entry.getReport');
+        Route::get('/report/entry', [ReportController::class, 'getEntryReport'])->name('api.v0.entry.getReport');
     });
 
     Route::middleware(RUOrThirdPartyCashierEmployeeMiddleware::class)->namespace('\App\Http\Controllers\Api\V0')->group(function () {
-        Route::get('/ticket/report', [TicketController::class, 'getReport'])->name('api.v0.ticket.getReport');
+        Route::get('/report/ticket', [ReportController::class, 'getTicketReport'])->name('api.v0.ticket.getReport');
     });
 
     Route::middleware(RoomsAdministratorMiddleware::class)->namespace('\App\Http\Controllers\Api\V0')->group(function () {

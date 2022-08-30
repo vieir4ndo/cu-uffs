@@ -101,27 +101,4 @@ class TicketController extends Controller
             return ApiResponse::badRequest($e->getMessage());
         }
     }
-
-    public function getReport(Request $request)
-    {
-        try {
-
-            $dates = [
-                'init_date' => $request->init_date,
-                'final_date' => $request->final_date
-            ];
-
-            $validation = Validator::make($dates, ReportValidator::redirectReportRules($request->init_date, $request->final_date));
-
-            if ($validation->fails()) {
-                return ApiResponse::badRequest($validation->errors()->all());
-            }
-
-            $tickets = $this->service->generateReport($request->init_date, $request->final_date);
-
-            return ApiResponse::ok($tickets);
-        } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
-        }
-    }
 }

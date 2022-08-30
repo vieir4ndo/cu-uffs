@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Validators\ReportValidator;
+use App\Interfaces\Services\IReportService;
 use App\Interfaces\Services\ITicketService;
 use Illuminate\Http\Request;
 use App\Models\Api\ApiResponse;
@@ -14,13 +15,11 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class ReportController extends Controller
 {
-    private IEntryService $entryService;
-    private ITicketService $ticketService;
+    private IReportService $service;
 
-    public function __construct(IEntryService $service, ITicketService $ticketService)
+    public function __construct(IReportService $service)
     {
-        $this->entryService = $service;
-        $this->ticketService = $ticketService;
+        $this->service = $service;
     }
 
     public function index()
@@ -47,7 +46,7 @@ class ReportController extends Controller
                  return back();
              }
 
-            $report = $this->entryService->generateReport($formatted_init_date, $formatted_final_date);
+            $report = $this->service->generateEntryReport($formatted_init_date, $formatted_final_date);
 
             return view('restaurant.report.entry', [
                 'init_date'                   => $report['init_date'],
@@ -84,7 +83,7 @@ class ReportController extends Controller
                 return back();
             }
 
-            $report = $this->ticketService->generateReport($formatted_init_date, $formatted_final_date);
+            $report = $this->service->generateTicketReport($formatted_init_date, $formatted_final_date);
 
             return view('restaurant.report.ticket', [
                 'init_date'                   => $report['init_date'],
