@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "aef603f2-2b76-4d33-a7a6-0d819ff7ace1",
+		"_postman_id": "bbbc4566-1d94-4e50-9396-fd6edbbf11b7",
 		"name": "C.U. UFFS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "15701954"
@@ -165,47 +165,6 @@
 										"v0",
 										"entry",
 										"{{user.enrollment_id}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Entry Report",
-							"protocolProfileBehavior": {
-								"disabledSystemHeaders": {
-									"accept": true
-								},
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"init_date\":\"01-08-2022\",\n    \"final_date\":\"30-08-2022\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{url}}/api/v0/entry/report",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"entry",
-										"report"
 									]
 								}
 							},
@@ -427,47 +386,6 @@
 				{
 					"name": "Tickets",
 					"item": [
-						{
-							"name": "Ticket Report",
-							"protocolProfileBehavior": {
-								"disabledSystemHeaders": {
-									"accept": true
-								},
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"init_date\":\"01-08-2022\",\n    \"final_date\":\"30-08-2022\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{url}}/api/v0/ticket/report",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"api",
-										"v0",
-										"ticket",
-										"report"
-									]
-								}
-							},
-							"response": []
-						},
 						{
 							"name": "Insert tickets",
 							"request": {
@@ -858,6 +776,93 @@
 										"v0",
 										"user",
 										"type"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Report",
+					"item": [
+						{
+							"name": "Ticket Report",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								},
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"init_date\":\"01-08-2022\",\n    \"final_date\":\"30-08-2022\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/report/ticket",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"report",
+										"ticket"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Entry Report",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"accept": true
+								},
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"init_date\":\"01-08-2022\",\n    \"final_date\":\"30-08-2022\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v0/report/entry",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"report",
+										"entry"
 									]
 								}
 							},
