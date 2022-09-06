@@ -22,7 +22,9 @@ services:
     entrypoint: docker-entrypoint.sh --requirepass ${REDIS_PASSWORD}
 
   app:
-    image: vieir4ndo/cu-uffs:latest
+    build:
+      context: ./../
+      dockerfile: ./docker/.Dockerfile
     container_name: app
     restart: always
     ports:
@@ -37,7 +39,9 @@ services:
     entrypoint: ./docker/start.sh
 
   horizon:
-    image: vieir4ndo/cu-uffs:latest
+    build:
+      context: ./../
+      dockerfile: ./docker/.Dockerfile
     container_name: horizon
     restart: always
     ports:
@@ -51,7 +55,9 @@ services:
     entrypoint: ./docker/start.sh
 
   scheduler:
-    image: vieir4ndo/cu-uffs:latest
+    build:
+      context: ./../
+      dockerfile: ./docker/.Dockerfile
     container_name: scheduler
     restart: always
     ports:
@@ -65,7 +71,9 @@ services:
     entrypoint: ./docker/start.sh
 
   webpacker:
-    image: vieir4ndo/cu-uffs:latest
+    build:
+      context: ./../
+      dockerfile: ./docker/.Dockerfile
     container_name: webpacker
     restart: always
     command: 'npm run watch'
