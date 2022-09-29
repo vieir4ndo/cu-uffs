@@ -20,20 +20,15 @@ class AuthController
 
     public function login(Request $request)
     {
-        try {
+        $validation = Validator::make(["uid" => $request->uid, "password" => $request->password], AuthValidator::loginRules());
 
-            $validation = Validator::make(["uid" => $request->uid, "password" => $request->password], AuthValidator::loginRules());
-
-            if ($validation->fails()) {
-                return ApiResponse::badRequest($validation->errors()->all());
-            }
-
-            $token = $this->service->login($request->uid, $request->password);
-
-            return ApiResponse::ok(["token" => $token]);
-        } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
+        if ($validation->fails()) {
+            return ApiResponse::badRequest($validation->errors()->all());
         }
+
+        $token = $this->service->login($request->uid, $request->password);
+
+        return ApiResponse::ok(["token" => $token]);
     }
 
     public function forgotPassword(Request $request)
