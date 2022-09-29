@@ -39,5 +39,11 @@ class Handler extends ExceptionHandler
                 return ApiResponse::badRequest($e->getMessage());
             }
         });
+
+        $this->renderable(function (BadRequestException $e, $request) {
+            if ($request->is('api/*')) {
+                return ApiResponse::badRequest($e->getMessage());
+            }
+        });
     }
 }

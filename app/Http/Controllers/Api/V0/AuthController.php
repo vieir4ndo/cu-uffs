@@ -6,10 +6,8 @@ use App\Exceptions\ValidationException;
 use App\Http\Validators\AuthValidator;
 use App\Interfaces\Services\IAuthService;
 use App\Models\Api\ApiResponse;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Spatie\DataTransferObject\Arr;
 
 class AuthController
 {
@@ -35,35 +33,27 @@ class AuthController
 
     public function forgotPassword(Request $request)
     {
-        try {
-            $validation = Validator::make(["uid" => $request->uid], AuthValidator::forgotPasswordRules());
+        $validation = Validator::make(["uid" => $request->uid], AuthValidator::forgotPasswordRules());
 
-            if ($validation->fails()) {
-                return ApiResponse::badRequest($validation->errors()->all());
-            }
-
-            $this->service->forgotPassword($request->uid);
-
-            return ApiResponse::ok(null);
-        } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
+        if ($validation->fails()) {
+            throw new ValidationException(implode(" ", $validation->errors()->all()));
         }
+
+        $this->service->forgotPassword($request->uid);
+
+        return ApiResponse::ok(null);
     }
 
     public function resetPassword(Request $request)
     {
-        try {
-            $validation = Validator::make(["new_password" => $request->new_password], AuthValidator::resetPasswordRules());
+        $validation = Validator::make(["new_password" => $request->new_password], AuthValidator::resetPasswordRules());
 
-            if ($validation->fails()) {
-                return ApiResponse::badRequest($validation->errors()->all());
-            }
-
-            $this->service->resetPassword($request->user()->uid, $request->new_password);
-
-            return ApiResponse::ok(null);
-        } catch (Exception $e) {
-            return ApiResponse::badRequest($e->getMessage());
+        if ($validation->fails()) {
+            throw new ValidationException(implode(" ", $validation->errors()->all()));
         }
+
+        $this->service->resetPassword($request->user()->uid, $request->new_password);
+
+        return ApiResponse::ok(null);
     }
 }
