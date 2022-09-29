@@ -8,8 +8,8 @@ use App\Interfaces\Services\IAuthService;
 use App\Models\Api\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use Spatie\DataTransferObject\Arr;
 
 class AuthController
 {
@@ -25,7 +25,7 @@ class AuthController
         $validation = Validator::make(["uid" => $request->uid, "password" => $request->password], AuthValidator::loginRules());
 
         if ($validation->fails()) {
-            throw new ValidationException((string)Arr::flatten($validation->errors()->all()));
+            throw new ValidationException(implode(" ", $validation->errors()->all()));
         }
 
         $token = $this->service->login($request->uid, $request->password);
