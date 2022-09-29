@@ -36,7 +36,7 @@ class Handler extends ExceptionHandler
     {
         $this->renderable(function (ValidationException $e, $request) {
             if ($request->is('api/*')) {
-                ApiResponse::badRequest($e->getMessage());
+                return ApiResponse::badRequest($e->getMessage());
             }
         });
     }
