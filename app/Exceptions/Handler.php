@@ -2,7 +2,6 @@
 
 namespace App\Exceptions;
 
-use App\Models\Api\ApiResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -34,10 +33,8 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->renderable(function (ValidationException $e, $request) {
-            if ($request->is('api/*')) {
-                ApiResponse::badRequest($e->getMessage());
-            }
+        $this->reportable(function (Throwable $e) {
+            //
         });
     }
 }
