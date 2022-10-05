@@ -2,13 +2,15 @@
 
 namespace App\Services;
 
-use App\Exceptions\BadRequestException;
 use App\Interfaces\Services\IAuthService;
 use App\Interfaces\Services\IIdUffsService;
 use App\Interfaces\Services\IMailjetService;
 use App\Interfaces\Services\IUserService;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Exception;
+use Illuminate\Contracts\Cache\Store;
+use Illuminate\Support\Facades\Storage;
 
 class AuthService implements IAuthService
 {
@@ -32,13 +34,13 @@ class AuthService implements IAuthService
             $data = $this->idUffsService->authWithIdUFFS($uid, $password);
 
             if ($data == null) {
-                throw new BadRequestException("A senha informada está incorreta.");
+                throw new Exception("A senha informada está incorreta.");
             }
 
             $this->service->updateUser($this->user, $data);
         } else {
             if (!Hash::check($password, $this->user->password)) {
-                throw new BadRequestException("A senha informada está incorreta.");
+                throw new Exception("A senha informada está incorreta.");
             }
         }
 
@@ -51,7 +53,7 @@ class AuthService implements IAuthService
         $this->user = $this->service->getUserByUsername($uid, false);
 
         if (in_array($this->user->type, config("user.users_auth_iduffs"))) {
-            throw new BadRequestException("Usuário não pode alterar sua senha nessa plataforma. Por favor continue em <a href='https://id.uffs.edu.br/id/XUI/?realm=/#passwordReset/'>IdUFFS</a>.");
+            throw new Exception("Usuário não pode alterar sua senha nessa plataforma. Por favor continue em <a href='https://id.uffs.edu.br/id/XUI/?realm=/#passwordReset/'>IdUFFS</a>.");
         }
 
         $this->user->tokens()->delete();
@@ -72,7 +74,7 @@ class AuthService implements IAuthService
         $this->user = $this->service->getUserByUsername($uid, false);
 
         if (in_array($this->user->type, config("user.users_auth_iduffs"))) {
-            throw new BadRequestException("Usuário não pode alterar sua senha nessa plataforma. Por favor continue em <a href='https://id.uffs.edu.br/id/XUI/?realm=/#passwordReset/'>IdUFFS</a>.");
+            throw new Exception("Usuário não pode alterar sua senha nessa plataforma. Por favor continue em <a href='https://id.uffs.edu.br/id/XUI/?realm=/#passwordReset/'>IdUFFS</a>.");
         }
 
         $data = [
