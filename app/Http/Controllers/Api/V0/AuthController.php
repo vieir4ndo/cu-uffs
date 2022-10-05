@@ -25,7 +25,7 @@ class AuthController
         $validation = Validator::make(["uid" => $request->uid, "password" => $request->password], AuthValidator::loginRules());
 
         if ($validation->fails()) {
-            throw new ValidationException((string)Arr::flatten($validation->errors()->all()));
+            throw new ValidationException(Arr::flatten($validation->errors()->all()));
         }
 
         $token = $this->service->login($request->uid, $request->password);
