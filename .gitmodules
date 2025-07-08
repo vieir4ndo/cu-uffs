@@ -1,0 +1,6 @@
+[submodule "web"]
+	path = web
+	url = https://github.com/vieir4ndo/cu-uffs-web
+[submodule "mobile"]
+	path = mobile
+	url = https://github.com/vieir4ndo/app-practice
